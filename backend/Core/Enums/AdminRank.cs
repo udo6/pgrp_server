@@ -1,0 +1,14 @@
+﻿namespace Core.Enums
+{
+	public enum AdminRank
+	{
+		SPIELER,
+		GUIDE,
+		SUPPORTER,
+		MODERATOR,
+		ADMINISTRATOR,
+		SUPERADMINISTRATOR,
+		MANAGER,
+		PROJEKTLEITER
+	}
+}
