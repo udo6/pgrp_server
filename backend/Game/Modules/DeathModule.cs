@@ -86,6 +86,25 @@ namespace Game.Modules
 		{
 			if (player.Interaction) player.StopInteraction(false);
 
+			if (killer != null && killer.Type == BaseObjectType.Player)
+			{
+				var killerPlayer = (RPPlayer)killer;
+
+				player.KillerId = killerPlayer.DbId;
+				player.KillerWeapon = weapon;
+				player.KillerDate = DateTime.Now;
+			}
+
+			if (killer != null && killer.Type == BaseObjectType.Vehicle)
+			{
+				var killerVehicle = (RPVehicle)killer;
+				var killerPlayer = (RPPlayer)killerVehicle.NetworkOwner;
+
+				player.KillerId = killerPlayer.DbId;
+				player.KillerWeapon = 187;
+				player.KillerDate = DateTime.Now;
+			}
+
 			if (player.IsGangwar)
 			{
 				GangwarController.OnPlayerDeath(player);
@@ -96,6 +115,7 @@ namespace Game.Modules
 				if(killer != null && killer.Type == BaseObjectType.Player)
 				{
 					var killerPlayer = (RPPlayer)killer;
+
 					killerPlayer.Notify("FFA", $"Du hast {player.Name} getötet!", NotificationType.SUCCESS);
 					player.Notify("FFA", $"Du wurdest von {killerPlayer.Name} getötet!", NotificationType.WARN);
 				}

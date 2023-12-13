@@ -28,6 +28,7 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, uint>("Server:Anticheat:Weapon", DetectedWeapon);
 
 			Alt.OnWeaponDamage += OnWeaponDamage;
+			Alt.OnExplosion += OnExplosion;
 		}
 
 		private static void DetectedGodmodeTarget(RPPlayer player, RPPlayer target, int allowedHealth)
@@ -176,6 +177,15 @@ namespace Game.Modules
 			}
 
 			return true;
+		}
+
+		private static bool OnExplosion(IPlayer _player, ExplosionType explosionType, Position position, uint explosionFx, IEntity targetEntity)
+		{
+			var player = (RPPlayer) _player;
+
+			LogService.LogExplosion(player.DbId, (int)explosionType);
+
+			return false;
 		}
 	}
 }

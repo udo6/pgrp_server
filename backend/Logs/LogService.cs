@@ -41,5 +41,14 @@ namespace Logs
 			ctx.BanLogs.Add(model);
 			ctx.SaveChanges();
 		}
+
+		public static void LogExplosion(int playerId, int explosionType)
+		{
+			var model = new ExplosionModel(playerId, explosionType, DateTime.Now);
+
+			using var ctx = new Context();
+			ctx.Explosions.Add(model);
+			ctx.SaveChanges();
+		}
 	}
 }

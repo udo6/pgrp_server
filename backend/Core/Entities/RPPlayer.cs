@@ -88,6 +88,10 @@ namespace Core.Entities
 		public DateTime LastGodmodeChange { get; set; }
 		public DateTime LastPositionChange { get; set; }
 
+		public int KillerId { get; set; }
+		public uint KillerWeapon { get; set; }
+		public DateTime KillerDate { get; set; }
+
 		public RPPlayer(ICore core, nint nativePointer, uint id) : base(core, nativePointer, id)
 		{
 			All.Add(this);

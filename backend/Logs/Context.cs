@@ -11,6 +11,7 @@ namespace Logs
 		public DbSet<MoneyTransactionModel> MoneyTransactionLogs { get; set; }
 		public DbSet<PlayerConnectionModel> PlayerConnectionLogs { get; set; }
 		public DbSet<BanModel> BanLogs { get; set; }
+		public DbSet<ExplosionModel> Explosions { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
