@@ -183,6 +183,19 @@ namespace Game.Modules
 		{
 			var player = (RPPlayer) _player;
 
+			if(explosionType == ExplosionType.GrenadeLauncher)
+			{
+				var account = AccountService.Get(player.DbId);
+				if (account == null) return false;
+
+				account.BannedUntil = DateTime.Now.AddYears(10);
+				account.BanReason = "Cheating";
+				AccountService.Update(account);
+
+				LogService.LogPlayerBan(player.DbId, 0, $"[ANTICHEAT] SKRIPT Explosive Ammo (Grenadelauncher)");
+				player.Kick("Du wurdest gebannt! Grund: Cheating");
+			}
+
 			LogService.LogExplosion(player.DbId, (int)explosionType);
 
 			return false;

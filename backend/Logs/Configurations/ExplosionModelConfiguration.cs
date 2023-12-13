@@ -19,7 +19,7 @@ namespace Logs.Configurations
 			builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int(11)");
 			builder.Property(x => x.PlayerId).HasColumnName("account_id").HasColumnType("int(11)");
 			builder.Property(x => x.ExplosionType).HasColumnName("type").HasColumnType("int(11)");
-			builder.Property(x => x.Date).HasColumnName("datetime").HasColumnType("int(11)");
+			builder.Property(x => x.Date).HasColumnName("datetime").HasColumnType("datetime");
 		}
 	}
 }
