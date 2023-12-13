@@ -54,7 +54,7 @@ namespace Game.Modules
 
 		private static void ToggleEngine(RPPlayer player)
 		{
-			if (!player.LoggedIn || !player.IsInVehicle) return;
+			if (!player.LoggedIn || !player.IsInVehicle || player.Seat != 0) return;
 
 			var veh = (RPVehicle)player.Vehicle;
 
@@ -171,7 +171,7 @@ namespace Game.Modules
 				Id = station.Id,
 				Vehicle = vehicleId,
 				Max = baseModel.MaxFuel - veh.Fuel,
-				Price = station.Price
+				Price = 20
 			}));
 		}
 

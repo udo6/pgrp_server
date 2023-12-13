@@ -64,6 +64,15 @@ namespace Game.Controllers
 				blip.Color = 4;
 				blip.ShortRange = true;
 			}
+
+			if (model.Type == ShopType.FOOD)
+			{
+				var blip = Alt.CreateBlip(true, 4, pos.Position, Array.Empty<IPlayer>());
+				blip.Name = "Restaurant";
+				blip.Sprite = 770;
+				blip.Color = 4;
+				blip.ShortRange = true;
+			}
 		}
 
 		public static void ResetItemPrices()

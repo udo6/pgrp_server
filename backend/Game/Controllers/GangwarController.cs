@@ -9,12 +9,13 @@ using Database.Models.Gangwar;
 using Database.Services;
 using Newtonsoft.Json;
 using AltV.Net.Shared.Enums;
+using Game.Streamer;
 
 namespace Game.Controllers
 {
     public static class GangwarController
 	{
-		public static readonly int GangwarDuration = 3;
+		public static readonly int GangwarDuration = 1;
 		public static readonly List<RunningGangwar> RunningGangwars = new();
 
 		public static List<uint> Weapons = new()
@@ -30,12 +31,13 @@ namespace Game.Controllers
 			var pos = PositionService.Get(model.PositionId);
 			if (pos == null) return;
 
-			var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 1f, 2f);
+			var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 1.5f, 2f);
 			shape.Id = model.Id;
 			shape.ShapeType = ColshapeType.GANGWAR_START;
-			shape.Size = 1f;
+			shape.Size = 1.5f;
 
-			Alt.CreateMarker(MarkerType.MarkerCylinder, pos.Position.Down(), new(0, 155, 255, 255));
+			var ped = Alt.CreatePed(AltV.Net.Enums.PedModel.Michael, pos.Position, pos.Rotation);
+			ped.Frozen = true;
 
 			var team = TeamService.Get(model.OwnerId);
 
@@ -78,15 +80,35 @@ namespace Game.Controllers
 			defenderShape.Size = 2f;
 
 			// markers
-			var mainMarker = Alt.CreateMarker(MarkerType.MarkerCylinder, new(gwPos.Position.X, gwPos.Position.Y, gwPos.Position.Z - 30), new(0, 155, 255, 255));
-			mainMarker.Scale = new(300, 300, 300);
-			mainMarker.Dimension = gangwar.Id;
+			var mainMarker = MarkerStreamer.AddMarker(new(
+				1,
+				new(gwPos.Position.X, gwPos.Position.Y, gwPos.Position.Z - 30),
+				new(300, 300, 300),
+				new(0, 155, 255, 255),
+				0,
+				gangwar.Id));
 
-			var attackerSpawnMarker = Alt.CreateMarker(MarkerType.MarkerChevron2, new(attackerSpawn.Position.X, attackerSpawn.Position.Y, attackerSpawn.Position.Z), new(0, 155, 255, 255));
-			attackerSpawnMarker.Dimension = gangwar.Id;
+			var attackerSpawnMarker = MarkerStreamer.AddMarker(new(
+				21,
+				attackerSpawn.Position,
+				new(1, 1, 1),
+				new(0, 155, 255, 255),
+				0,
+				false,
+				true,
+				false,
+				gangwar.Id));
 
-			var defenderSpawnMarker = Alt.CreateMarker(MarkerType.MarkerChevron2, new(defenderSpawn.Position.X, defenderSpawn.Position.Y, defenderSpawn.Position.Z), new(0, 155, 255, 255));
-			defenderSpawnMarker.Dimension = gangwar.Id;
+			var defenderSpawnMarker = MarkerStreamer.AddMarker(new(
+				21,
+				defenderSpawn.Position,
+				new(1, 1, 1),
+				new(0, 155, 255, 255),
+				0,
+				false,
+				true,
+				false,
+				gangwar.Id));
 
 			var gw = new RunningGangwar(gangwar.Id, gangwar.Name, owner.Id, owner.Name, 0, attacker.Id, attacker.Name, 0, mainMarker, attackerSpawnMarker, defenderSpawnMarker);
 			RunningGangwars.Add(gw);
@@ -105,8 +127,16 @@ namespace Game.Controllers
 				shape.Size = 2f;
 				shape.Dimension = gangwar.Id;
 
-				var marker = Alt.CreateMarker(MarkerType.MarkerFlag, pos.Position, new(0, 155, 255, 255));
-				marker.Dimension = gangwar.Id;
+				var marker = MarkerStreamer.AddMarker(new(
+				4,
+				pos.Position,
+				new(1, 1, 1),
+				new(0, 155, 255, 255),
+				0,
+				false,
+				true,
+				false,
+				gangwar.Id));
 
 				gw.Markers.Add(marker);
 			}
@@ -153,6 +183,8 @@ namespace Game.Controllers
 				shape.Destroy();
 			}
 
+			Console.WriteLine(1);
+
 			foreach (var veh in RPVehicle.All.ToList())
 			{
 				if (veh == null || !veh.Exists || veh.Dimension != gw.DbId || !veh.Gangwar) continue;
@@ -160,10 +192,12 @@ namespace Game.Controllers
 				veh.Delete();
 			}
 
-			foreach(var marker in gw.Markers)
-				marker.Destroy();
+			Console.WriteLine(2);
 
+			MarkerStreamer.RemoveMarkers(gw.Markers);
+			Console.WriteLine(3);
 			RunningGangwars.Remove(gw);
+			Console.WriteLine(4);
 		}
 
 		public static void RespawnPlayer(RPPlayer player)

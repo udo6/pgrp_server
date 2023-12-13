@@ -16,7 +16,7 @@ namespace Core.Models.Gangwar
 		public DateTime Started { get; set; }
 
 		// markers
-		public List<IMarker> Markers { get; set; }
+		public List<int> Markers { get; set; }
 
 		public RunningGangwar()
 		{
@@ -28,7 +28,7 @@ namespace Core.Models.Gangwar
 			Started = DateTime.Now;
 		}
 
-		public RunningGangwar(int dbId, string name, int ownerId, string ownerName, int ownerPoints, int attackerId, string attackerName, int attackerPoints, params IMarker[] markers)
+		public RunningGangwar(int dbId, string name, int ownerId, string ownerName, int ownerPoints, int attackerId, string attackerName, int attackerPoints, params int[] markers)
 		{
 			DbId = dbId;
 			Name = name;

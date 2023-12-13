@@ -10,7 +10,7 @@ namespace Core.Entities
 		public static readonly List<RPShape> All = new();
 		public static RPShape? Get(Position pos, int dimension, ColshapeType type)
 		{
-			return All.FirstOrDefault(x => x.ShapeType == type && x.Dimension == dimension && x.Position.Distance(pos) <= x.Size);
+			return All.FirstOrDefault(x => x.ShapeType == type && x.Dimension == dimension && new Position(x.Position.X, x.Position.Y, x.Position.Z+1).Distance(pos) <= x.Size);
 		}
 
 		public int Id { get; set; }

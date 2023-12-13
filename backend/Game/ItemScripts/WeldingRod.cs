@@ -49,7 +49,6 @@ namespace Game.ItemScripts
 			}
 
 			var drop = LootdropModule.ActiveLootDrops.FirstOrDefault(x => !x.Open && x.Position.Distance(player.Position) <= 15f);
-
 			if (drop != null)
 			{
 				player.PlayAnimation(AnimationType.WELDING);

@@ -27,6 +27,7 @@ namespace Game.Modules
 
 			CustomizationService.Update(custom);
 
+			player.Visible = true;
 			PlayerController.LoadPlayer(player);
 
 			player.ShowComponent("Creator", false);

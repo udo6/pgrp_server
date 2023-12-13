@@ -125,10 +125,10 @@ namespace Game.Controllers
 				shape.Size = 2f;
 			}
 
-			var upgrader = (RPShape)Alt.CreateColShapeCylinder(UpgraderPositions[model.Type].Down(), 1f, 2f);
+			var upgrader = (RPShape)Alt.CreateColShapeCylinder(UpgraderPositions[model.Type].Down(), 1.5f, 2f);
 			upgrader.Id = model.Id;
 			upgrader.ShapeType = ColshapeType.WAREHOUSE_UPGRADE;
-			upgrader.Size = 1f;
+			upgrader.Size = 1.5f;
 			upgrader.Dimension = model.Id;
 
 			var inventories = WarehouseService.GetFromWarehouse(model.Id);

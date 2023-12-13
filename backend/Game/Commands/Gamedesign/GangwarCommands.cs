@@ -15,7 +15,7 @@ namespace Game.Commands.Gamedesign
 		{
 			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
 
-			var pos = new PositionModel(player.Position);
+			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);
 
 			var gw = new GangwarModel(name.Replace('_', ' '), pos.Id, 0, DateTime.Now.AddHours(-48), 0, 0);

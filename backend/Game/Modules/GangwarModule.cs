@@ -7,6 +7,7 @@ using Core.Enums;
 using AltV.Net.Enums;
 using Core.Models.Gangwar;
 using Newtonsoft.Json;
+using Core;
 
 namespace Game.Modules
 {
@@ -62,7 +63,7 @@ namespace Game.Modules
 				return;
 			}
 
-			if (gangwar.LastAttack.AddHours(36) > DateTime.Now)
+			if (!Config.DevMode && gangwar.LastAttack.AddHours(36) > DateTime.Now)
 			{
 				player.Notify("Gangwar", "Das Gebiet wurde bereits in den letzten 36 Stunden attackiert!", NotificationType.ERROR);
 				return;
@@ -76,7 +77,7 @@ namespace Game.Modules
 
 			var defenderOnline = RPPlayer.All.Count(x => x.TeamId == gangwar.OwnerId);
 
-			if (defenderOnline < 15)
+			if (!Config.DevMode && defenderOnline < 15)
 			{
 				player.Notify("Gangwar", "Es sind nicht genug Mitglieder der verteidigenden Fraktion online!", NotificationType.ERROR);
 				return;
@@ -136,6 +137,8 @@ namespace Game.Modules
 			veh.Dimension = gangwar.DbId;
 			veh.SetLockState(false);
 			veh.SetEngineState(true);
+			veh.SetFuel(1000);
+			veh.SetMaxFuel(1000);
 			veh.Gangwar = true;
 			veh.PrimaryColorRgb = new(team.ColorR, team.ColorG, team.ColorB, 255);
 			veh.SecondaryColorRgb = new(team.ColorR, team.ColorG, team.ColorB, 255);

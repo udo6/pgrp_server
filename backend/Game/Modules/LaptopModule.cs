@@ -533,7 +533,7 @@ namespace Game.Modules
 				Name = player.Name,
 				Team = account.TeamId,
 				TeamLeader = account.TeamAdmin,
-				Admin = player.AdminRank > Core.Enums.AdminRank.GUIDE
+				Admin = player.AdminRank > Core.Enums.AdminRank.GUIDE && player.AdminDuty
 			}));
 		}
 

@@ -40,6 +40,36 @@ namespace Game.Commands.Admin
 			PlayerController.SetPlayerAlive(target, false);
 		}
 
+		[Command("reviveradius")]
+		public static void ReviveAllPlayers(RPPlayer player, int radius)
+		{
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
+
+			foreach (var target in RPPlayer.All.ToList())
+			{
+				if (target.Alive || player.Position.Distance(target.Position) > radius) continue;
+
+				PlayerController.SetPlayerAlive(target, false);
+			}
+
+			AdminController.BroadcastTeam("Administration", $"{player.Name} hat alle Spieler wiederbelebt!", NotificationType.WARN);
+		}
+
+		[Command("reviveall")]
+		public static void ReviveAllPlayers(RPPlayer player)
+		{
+			if (player.AdminRank < AdminRank.SUPERADMINISTRATOR) return;
+
+			foreach(var target in RPPlayer.All.ToList())
+			{
+				if (target.Alive) continue;
+
+				PlayerController.SetPlayerAlive(target, false);
+			}
+
+			AdminController.BroadcastTeam("Administration", $"{player.Name} hat alle Spieler wiederbelebt!", NotificationType.WARN);
+		}
+
 		[Command("respawn")]
 		public static void RespawnPlayer(RPPlayer player, string targetName)
 		{

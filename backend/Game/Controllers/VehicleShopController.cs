@@ -57,6 +57,8 @@ namespace Game.Controllers
 			veh.Frozen = true;
 			veh.SetLockState(true);
 			veh.SetEngineState(false);
+			veh.SetFuel(0);
+			veh.SetMaxFuel(0);
 		}
 	}
 }

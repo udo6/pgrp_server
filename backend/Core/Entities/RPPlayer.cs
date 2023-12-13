@@ -83,6 +83,11 @@ namespace Core.Entities
 		private string ClientInteraction { get; set; } = string.Empty;
 		private string ClientCachedInteraction { get; set; } = string.Empty;
 
+		// ANTICHEAT
+		public DateTime LastHealthChange { get; set; }
+		public DateTime LastGodmodeChange { get; set; }
+		public DateTime LastPositionChange { get; set; }
+
 		public RPPlayer(ICore core, nint nativePointer, uint id) : base(core, nativePointer, id)
 		{
 			All.Add(this);
@@ -237,6 +242,7 @@ namespace Core.Entities
 
 		public void SetInvincible(bool state)
 		{
+			LastGodmodeChange = DateTime.Now;
 			Invincible = state;
 			Emit("Client:AnticheatModule:SetGodmode", state);
 			SetStreamSyncedMetaData("GODMODE", state);
@@ -244,18 +250,21 @@ namespace Core.Entities
 
 		public void SetPosition(Position position)
 		{
+			LastPositionChange = DateTime.Now;
 			Position = position;
 			Emit("Client:AnticheatModule:SetPosition", position);
 		}
 
 		public void SetHealth(ushort health)
 		{
+			LastHealthChange = DateTime.Now;
 			Health = health;
 			Emit("Client:AnticheatModule:SetHealth", Health + Armor);
 		}
 
 		public void SetArmor(ushort armor)
 		{
+			LastHealthChange = DateTime.Now;
 			Armor = armor;
 			Emit("Client:AnticheatModule:SetHealth", Health + Armor);
 		}

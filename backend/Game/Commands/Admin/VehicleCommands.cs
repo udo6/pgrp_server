@@ -20,6 +20,8 @@ namespace Game.Commands.Admin
 			veh.NumberplateText = "PGRP";
 			veh.SetLockState(false);
 			veh.SetEngineState(true);
+			veh.SetFuel(1000);
+			veh.SetMaxFuel(1000);
 			player.SetIntoVehicle(veh, 1);
 		}
 

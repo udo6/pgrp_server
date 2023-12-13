@@ -6,6 +6,7 @@
 		AMMUNATION,
 		TEAM,
 		SWAT,
-		MECHANIC
+		MECHANIC,
+		FOOD
 	}
 }

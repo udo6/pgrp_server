@@ -71,6 +71,11 @@ namespace Game.Modules
 						player.Notify("Information", "Du hast einen Paycheck erhalten!", Core.Enums.NotificationType.INFO);
 					}
 
+					if(player.AdminRank > AdminRank.SPIELER)
+					{
+						account.BankMoney += 300 * (int)player.AdminRank;
+					}
+
 					account.SocialBonusMoney += 100 * player.Level;
 					AccountService.Update(account);
 				}

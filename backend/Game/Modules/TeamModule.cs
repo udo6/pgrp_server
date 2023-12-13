@@ -265,6 +265,8 @@ namespace Game.Modules
 					member.TeamJoinDate.ToString()));
 			}
 
+			var swat = RPPlayer.All.Count(x => x.SWATDuty);
+
 			var teamData = new ClientFederalTeam(
 				team.Id,
 				team.Name,
@@ -273,7 +275,7 @@ namespace Game.Modules
 				team.Money,
 				members,
 				GetBankHistory(team.Id),
-				new(0, 0, 0));
+				new(swat, 0, 0));
 
 			player.ShowComponent("Team", true, JsonConvert.SerializeObject(new TeamFederalClientData(
 				player.Name,

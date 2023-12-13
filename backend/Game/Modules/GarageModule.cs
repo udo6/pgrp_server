@@ -72,8 +72,9 @@ namespace Game.Modules
 			veh.PositionId = vehicle.PositionId;
 			veh.OwnerType = vehicle.Type;
 			veh.GarageType = baseModel.GarageType;
-			veh.Fuel = vehicle.Fuel;
 			veh.NumberplateText = vehicle.Plate;
+			veh.SetFuel(vehicle.Fuel);
+			veh.SetMaxFuel(baseModel.MaxFuel);
 			VehicleController.ApplyVehicleTuning(veh);
 
 			var vehPos = PositionService.Get(vehicle.PositionId);

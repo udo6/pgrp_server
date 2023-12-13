@@ -7,6 +7,7 @@ using Database.Models.Account;
 using Database.Models.Inventory;
 using Database.Services;
 using Game.Controllers;
+using Game.Streamer;
 using Logs;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
@@ -35,6 +36,8 @@ namespace Game.Modules
 			player.SetStreamSyncedMetaData("CUFFED", false);
 			player.SetStreamSyncedMetaData("ROPED", false);
 			player.SetStreamSyncedMetaData("STABILIZED", false);
+
+			player.Emit("Client:MarkerStreamer:SetMarkers", JsonConvert.SerializeObject(MarkerStreamer.Markers));
 
 			var account = AccountService.Get(player.Name);
 			if (account == null)
@@ -136,6 +139,8 @@ namespace Game.Modules
 
 			if (!custom.Finished)
 			{
+				player.SetPosition(new(402.8664f, -996.4108f, -100f));
+				player.Visible = false;
 				player.ShowComponent("Creator", true, JsonConvert.SerializeObject(custom));
 				return;
 			}

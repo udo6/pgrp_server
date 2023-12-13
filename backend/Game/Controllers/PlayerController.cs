@@ -71,6 +71,9 @@ namespace Game.Controllers
 				player.Frozen = true;
 
 			player.Emit("Client:DoorModule:Init", DoorModule.JSONData);
+
+			account.LastOnline = DateTime.Now;
+			AccountService.Update(account);
 		}
 
 		public static void ApplyPlayerCustomization(RPPlayer player)

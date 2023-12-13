@@ -6,6 +6,7 @@ using Core.Enums;
 using Core.Extensions;
 using Database.Models.Team;
 using Database.Services;
+using Game.Streamer;
 
 namespace Game.Controllers
 {
@@ -38,7 +39,8 @@ namespace Game.Controllers
 
 		public static void LoadLaboratory(LaboratoryModel model)
 		{
-			var fuel = (RPShape)Alt.CreateColShapeCylinder(Positions[model.Type].Fuel.Down(), 2f, 2f);
+			var fuelPos = Positions[model.Type].Fuel.Down();
+			var fuel = (RPShape)Alt.CreateColShapeCylinder(fuelPos, 2f, 2f);
 			fuel.Id = model.Id;
 			fuel.ShapeType = ColshapeType.LABORATORY_FUEL;
 			fuel.Size = 2f;
@@ -46,30 +48,44 @@ namespace Game.Controllers
 			fuel.InventoryId = model.FuelInventoryId;
 			fuel.InventoryAccess = new() { (model.TeamId, OwnerType.TEAM) };
 
-			var interaction = (RPShape)Alt.CreateColShapeCylinder(Positions[model.Type].Interaction.Down(), 2f, 2f);
+			MarkerStreamer.AddMarker(new(1, fuelPos, new(0, 155, 255, 255), 0, model.Id));
+
+			var interactionPos = Positions[model.Type].Interaction.Down();
+			var interaction = (RPShape)Alt.CreateColShapeCylinder(interactionPos, 2f, 2f);
 			interaction.Id = model.Id;
 			interaction.ShapeType = ColshapeType.LABORATORY_INTERACTION;
 			interaction.Size = 2f;
 			interaction.Dimension = model.Id;
 
-			var input = (RPShape)Alt.CreateColShapeCylinder(Positions[model.Type].Input.Down(), 2f, 2f);
+			MarkerStreamer.AddMarker(new(1, interactionPos, new(0, 155, 255, 255), 0, model.Id));
+
+			var inputPos = Positions[model.Type].Input.Down();
+			var input = (RPShape)Alt.CreateColShapeCylinder(inputPos, 2f, 2f);
 			input.Id = model.Id;
 			input.ShapeType = ColshapeType.LABORATORY_INPUT;
 			input.Size = 2f;
 			input.Dimension = model.Id;
 
-			var output = (RPShape)Alt.CreateColShapeCylinder(Positions[model.Type].Output.Down(), 2f, 2f);
+			MarkerStreamer.AddMarker(new(1, inputPos, new(0, 155, 255, 255), 0, model.Id));
+
+			var outputPos = Positions[model.Type].Output.Down();
+			var output = (RPShape)Alt.CreateColShapeCylinder(outputPos, 2f, 2f);
 			output.Id = model.Id;
 			output.ShapeType = ColshapeType.LABORATORY_OUTPUT;
 			output.Size = 2f;
 			output.Dimension = model.Id;
 
-			var rob = (RPShape)Alt.CreateColShapeCylinder(Positions[model.Type].Rob.Down(), 2f, 2f);
+			MarkerStreamer.AddMarker(new(1, outputPos, new(0, 155, 255, 255), 0, model.Id));
+
+			var robPos = Positions[model.Type].Rob.Down();
+			var rob = (RPShape)Alt.CreateColShapeCylinder(robPos, 2f, 2f);
 			rob.Id = model.Id;
 			rob.ShapeType = ColshapeType.LABORATORY_ROB;
 			rob.Size = 2f;
 			rob.Dimension = model.Id;
 			rob.InventoryId = model.RobInventoryId;
+
+			MarkerStreamer.AddMarker(new(1, robPos, new(0, 155, 255, 255), 0, model.Id));
 		}
 	}
 }

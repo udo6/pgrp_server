@@ -33,7 +33,7 @@ namespace Game.Modules
 			var station = GasStationService.Get(stationId);
 			if (station == null) return;
 
-			var price = station.Price * value;
+			var price = 20 * value;
 
 			if(account.Money < price)
 			{

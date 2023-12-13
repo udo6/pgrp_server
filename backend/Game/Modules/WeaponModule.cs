@@ -19,6 +19,7 @@ namespace Game.Modules
 		private static void OnWeaponSwitch(IPlayer _player, uint oldWeapon, uint newWeapon)
 		{
 			var player = (RPPlayer)_player;
+			if (player.IsGangwar || player.IsInFFA) return;
 
 			if (oldWeapon == 2725352035u) return;
 
