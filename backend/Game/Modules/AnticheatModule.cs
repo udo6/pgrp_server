@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Game.Modules
 {
@@ -147,28 +148,8 @@ namespace Game.Modules
 			player.Kick("Du wurdest gebannt! Grund: Cheating");
 		}
 
-		private static void DetectedAmmoModifier(RPPlayer player, uint weapon)
-		{
-			var account = AccountService.Get(player.DbId);
-			if (account == null) return;
-
-			account.BannedUntil = DateTime.Now.AddYears(10);
-			account.BanReason = "Cheating";
-			AccountService.Update(account);
-
-			LogService.LogPlayerBan(player.DbId, 0, $"[ANTICHEAT] Unallowed ammo (Weapon: {weapon})");
-			player.Kick("Du wurdest gebannt! Grund: Cheating");
-		}
-
 		private static WeaponDamageResponse OnWeaponDamage(IPlayer player, IEntity target, uint weapon, ushort damage, Position shotOffset, BodyPart bodyPart)
 		{
-			if(weapon == 539292904)
-			{
-				Console.WriteLine($"[ANTICHEAT] {player.Name}: WeaponDamage Event ({weapon}, {damage})");
-				DetectedAmmoModifier((RPPlayer)player, weapon);
-				return false;
-			}
-
 			if (target.Type == BaseObjectType.Player)
 			{
 				var targetPlayer = ((RPPlayer)target);
@@ -183,7 +164,9 @@ namespace Game.Modules
 		{
 			var player = (RPPlayer) _player;
 
-			if(explosionType == ExplosionType.GrenadeLauncher)
+			Console.WriteLine($"[ANTICHEAT] {player.Name}: Explosion ({explosionType})");
+
+			if (explosionType == ExplosionType.GrenadeLauncher)
 			{
 				var account = AccountService.Get(player.DbId);
 				if (account == null) return false;
@@ -194,11 +177,12 @@ namespace Game.Modules
 
 				LogService.LogPlayerBan(player.DbId, 0, $"[ANTICHEAT] SKRIPT Explosive Ammo (Grenadelauncher)");
 				player.Kick("Du wurdest gebannt! Grund: Cheating");
+				return false;
 			}
 
 			LogService.LogExplosion(player.DbId, (int)explosionType);
 
-			return false;
+			return true;
 		}
 	}
 }
