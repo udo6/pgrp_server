@@ -144,6 +144,7 @@ namespace Game.Modules
 			return type == ShopType.TWENTYFOURSEVEN ||
 				type == ShopType.AMMUNATION ||
 				type == ShopType.MECHANIC ||
+				type == ShopType.FOOD ||
 				(type == ShopType.TEAM && player.TeamId == owner) ||
 				(type == ShopType.SWAT && player.SWATDuty);
 		}
