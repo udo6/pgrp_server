@@ -1,4 +1,6 @@
 ﻿using AltV.Net;
+using AltV.Net.Elements.Entities;
+using AltV.Net.Enums;
 using Core.Entities;
 using Core.Enums;
 using Core.Extensions;
@@ -32,6 +34,11 @@ namespace Game.Controllers.Jobs
             returnJobShape.Id = model.Id;
             returnJobShape.ShapeType = ColshapeType.GARBAGE_JOB_RETURN;
             returnJobShape.Size = 6f;
+
+            var ped = Alt.CreatePed(PedModel.Construct01SMY, startPosition.Position, startPosition.Rotation);
+            ped.Frozen = true;
+            ped.Health = 8000;
+            ped.Armour = 8000;
         }
     }
 }
