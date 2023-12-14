@@ -101,7 +101,7 @@ namespace Game.Modules.Jobs
 
         private static void Return(RPPlayer player)
         {
-            if (!player.LoggedIn || player == null || !player.IsInVehicle || player.GarbageTruck == null) return;
+            if (!player.LoggedIn || player == null || player.GarbageTruck == null) return;
 
             var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == Core.Enums.ColshapeType.GARBAGE_JOB_RETURN && x.Position.Distance(player.Position) <= x.Size);
             if (shape == null) return;
