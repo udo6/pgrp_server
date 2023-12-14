@@ -64,6 +64,8 @@ namespace Database.Models.Account
         public string FederalRecordDescription { get; set; }
         public string FederalRecordPhone { get; set; }
 
+        public string AdminRecordDescription { get; set; }
+
         public int Jailtime { get; set; }
 
         public bool IsInHospital { get; set; }
@@ -75,7 +77,9 @@ namespace Database.Models.Account
             FederalRecordDescription = string.Empty;
             FederalRecordPhone = string.Empty;
             BanReason = string.Empty;
-        }
+            AdminRecordDescription = string.Empty;
+
+		}
 
         public AccountModel(string name, ulong socialclubId, ulong hardwareId, ulong hardwareIdEx, long discordId, bool whitelisted, int money, int bankMoney, ushort health, ushort armor, InjuryType injuryType, bool alive, bool coma, bool stabilized, AdminRank adminRank, DateTime lastOnline, int hunger, int thirst, bool cuffed, bool roped, bool sWATDuty, bool phone, bool laptop, bool backpack, int phoneNumber, int phoneBackground, int positionId, int customizationId, int clothesId, int inventoryId, int laboratoryInputInventoryId, int laboratoryOutputInventoryId, int lockerInventoryId, int businessId, int teamId, int teamRank, bool teamAdmin, bool teamBank, bool teamStorage, DateTime teamJoinDate, bool teamDuty, string federalRecordTeam, string federalRecordDescription, string federalRecordPhone, int jailtime)
         {
@@ -126,6 +130,7 @@ namespace Database.Models.Account
             Jailtime = jailtime;
             Level = 1;
 			BanReason = string.Empty;
+			AdminRecordDescription = string.Empty;
 		}
     }
 }

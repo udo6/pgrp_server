@@ -29,6 +29,16 @@ namespace Database.Services
 			return ctx.Accounts.ToList();
 		}
 
+		public static List<AccountModel> Search(string search, int take)
+		{
+			using var ctx = new Context();
+			return ctx.Accounts.Where(x =>
+				x.Id.ToString().Contains(search) ||
+				x.Name.Contains(search) ||
+				x.TeamId.ToString().Contains(search) ||
+				x.PhoneNumber.ToString().Contains(search)).Take(take).ToList();
+		}
+
 		public static List<int> GetAllIdOnly()
 		{
 			using var ctx = new Context();

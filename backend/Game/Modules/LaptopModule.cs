@@ -1,11 +1,13 @@
 ﻿using AltV.Net;
 using Core.Attribute;
 using Core.Entities;
+using Core.Enums;
 using Core.Models.Laptop;
 using Database.Models.Crimes;
 using Database.Services;
 using Game.Controllers;
 using Newtonsoft.Json;
+using System;
 
 namespace Game.Modules
 {
@@ -18,6 +20,17 @@ namespace Game.Modules
 		public static void Initialize()
 		{
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
+
+			// ACP PLAYERS APP
+			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPPlayers:SetAdmin", ACPSetAdmin);
+			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPPlayers:SetMoney", ACPSetMoney);
+			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPPlayers:SetTeam", ACPSetTeam);
+			Alt.OnClient<RPPlayer, int, string, string>("Server:Laptop:ACPPlayers:BanPlayer", ACPBanPlayer);
+			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:KickPlayer", ACPKickPlayer);
+			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:WarnPlayer", ACPWarnPlayer);
+			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:SaveRecord", SaveACPRecord);
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:RequestPlayerData", RequestACPPlayerData);
+			Alt.OnClient<RPPlayer, string>("Server:Laptop:ACPPlayers:Search", SearchACPPlayers);
 
 			// SUPPORT APP
 			Alt.OnClient<RPPlayer>("Server:Laptop:Support:RequestData", RequestSupportData);
@@ -55,6 +68,221 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:Dispatch:Accept", AcceptDispatch);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:Dispatch:Close", CloseDispatch);
 		}
+
+		#region ACP Players
+
+		private static void ACPSetAdmin(RPPlayer player, int id, int rank)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR || rank > Enum.GetValues<AdminRank>().Length) return;
+
+			var targetAccount = AccountService.Get(id);
+			if (targetAccount == null) return;
+
+			targetAccount.AdminRank = (AdminRank)rank;
+			AccountService.Update(targetAccount);
+
+			player.Notify("Administration", $"Du hast {targetAccount.Name} auf ${rank} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
+			if (target == null) return;
+
+			target.AdminRank = (AdminRank)rank;
+			target.Notify("Administration", $"Du wurdest von {player.Name} auf Rang {rank} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+		}
+
+		private static void ACPSetMoney(RPPlayer player, int id, int money, int bank)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+
+			var targetAccount = AccountService.Get(id);
+			if (targetAccount == null) return;
+
+			targetAccount.Money = money;
+			targetAccount.BankMoney = bank;
+			AccountService.Update(targetAccount);
+
+			player.Notify("Administration", $"Du hast das Geld von {targetAccount.Name} auf ${money} und ${bank} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
+			if (target == null) return;
+
+			target.EmitBrowser("Hud:SetMoney", money);
+			target.Notify("Administration", $"Dein Geld wurde von {player.Name} auf ${money} und ${bank} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+		}
+
+		private static void ACPSetTeam(RPPlayer player, int id, int teamId, int rank)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+
+			var team = TeamService.Get(teamId);
+			if (team == null) return;
+
+			var targetAccount = AccountService.Get(id);
+			if (targetAccount == null) return;
+
+			targetAccount.TeamId = teamId;
+			targetAccount.TeamRank = rank;
+			targetAccount.TeamAdmin = rank >= 10;
+			targetAccount.TeamStorage = rank >= 10;
+			targetAccount.TeamBank = rank >= 10;
+			AccountService.Update(targetAccount);
+
+			player.Notify("Administration", $"Du hast {targetAccount.Name} in die Fraktion {team.ShortName} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
+			if (target == null) return;
+
+			target.TeamId = teamId;
+			target.Notify("Administration", $"Du wurdest von {player.Name} in die Fraktion {team.ShortName} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+		}
+
+		private static void ACPBanPlayer(RPPlayer player, int id, string reason, string datetime)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.MODERATOR) return;
+
+			var targetAccount = AccountService.Get(id);
+			if (targetAccount == null) return;
+
+			targetAccount.BanReason = reason;
+			targetAccount.BannedUntil = DateTime.Parse(datetime);
+			AccountService.Update(targetAccount);
+
+			player.Notify("Administration", $"Du hast {targetAccount.Name} vom Server gebannt!", Core.Enums.NotificationType.SUCCESS);
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
+			if (target == null) return;
+
+			var data = JsonConvert.SerializeObject(new
+			{
+				Title = $"ADMINISTRATIVE NACHRICHT",
+				Message = $"{player.Name} hat {target.Name} vom Server gebannt! Grund: {reason}",
+				Duration = 10000
+			});
+
+			target.Kick($"Du wurdest von {player.Name} gebannt! Grund: {reason}");
+
+			foreach (var user in RPPlayer.All.ToList())
+			{
+				user.EmitBrowser("Hud:ShowGlobalNotification", data);
+			}
+
+			// add history
+		}
+
+		private static void ACPKickPlayer(RPPlayer player, int id, string reason)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER) return;
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
+			if(target == null)
+			{
+				player.Notify("Administration", "Der Spieler ist nicht Online!", Core.Enums.NotificationType.ERROR);
+				return;
+			}
+
+			player.Notify("Administration", $"Du hast {target.Name} vom Server gekickt!", Core.Enums.NotificationType.SUCCESS);
+
+			var data = JsonConvert.SerializeObject(new
+			{
+				Title = $"ADMINISTRATIVE NACHRICHT",
+				Message = $"{player.Name} hat {target.Name} vom Server gekickt! Grund: {reason}",
+				Duration = 10000
+			});
+
+			target.Kick($"Du wurdest von {player.Name} gekickt! Grund: {reason}");
+
+			foreach (var user in RPPlayer.All.ToList())
+			{
+				user.EmitBrowser("Hud:ShowGlobalNotification", data);
+			}
+			// add history
+		}
+
+		private static void ACPWarnPlayer(RPPlayer player, int id, string reason)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER) return;
+
+			// warn stuff
+		}
+
+		private static void SaveACPRecord(RPPlayer player, int id, string description)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.MODERATOR) return;
+
+			var account = AccountService.Get(id);
+			if (account == null) return;
+
+			account.AdminRecordDescription = description;
+			AccountService.Update(account);
+
+			player.Notify("Administration", $"Du hast die Beschreibung von {account.Name} bearbeitet!", Core.Enums.NotificationType.SUCCESS);
+		}
+
+		private static void RequestACPPlayerData(RPPlayer player, int id)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER) return;
+
+			var account = AccountService.Get(id);
+			if (account == null) return;
+
+			var house = HouseService.GetByOwner(id);
+			var warehouse = WarehouseService.GetByOwner(id, Core.Enums.OwnerType.PLAYER);
+
+			var team = TeamService.Get(account.TeamId);
+
+			var data = new
+			{
+				// Todo: add warns
+
+				Id = account.Id,
+				Name = account.Name,
+				House = house?.Id,
+				Warehouse = warehouse?.Id,
+				TeamId = account.TeamId,
+				TeamName = team?.ShortName,
+				TeamRank = account.TeamRank,
+				BusinessId = account.BusinessId,
+				BusinessName = "",
+				BusinessRank = 0,
+				Phone = account.PhoneNumber,
+				Description = account.AdminRecordDescription,
+				Rank = account.AdminRank,
+				LastOnline = account.LastOnline.ToString("HH:mm dd.MM.yyyy"),
+				Warns = 0,
+				Money = account.Money,
+				BankMoney = account.BankMoney,
+				AdminHistory = new List<object>()
+			};
+
+			player.EmitBrowser("Laptop:ACPPlayers:SetUserData", JsonConvert.SerializeObject(data));
+		}
+
+		private static void SearchACPPlayers(RPPlayer player, string search)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER || search.Length < 1) return;
+
+			var accounts = AccountService.Search(search, 10);
+			var data = new List<object>();
+			foreach(var account in accounts)
+			{
+				data.Add(new
+				{
+					// Todo: add warns
+
+					Id = account.Id,
+					Name = account.Name,
+					Team = account.TeamId,
+					Rank = account.AdminRank,
+					Phone = account.PhoneNumber,
+					LastOnline = account.LastOnline.ToString("HH:mm dd.MM.yyyy"),
+					Warns = 0
+				});
+			}
+
+			player.EmitBrowser("Laptop:ACPPlayers:SetData", JsonConvert.SerializeObject(data));
+		}
+
+		#endregion
 
 		#region Support
 
