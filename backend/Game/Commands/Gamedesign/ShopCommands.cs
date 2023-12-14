@@ -13,7 +13,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createshop")]
 		public static void CreateShop(RPPlayer player, string name, int owner, int type)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
@@ -26,7 +26,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addshopped")]
 		public static void AddShopPed(RPPlayer player, int shopId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);
@@ -41,7 +41,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addshopitem")]
 		public static void AddShopItem(RPPlayer player, int shopId, int itemId, int minPrice, int maxPrice, int minRank)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var item = new ShopItemModel(shopId, itemId, 0, minPrice, maxPrice, minRank);
 			ShopService.AddItem(item);

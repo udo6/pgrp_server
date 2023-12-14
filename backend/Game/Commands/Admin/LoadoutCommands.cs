@@ -12,7 +12,7 @@ namespace Game.Commands.Admin
 		[Command("giveweapon")]
 		public static void GiveWeapon(RPPlayer player, int weapon, int ammo)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var loadout = new LoadoutModel(player.DbId, (uint)weapon, ammo);
 			LoadoutService.Add(loadout);
@@ -22,7 +22,7 @@ namespace Game.Commands.Admin
 		[Command("giveattatchment")]
 		public static void GiveAttachment(RPPlayer player, int hash)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var loadout = LoadoutService.Get(player.CurrentWeapon);
 			if (loadout == null) return;

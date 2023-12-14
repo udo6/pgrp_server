@@ -19,7 +19,7 @@ namespace Game.Controllers
 		{
 			foreach (var player in RPPlayer.All.ToList())
 			{
-				if (player.AdminRank < AdminRank.SUPERADMINISTRATOR) continue;
+				if (player.AdminRank < AdminRank.SUPERADMIN) continue;
 
 				player.Notify(title, message, type);
 			}

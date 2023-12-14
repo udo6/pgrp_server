@@ -9,7 +9,7 @@ namespace Game.Commands.Admin
 		[Command("resetgwcooldown")]
 		public static void ResetGangwarCooldown(RPPlayer player, int gangwarId)
 		{
-			if (!Core.Config.DevMode || player.AdminRank >= Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode || player.AdminRank >= Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var gw = GangwarService.Get(gangwarId);
 			if (gw == null) return;

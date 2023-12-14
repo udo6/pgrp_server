@@ -13,7 +13,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createvehicle")]
 		public static void CreateVehicle(RPPlayer player, string plate, int garageId, int baseId, int owner, int type)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var baseModel = VehicleService.GetBase(baseId);
 			if(baseModel == null) return;
@@ -37,7 +37,7 @@ namespace Game.Commands.Gamedesign
 		[Command("setmod")]
 		public static void SetMod(RPPlayer player, int cat, int val)
 		{
-			if ((!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) || !player.IsInVehicle) return;
+			if ((!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) || !player.IsInVehicle) return;
 
 			player.Vehicle.SetMod((byte)cat, (byte)val);
 		}

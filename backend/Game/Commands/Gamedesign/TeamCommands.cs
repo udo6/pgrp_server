@@ -15,7 +15,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createteam")]
 		public static void CreateTeam(RPPlayer player, string name, string shortName, int r, int g, int b, int blipColor, int type, string meeleName, int meeleHash)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
@@ -41,7 +41,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createlab")]
 		public static void CreateLaboratory(RPPlayer player, int teamId, int type)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var team = TeamService.Get(teamId);
 			if (team == null) return;

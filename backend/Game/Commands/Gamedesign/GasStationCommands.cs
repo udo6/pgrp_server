@@ -12,7 +12,7 @@ namespace Game.Commands.Gamedesign
 		[Command("creategasstation")]
 		public static void CreateGasStation(RPPlayer player, string name, int minPrice, int maxPrice)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);

@@ -73,7 +73,7 @@ namespace Game.Modules
 
 		private static void ACPSetAdmin(RPPlayer player, int id, int rank)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR || rank > Enum.GetValues<AdminRank>().Length) return;
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN || rank > Enum.GetValues<AdminRank>().Length) return;
 
 			var targetAccount = AccountService.Get(id);
 			if (targetAccount == null) return;
@@ -92,7 +92,7 @@ namespace Game.Modules
 
 		private static void ACPSetMoney(RPPlayer player, int id, int money, int bank)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var targetAccount = AccountService.Get(id);
 			if (targetAccount == null) return;
@@ -112,7 +112,7 @@ namespace Game.Modules
 
 		private static void ACPSetTeam(RPPlayer player, int id, int teamId, int rank)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var team = TeamService.Get(teamId);
 			if (team == null) return;
@@ -246,7 +246,7 @@ namespace Game.Modules
 				BusinessRank = 0,
 				Phone = account.PhoneNumber,
 				Description = account.AdminRecordDescription,
-				Rank = account.AdminRank,
+				Rank = account.AdminRank.ToString(),
 				LastOnline = account.LastOnline.ToString("HH:mm dd.MM.yyyy"),
 				Warns = 0,
 				Money = account.Money,
@@ -272,7 +272,7 @@ namespace Game.Modules
 					Id = account.Id,
 					Name = account.Name,
 					Team = account.TeamId,
-					Rank = account.AdminRank,
+					Rank = account.AdminRank.ToString(),
 					Phone = account.PhoneNumber,
 					LastOnline = account.LastOnline.ToString("HH:mm dd.MM.yyyy"),
 					Warns = 0

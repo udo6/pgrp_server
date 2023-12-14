@@ -13,7 +13,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createfarming")]
 		public static void CreateFarming(RPPlayer player, int objectHash, int neededItem, int gainItem, int minGain, int maxGain, string dict, string name)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var farming = new FarmingModel((uint)objectHash, neededItem, gainItem, minGain, maxGain, dict, name);
 			FarmingService.Add(farming);
@@ -22,7 +22,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addfarmingspot")]
 		public static void AddFarmingSpot(RPPlayer player, int farmingId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);

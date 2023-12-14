@@ -12,7 +12,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createwarehouse")]
 		public static void CreateWarehouse(RPPlayer player)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);

@@ -13,7 +13,7 @@ namespace Game.Commands.Gamedesign
 		[Command("creategarage")]
 		public static void CreateGarage(RPPlayer player, string name, int type, int owner, int ownerType)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);
@@ -27,7 +27,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addgaragespawn")]
 		public static void AddGarageSpawn(RPPlayer player, int garageId)
 		{
-			if ((!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) || !player.IsInVehicle) return;
+			if ((!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) || !player.IsInVehicle) return;
 
 			var pos = new PositionModel(player.Vehicle.Position, player.Vehicle.Rotation);
 			PositionService.Add(pos);
@@ -41,7 +41,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addgarageped")]
 		public static void AddGaragePed(RPPlayer player, int garageId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var garage = GarageService.Get(garageId);
             if (garage == null) return;
@@ -58,7 +58,7 @@ namespace Game.Commands.Gamedesign
 		[Command("loadgarage")]
 		public static void LoadGarage(RPPlayer player, int garageId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var garage = GarageService.Get(garageId);
 			if (garage == null) return;

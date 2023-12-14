@@ -13,7 +13,7 @@ namespace Game.Commands.Gamedesign
 		[Command("creategw")]
 		public static void CreateGangwar(RPPlayer player, string name)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);
@@ -25,7 +25,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addgwspawn1")]
 		public static void AddGangwarSpawn1(RPPlayer player, int gangwarId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
@@ -40,7 +40,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addgwspawn2")]
 		public static void AddGangwarSpawn2(RPPlayer player, int gangwarId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
@@ -55,7 +55,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addgwvehiclespawn1")]
 		public static void AddGangwarVehicleSpawn1(RPPlayer player, int gangwarId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			if (!player.IsInVehicle) return;
 
@@ -69,7 +69,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addgwvehiclespawn2")]
 		public static void AddGangwarVehicleSpawn2(RPPlayer player, int gangwarId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			if (!player.IsInVehicle) return;
 
@@ -83,7 +83,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addgwflag")]
 		public static void AddGangwarFlag(RPPlayer player, int gangwarId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
@@ -95,7 +95,7 @@ namespace Game.Commands.Gamedesign
 		[Command("loadgw")]
 		public static void LoadGangwar(RPPlayer player, int gangwarId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var gw = GangwarService.Get(gangwarId);
 			if (gw == null) return;

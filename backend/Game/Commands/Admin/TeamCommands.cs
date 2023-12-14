@@ -9,7 +9,7 @@ namespace Game.Commands.Admin
 		[Command("setteam")]
 		public static void SetTeam(RPPlayer player, string targetName, int team, int rank, int leader, int storage, int bank)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
 			if (target == null) return;

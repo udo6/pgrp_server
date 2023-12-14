@@ -10,7 +10,7 @@ namespace Game.Commands.Admin
 		[Command("giveitem")]
 		public static void GiveItem(RPPlayer player, int itemId, int amount)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var inventory = InventoryService.Get(player.InventoryId);
 			if (inventory == null) return;

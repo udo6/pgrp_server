@@ -12,7 +12,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createtattooshop")]
 		public static void CreateTattooShop(RPPlayer player)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);
@@ -25,7 +25,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addtattoo")]
 		public static void AddTattoo(RPPlayer player, int shopId, int collection, int overlay, int category, string label, int price)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var model = new TattooShopItemModel(shopId, (uint)collection, (uint)overlay, category, label.Replace('_', ' '), price);
 			TattooService.AddItem(model);

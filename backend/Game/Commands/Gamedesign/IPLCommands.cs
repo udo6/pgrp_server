@@ -8,7 +8,7 @@ namespace Game.Commands.Gamedesign
 		[Command("loadipl")]
 		public static void LoadIPL(RPPlayer player, string ipl)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			player.LoadIPL(ipl);
 		}
@@ -16,7 +16,7 @@ namespace Game.Commands.Gamedesign
 		[Command("unloadipl")]
 		public static void UnloadIPL(RPPlayer player, string ipl)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			player.UnloadIPL(ipl);
 		}

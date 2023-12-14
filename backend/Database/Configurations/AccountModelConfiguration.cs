@@ -74,6 +74,8 @@ namespace Database.Configurations
 			builder.Property(x => x.FederalRecordPhone).HasColumnName("federal_record_phone").HasColumnType("varchar(255)");
 			builder.Property(x => x.FederalRecordDescription).HasColumnName("federal_record_description").HasColumnType("longtext");
 
+			builder.Property(x => x.AdminRecordDescription).HasColumnName("admin_record").HasColumnType("longtext");
+
 			builder.Property(x => x.Jailtime).HasColumnName("jailtime").HasColumnType("int(11)");
 
 			builder.Property(x => x.IsInHospital).HasColumnName("hospital").HasColumnType("tinyint(1)");

@@ -13,7 +13,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createjumppoint")]
 		public static void CreateJumppoint(RPPlayer player, string name, int dimension, int ownerId, int ownerType, int locked, int type)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
@@ -25,7 +25,7 @@ namespace Game.Commands.Gamedesign
 		[Command("setjumppointpos2")]
 		public static void SetJumppointPos2(RPPlayer player, int jumppointId, int dimension)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var jumppoint = JumppointService.Get(jumppointId);
 			if (jumppoint == null) return;

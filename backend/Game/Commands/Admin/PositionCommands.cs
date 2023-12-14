@@ -9,7 +9,7 @@ namespace Game.Commands.Admin
 		[Command("gotopos")]
 		public static void GotoPos(RPPlayer player, int posId)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = PositionService.Get(posId);
 			if (pos == null) return;

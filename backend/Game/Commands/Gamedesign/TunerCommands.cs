@@ -15,7 +15,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addtunercategory")]
 		public static void AddTunerCategory(RPPlayer player, string name)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var model = new TunerCategoryModel(name.Replace('_', ' '));
 			TunerService.AddCategory(model);
@@ -25,7 +25,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addtuneritem")]
 		public static void AddTunerItem(RPPlayer player, int category, string name, int modcategory, int modvalue)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var model = new TunerItemModel(category, name.Replace('_', ' '), modcategory, modvalue);
 			TunerService.AddItem(model);

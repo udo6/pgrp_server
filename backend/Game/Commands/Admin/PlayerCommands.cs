@@ -58,7 +58,7 @@ namespace Game.Commands.Admin
 		[Command("reviveall")]
 		public static void ReviveAllPlayers(RPPlayer player)
 		{
-			if (player.AdminRank < AdminRank.SUPERADMINISTRATOR) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			foreach(var target in RPPlayer.All.ToList())
 			{
@@ -217,7 +217,7 @@ namespace Game.Commands.Admin
 		[Command("kickall", true)]
 		public static void KickAllPlayers(RPPlayer player, string reason)
 		{
-			if (player.AdminRank < AdminRank.SUPERADMINISTRATOR) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			foreach (var target in RPPlayer.All.ToList())
 			{

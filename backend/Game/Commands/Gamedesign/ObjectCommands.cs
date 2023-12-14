@@ -9,7 +9,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createobj")]
 		public static void CreateObject(RPPlayer player, int hash, int frozen)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var obj = Alt.CreateObject((uint)hash, player.Position, player.Rotation);
 			obj.Frozen = frozen > 0;
@@ -19,7 +19,7 @@ namespace Game.Commands.Gamedesign
 		[Command("deleteobj")]
 		public static void DeleteObj(RPPlayer player, int id)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var obj = Alt.GetAllNetworkObjects().FirstOrDefault(x => x.Id == id);
 			if (obj == null) return;

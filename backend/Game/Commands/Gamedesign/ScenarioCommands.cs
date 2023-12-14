@@ -13,7 +13,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createdrop")]
 		public static void CreateDrop(RPPlayer player, string name)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var offset = new Position(15, 9, 46);
 
@@ -30,7 +30,7 @@ namespace Game.Commands.Gamedesign
 		[Command("setdropbox1")]
 		public static void SetDropBox1(RPPlayer player, int dropId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var drop = LootdropService.Get(dropId);
 			if (drop == null) return;
@@ -47,7 +47,7 @@ namespace Game.Commands.Gamedesign
 		[Command("setdropbox2")]
 		public static void SetDropBox2(RPPlayer player, int dropId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var drop = LootdropService.Get(dropId);
 			if (drop == null) return;
@@ -64,7 +64,7 @@ namespace Game.Commands.Gamedesign
 		[Command("setdropbox3")]
 		public static void SetDropBox3(RPPlayer player, int dropId)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var drop = LootdropService.Get(dropId);
 			if (drop == null) return;

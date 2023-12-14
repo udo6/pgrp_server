@@ -12,7 +12,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createblip")]
 		public static void CreateBlip(RPPlayer player, string name, int sprite, int color, int shortRange)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);

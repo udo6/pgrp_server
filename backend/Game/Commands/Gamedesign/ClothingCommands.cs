@@ -11,7 +11,7 @@ namespace Game.Commands.Gamedesign
 		[Command("setclothes")]
 		public static void SetPlayerClothes(RPPlayer player, int slot, int drawable, int texture, int dlc = 0)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			PlayerController.SetClothes(player, slot, drawable, texture, (uint)dlc, true);
 		}
@@ -19,7 +19,7 @@ namespace Game.Commands.Gamedesign
 		[Command("setprop")]
 		public static void SetPlayerProp(RPPlayer player, int slot, int drawable, int texture, int dlc = 0)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			PlayerController.SetProps(player, slot, drawable, texture, (uint)dlc, true);
 		}

@@ -33,10 +33,10 @@ namespace Database.Services
 		{
 			using var ctx = new Context();
 			return ctx.Accounts.Where(x =>
-				x.Id.ToString().Contains(search) ||
-				x.Name.Contains(search) ||
-				x.TeamId.ToString().Contains(search) ||
-				x.PhoneNumber.ToString().Contains(search)).Take(take).ToList();
+				x.Id.ToString().ToLower().Contains(search.ToLower()) ||
+				x.Name.ToLower().Contains(search.ToLower()) ||
+				x.TeamId.ToString().ToLower().Contains(search.ToLower()) ||
+				x.PhoneNumber.ToString().ToLower().Contains(search.ToLower())).Take(take).ToList();
 		}
 
 		public static List<int> GetAllIdOnly()

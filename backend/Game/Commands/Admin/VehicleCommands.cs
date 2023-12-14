@@ -51,7 +51,7 @@ namespace Game.Commands.Admin
 		[Command("fixveh")]
 		public static void FixVehicle(RPPlayer player)
 		{
-			if (!player.LoggedIn || !player.IsInVehicle || player.AdminRank < AdminRank.SUPERADMINISTRATOR) return;
+			if (!player.LoggedIn || !player.IsInVehicle || player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			player.Vehicle.Repair();
 		}
@@ -59,7 +59,7 @@ namespace Game.Commands.Admin
 		[Command("drift")]
 		public static void ToggleDriftMode(RPPlayer player)
 		{
-			if (!player.LoggedIn || !player.IsInVehicle || player.AdminRank < AdminRank.SUPERADMINISTRATOR) return;
+			if (!player.LoggedIn || !player.IsInVehicle || player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			player.Vehicle.DriftMode = !player.Vehicle.DriftMode;
 			player.Notify("Information", $"Du hast den Drift mode auf {player.Vehicle.DriftMode} gesetzt!", NotificationType.INFO);

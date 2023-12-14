@@ -13,7 +13,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createbank")]
 		public static void CreateBank(RPPlayer player, string name)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
@@ -26,7 +26,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createatm")]
 		public static void CreateATM(RPPlayer player)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);

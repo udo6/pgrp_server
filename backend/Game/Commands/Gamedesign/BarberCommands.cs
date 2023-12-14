@@ -13,7 +13,7 @@ namespace Game.Commands.Gamedesign
 		[Command("createbarber")]
 		public static void CreateBarber(RPPlayer player)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);
@@ -26,7 +26,7 @@ namespace Game.Commands.Gamedesign
 		[Command("addbarberstyle")]
 		public static void AddBarberStyle(RPPlayer player, int barberId, int style, string label, int gender)
 		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMINISTRATOR) return;
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var model = new BarberStyleModel(barberId, label, style, 450, gender);
 			BarberService.AddStyle(model);
