@@ -92,7 +92,20 @@ namespace Core.Entities
 		public uint KillerWeapon { get; set; }
 		public DateTime KillerDate { get; set; }
 
-		public RPPlayer(ICore core, nint nativePointer, uint id) : base(core, nativePointer, id)
+        // JOBS
+        public bool IsInGarbageJob { get; set; } = false;
+        public bool IsInGardenerJob { get; set; } = false;
+        public bool IsInMoneyTruckJob { get; set; } = false;
+
+        // JOB VEHICLES
+        public IVehicle? GarbageTruck { get; set; } = null;
+
+        public bool IsInJob()
+        {
+            return (IsInGarbageJob || IsInGardenerJob || IsInMoneyTruckJob);
+        }
+
+        public RPPlayer(ICore core, nint nativePointer, uint id) : base(core, nativePointer, id)
 		{
 			All.Add(this);
 			DbId = -1;

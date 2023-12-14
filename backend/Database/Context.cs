@@ -31,6 +31,7 @@ using Database.Models.FFA;
 using Database.Models.Dealer;
 using Database.Models.Door;
 using Database.Models.Tuner;
+using Database.Models.GarbageJob;
 
 namespace Database
 {
@@ -114,8 +115,9 @@ namespace Database
 		public DbSet<TunerModel> Tuner { get; set; }
 		public DbSet<TunerCategoryModel> TunerCategories { get; set; }
 		public DbSet<TunerItemModel> TunerItems { get; set; }
+        public DbSet<GarbageJobModel> GarbageJobs { get; set; }
 
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			if (optionsBuilder.IsConfigured) return;
 

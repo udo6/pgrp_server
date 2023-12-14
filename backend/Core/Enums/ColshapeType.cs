@@ -59,6 +59,10 @@
 		IMPOUND,
 		DMV,
 		SOCIAL_BONUS,
-		TUNER
-	}
+		TUNER,
+
+        // JOBS
+        GARBAGE_JOB_START,
+        GARBAGE_JOB_RETURN,
+    }
 }
