@@ -35,7 +35,11 @@ namespace Game.Modules
 
 			(ColshapeType.JUMP_POINT, ("KEY_E", "JUMPPOINT")),
 			(ColshapeType.JUMP_POINT, ("KEY_L", "JUMPPOINT")),
-		};
+
+			// JOBS
+			(ColshapeType.GARBAGE_JOB_START, ("KEY_E", "GARBAGE_JOB_START")),
+            (ColshapeType.GARBAGE_JOB_RETURN, ("KEY_E", "GARBAGE_JOB_RETURN")),
+        };
 
 		[ServerEvent(ServerEventType.ENTITY_COLSHAPE)]
 		public static void OnEntityColshape(RPShape shape, IWorldObject entity, bool entered)
