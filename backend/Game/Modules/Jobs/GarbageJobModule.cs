@@ -8,6 +8,7 @@ using Game.Controllers;
 using Game.Controllers.Jobs;
 using Database.Services.Jobs;
 using Core.Extensions;
+using AltV.Net.Enums;
 
 namespace Game.Modules.Jobs
 {
@@ -68,7 +69,7 @@ namespace Game.Modules.Jobs
             var customization = CustomizationService.Get(player.CustomizationId);
             if (customization == null) return;
 
-            player.TempClothesId = customization.Gender ? 66 : 65;
+            player.TempClothesId = customization.Gender ? 65 : 66;
             PlayerController.ApplyPlayerClothes(player);
             player.Notify("Müllabfuhr", "Du hast den Job gestartet.", Core.Enums.NotificationType.SUCCESS);
         }
@@ -84,7 +85,7 @@ namespace Game.Modules.Jobs
             }
 
             var model = GarbageJobService.Get(jobId);
-            if (model == null || player.GarbageTruck == null) return;
+            if (model == null) return;
 
             player.IsInGarbageJob = false;
             player.Notify("Müllabfuhr", "Du hast den Job beendet.", Core.Enums.NotificationType.SUCCESS);
@@ -93,8 +94,8 @@ namespace Game.Modules.Jobs
 
             if (player.GarbageTruck != null)
             {
-                player.GarbageTruck.Destroy();
-                player.GarbageTruck = null;
+                player.GarbageTruck.Delete();
+                player.GarbageTruck = null!;
             }
         }
 
@@ -153,11 +154,18 @@ namespace Game.Modules.Jobs
             var spawnPosition = PositionService.Get(model.VehicleSpawnPositionId);
             if (spawnPosition == null) return;
 
-            IVehicle garbageTruck = Alt.CreateVehicle(AltV.Net.Enums.VehicleModel.Trash, spawnPosition.Position.Down(), spawnPosition.Rotation);
-            if (garbageTruck == null) return;
+            RPVehicle garbageTruck = (RPVehicle)Alt.CreateVehicle(VehicleModel.Trash, spawnPosition.Position, spawnPosition.Rotation);
+            garbageTruck.OwnerId = player.DbId;
+            garbageTruck.OwnerType = Core.Enums.OwnerType.PLAYER;
+            garbageTruck.Dimension = player.Dimension;
+            garbageTruck.SetLockState(true);
+            garbageTruck.SetEngineState(false);
+            garbageTruck.SetFuel(200);
+            garbageTruck.SetMaxFuel(200);
+            garbageTruck.NumberplateText = "MUELL-0" + player.Id * 2;
+            garbageTruck.SetData("GARBAGE_COUNT", 12);
 
-            garbageTruck.NumberplateText = "MUELL-0" + player.Id;
-            garbageTruck.SetData("GARBAGE_COUNT", 0);
+            player.GarbageTruck = garbageTruck;
 
             player.Notify("Müllabfuhr", "Du hast einen Müllwagen gespawnt.", Core.Enums.NotificationType.SUCCESS);
         }

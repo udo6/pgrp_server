@@ -98,7 +98,7 @@ namespace Core.Entities
         public bool IsInMoneyTruckJob { get; set; } = false;
 
         // JOB VEHICLES
-        public IVehicle? GarbageTruck { get; set; } = null;
+        public RPVehicle GarbageTruck { get; set; } = null!;
 
         public bool IsInJob()
         {
