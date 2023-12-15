@@ -82,10 +82,10 @@ namespace Database.Services
 			ctx.SaveChanges();
 		}
 
-		public static void ClearPlayerLoadout(int accId)
+		public static void ClearPlayerLoadout(int accId, bool federalOnly = false)
 		{
 			using var ctx = new Context();
-			var weapons = ctx.Loadouts.Where(x => x.AccountId == accId);
+			var weapons = ctx.Loadouts.Where(x => x.AccountId == accId && (!federalOnly || x.Type == Core.Enums.LoadoutType.FEDERAL));
 			var weaponsIds = weapons.Select(x => x.Id);
 			var attatchments = ctx.LoadoutAttatchments.Where(x => weaponsIds.Contains(x.LoadoutId));
 			ctx.Loadouts.RemoveRange(weapons);

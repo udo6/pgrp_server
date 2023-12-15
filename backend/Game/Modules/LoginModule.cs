@@ -190,7 +190,7 @@ namespace Game.Modules
 			var inv = new InventoryModel(8, 30f, InventoryType.PLAYER);
 			var labInput = new InventoryModel(8, 100f, InventoryType.LAB_INPUT);
 			var labOutput = new InventoryModel(8, 100f, InventoryType.LAB_OUTPUT);
-			var locker = new InventoryModel(8, 20f, InventoryType.LOCKER);
+			var locker = new InventoryModel(8, 100f, InventoryType.LOCKER);
 			InventoryService.Add(inv, labInput, labOutput, locker);
 
 			var account = new AccountModel(

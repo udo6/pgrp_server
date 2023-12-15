@@ -23,7 +23,7 @@ namespace Game.Controllers
 			if (pos == null) return;
 
 			spot.Shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 2f, 2f);
-			spot.Shape.Id = model.Id;
+			spot.Shape.Id = spot.Id;
 			spot.Shape.ShapeType = ColshapeType.FARMING_SPOT;
 			spot.Shape.Size = 2f;
 

@@ -17,8 +17,9 @@
 
         }
 
-        public WorkstationBlueprintModel(int itemId, int itemAmount, int price, int neededItem, int neededItemAmount, int duration, int max)
+        public WorkstationBlueprintModel(int stationId, int itemId, int itemAmount, int price, int neededItem, int neededItemAmount, int duration, int max)
         {
+            WorkstationId = stationId;
             ItemId = itemId;
             ItemAmount = itemAmount;
             Price = price;

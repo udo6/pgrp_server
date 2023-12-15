@@ -88,6 +88,8 @@ namespace Core.Entities
 		public DateTime LastGodmodeChange { get; set; }
 		public DateTime LastPositionChange { get; set; }
 
+		public int AllowedHealth { get; set; } = 200;
+
 		public int KillerId { get; set; }
 		public uint KillerWeapon { get; set; }
 		public DateTime KillerDate { get; set; }
@@ -276,14 +278,16 @@ namespace Core.Entities
 		{
 			LastHealthChange = DateTime.Now;
 			Health = health;
-			Emit("Client:AnticheatModule:SetHealth", Health + Armor);
+			AllowedHealth = Health + Armor;
+			Emit("Client:AnticheatModule:SetHealth", AllowedHealth);
 		}
 
 		public void SetArmor(ushort armor)
 		{
 			LastHealthChange = DateTime.Now;
 			Armor = armor;
-			Emit("Client:AnticheatModule:SetHealth", Health + Armor);
+			AllowedHealth = Health + Armor;
+			Emit("Client:AnticheatModule:SetHealth", AllowedHealth);
 		}
 
 		public void UpdateVoiceHud()

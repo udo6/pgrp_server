@@ -73,9 +73,8 @@ namespace Game.Modules
 					ClothesService.Update(clothes);
 				}
 
-				LoadoutService.ClearPlayerLoadout(player.DbId);
-				player.RemoveAllWeapons(true);
-				player.Weapons.Clear();
+				LoadoutService.ClearPlayerLoadout(player.DbId, true);
+				PlayerController.ApplyPlayerLoadout(player);
 			}
 
 			player.Notify("Fraktion", $"Du hast den Dienst {(account.TeamDuty ? "angetreten" : "verlassen")}.", NotificationType.INFO);
@@ -178,14 +177,14 @@ namespace Game.Modules
 
 			var weapons = new List<LoadoutModel>()
 			{
-				new(player.DbId, 3219281620, 500),
-				new(player.DbId, team.MeeleWeaponHash, 0)
+				new(player.DbId, 3219281620, 500, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT),
+				new(player.DbId, team.MeeleWeaponHash, 0, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT)
 			};
 
 			if(team.Type == TeamType.FEDERAL)
 			{
-				weapons.Add(new(player.DbId, 911657153u, 0));
-				weapons.Add(new(player.DbId, 1233104067u, 25));
+				weapons.Add(new(player.DbId, 911657153u, 0, LoadoutType.FEDERAL));
+				weapons.Add(new(player.DbId, 1233104067u, 25, LoadoutType.FEDERAL));
 			}
 			else
 			{
@@ -210,6 +209,13 @@ namespace Game.Modules
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null || !account.TeamAdmin) return;
+
+			if(account.TeamRank <= rank)
+			{
+				player.ShowComponent("Team", false);
+				player.Notify("Information", $"Du kannst niemanden höher als dich selbst setzen!", NotificationType.ERROR);
+				return;
+			}
 
 			var target = AccountService.Get(targetId);
 			if (target == null) return;
@@ -341,8 +347,8 @@ namespace Game.Modules
 					member.TeamAdmin,
 					member.TeamStorage,
 					member.TeamBank,
-					$"{member.LastOnline.Day}.{member.LastOnline.Month}.{member.LastOnline.Year}",
-					$"{account.TeamJoinDate.Day}.{account.TeamJoinDate.Month}.{account.TeamJoinDate.Year}"));
+					member.LastOnline.ToString(),
+					account.TeamJoinDate.ToString()));
 			}
 
 			var gws = GangwarService.GetFromTeam(team.Id);

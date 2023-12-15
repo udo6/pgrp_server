@@ -69,9 +69,9 @@ namespace Game.Modules
 					}
 					else if(shapes.Count > 0)
 					{
-						if(shape != null)
+						foreach(var _shape in shapes)
 						{
-							switch(shape.ShapeType)
+							switch (_shape.ShapeType)
 							{
 								case ColshapeType.LABORATORY_INPUT:
 									container = InventoryService.Get(player.LaboratoryInputInventoryId);
@@ -79,6 +79,7 @@ namespace Game.Modules
 								case ColshapeType.LABORATORY_OUTPUT:
 									container = InventoryService.Get(player.LaboratoryOutputInventoryId);
 									break;
+								case ColshapeType.TEAM:
 								case ColshapeType.JAIL:
 									container = InventoryService.Get(player.LockerInventoryId);
 									break;
@@ -304,10 +305,12 @@ namespace Game.Modules
 				var script = InventoryController.GetItemScript(item.Id);
 				if (script == null) continue;
 
-				if(script.Type == ItemType.WEAPON)
+				var federal = loadout.Type == LoadoutType.FEDERAL;
+
+				if (script.Type == ItemType.WEAPON)
 				{
 					var weapon = (WeaponItemScript)script;
-					if (weapon.Hash == player.CurrentWeapon && weapon.Federal == player.TeamDuty)
+					if (weapon.Hash == player.CurrentWeapon && weapon.Federal == federal)
 					{
 						weaponItem = item;
 					}
@@ -316,7 +319,7 @@ namespace Game.Modules
 				if (script.Type == ItemType.AMMO)
 				{
 					var ammo = (AmmoItemScript)script;
-					if (ammo.WeaponHash == player.CurrentWeapon && ammo.Federal == player.TeamDuty)
+					if (ammo.WeaponHash == player.CurrentWeapon && ammo.Federal == federal)
 					{
 						ammoItem = item;
 						magSize = ammo.MagSize;

@@ -30,6 +30,7 @@ namespace Game.Modules
 			(ColshapeType.DMV, ("KEY_E", "DMV")),
 			(ColshapeType.SOCIAL_BONUS, ("KEY_E", "SOCIAL_BONUS")),
 			(ColshapeType.TUNER, ("KEY_E", "TUNER")),
+			(ColshapeType.LSPD_TELEPORTER, ("KEY_E", "LSPD_TELEPORTER")),
 
 			(ColshapeType.DOOR, ("KEY_L", "DOOR_LOCK")),
 

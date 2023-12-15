@@ -15,10 +15,10 @@ namespace Game.Controllers
 			var pos = PositionService.Get(model.PositionId);
 			if (pos == null) return;
 
-			var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 15f, 2f);
+			var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 20f, 2f);
 			shape.Id = model.Id;
 			shape.ShapeType = ColshapeType.GAS_STATION;
-			shape.Size = 5f;
+			shape.Size = 20f;
 
 			var blip = Alt.CreateBlip(true, 4, pos.Position, Array.Empty<IPlayer>());
 			blip.Name = "Tankstelle";

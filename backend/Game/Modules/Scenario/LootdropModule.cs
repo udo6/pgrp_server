@@ -6,7 +6,6 @@ using Core.Entities;
 using Core.Enums;
 using Core.Extensions;
 using Database.Models.Inventory;
-using Database.Models.Lootdrop;
 using Database.Services;
 using Game.Controllers;
 using Newtonsoft.Json;
@@ -50,11 +49,8 @@ namespace Game.Modules.Scenario
 			shape.Object?.Destroy();
 			shape.Remove2();
 
-			var loot = GetLoot();
-			if (loot == null) return;
-
-			var amount = Random.Next(1, loot.StackSize+1);
-			InventoryController.AddItem(player.InventoryId, loot.Id, amount);
+			var amount = Random.Next(3, 7);
+			InventoryController.AddItem(player.InventoryId, 363, amount);
 		}
 
 		public static bool Spawn()

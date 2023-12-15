@@ -13,7 +13,20 @@ namespace Game.Modules
 	public static class PoliceModule
 	{
 		public static bool SWATStatus = false;
-		public static Position ShopPosition = new(858.2901f, -1321.3055f, 28.134033f);
+		public static Position ShopPosition = new(-1079.9077f, -823.05493f, 14.873291f);
+
+		private static List<Position> TeleporterPositions = new()
+		{
+			new(-1096.3121f, -850.16705f, 4.8813477f),
+			new(-1096.3121f, -850.16705f, 10.273315f),
+			new(-1096.3121f, -850.16705f, 13.693726f),
+			new(-1096.3121f, -850.16705f, 18.98462f),
+			new(-1096.3121f, -850.16705f, 23.028564f),
+			new(-1096.3121f, -850.16705f, 26.819824f),
+			new(-1096.3121f, -850.16705f, 30.745728f),
+			new(-1096.3121f, -850.16705f, 34.351685f),
+			new(-1096.3121f, -850.16705f, 38.22705f)
+		};
 
 		[Initialize]
 		public static void Initialize()
@@ -23,10 +36,39 @@ namespace Game.Modules
 			shape.ShapeType = ColshapeType.SWAT_SHOP;
 			shape.Size = 2f;
 
+			foreach(var tp in TeleporterPositions)
+			{
+				var tpShape = (RPShape)Alt.CreateColShapeCylinder(tp.Down(), 2f, 2f);
+				tpShape.Id = 1;
+				tpShape.ShapeType = ColshapeType.LSPD_TELEPORTER;
+				tpShape.Size = 2f;
+			}
+
+			Alt.OnClient<RPPlayer, int>("Server:Police:Teleport", UseTeleporter);
+			Alt.OnClient<RPPlayer>("Server:Police:OpenTeleporter", OpenTeleporter);
 			Alt.OnClient<RPPlayer, int, int>("Server:Police:TakeLicense", TakeLicense);
 			Alt.OnClient<RPPlayer>("Server:SWAT:OpenShop", OpenShop);
 			Alt.OnClient<RPPlayer, bool>("Server:SWAT:SetSWATDuty", SetSWATDuty);
 			Alt.OnClient<RPPlayer, int, int>("Server:SWAT:Buy", BuyItem);
+		}
+
+		private static void UseTeleporter(RPPlayer player, int index)
+		{
+			if (index >= TeleporterPositions.Count) return;
+
+			var pos = TeleporterPositions[index];
+			player.SetPosition(pos);
+		}
+
+		private static void OpenTeleporter(RPPlayer player)
+		{
+			var nativeItems = new List<NativeMenuItem>();
+			for(int i = 0; i < TeleporterPositions.Count; i++)
+			{
+				nativeItems.Add(new($"Etage #{i + 1}", true, "Server:Police:Teleport", i));
+			}
+
+			player.ShowNativeMenu(true, new("LSPD Fahrstuhl", nativeItems));
 		}
 
 		private static void TakeLicense(RPPlayer player, int targetId, int type)
@@ -102,9 +144,8 @@ namespace Game.Modules
 
 			if (!state)
 			{
-				player.RemoveAllWeapons(true);
-				player.Weapons.Clear();
-				LoadoutService.ClearPlayerLoadout(player.DbId);
+				LoadoutService.ClearPlayerLoadout(player.DbId, true);
+				PlayerController.ApplyPlayerLoadout(player);
 			}
 			
 			player.SWATDuty = state;

@@ -125,12 +125,13 @@ namespace Game.Controllers
 			var veh = VehicleService.Get(vehicle.DbId);
 			if (veh == null) return;
 
-			veh.Fuel = fuel;
+			var newFuel = Math.Clamp(fuel, 0, 99999999999);
+
+			veh.Fuel = newFuel;
 			VehicleService.UpdateVehicle(veh);
 
-			vehicle.Fuel = fuel;
-			vehicle.SetStreamSyncedMetaData("FUEL", fuel);
-			if (fuel == 0) vehicle.SetEngineState(false);
+			vehicle.SetFuel(newFuel);
+			if (newFuel == 0) vehicle.SetEngineState(false);
 		}
 
 		public static void ApplyVehicleTuning(RPVehicle veh)

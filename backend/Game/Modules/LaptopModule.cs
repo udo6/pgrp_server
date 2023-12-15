@@ -7,7 +7,6 @@ using Database.Models.Crimes;
 using Database.Services;
 using Game.Controllers;
 using Newtonsoft.Json;
-using System;
 
 namespace Game.Modules
 {
@@ -755,7 +754,7 @@ namespace Game.Modules
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
 
-			player.PlayAnimation(Core.Enums.AnimationType.LAPTOP);
+			// player.PlayAnimation(Core.Enums.AnimationType.LAPTOP);
 			player.ShowComponent("Laptop", true, JsonConvert.SerializeObject(new
 			{
 				Name = player.Name,

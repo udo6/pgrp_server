@@ -60,9 +60,8 @@
 		DMV,
 		SOCIAL_BONUS,
 		TUNER,
-
-        // JOBS
         GARBAGE_JOB_START,
         GARBAGE_JOB_RETURN,
+		LSPD_TELEPORTER,
     }
 }

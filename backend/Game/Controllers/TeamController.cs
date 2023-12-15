@@ -50,7 +50,7 @@ namespace Game.Controllers
 		{
 			foreach(var player in RPPlayer.All.ToList())
 			{
-				if (player.TeamId != teamId) return;
+				if (player.TeamId != teamId) continue;
 				player.Notify("Fraktion", message, type);
 			}
 		}

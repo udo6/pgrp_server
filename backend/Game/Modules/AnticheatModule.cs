@@ -94,7 +94,7 @@ namespace Game.Modules
 
 		private static void DetectedHealkey(RPPlayer player, int health)
 		{
-			if (player.LastHealthChange.AddSeconds(5) >= DateTime.Now || player.Health + player.Armor <= health) return;
+			if (player.LastHealthChange.AddSeconds(5) >= DateTime.Now || player.Health + player.Armor <= player.AllowedHealth) return;
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;

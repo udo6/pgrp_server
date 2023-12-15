@@ -74,43 +74,42 @@ namespace Game.Modules
 				return;
 			}
 
-			if(target.Jailtime <= 0)
+			var crimeBases = CrimeService.GetAll();
+			var crimes = CrimeService.GetPlayerCrimes(targetId);
+			var jailtime = 0;
+			var fine = 0;
+
+			foreach (var crime in crimes)
 			{
-				var crimeBases = CrimeService.GetAll();
-				var crimes = CrimeService.GetPlayerCrimes(targetId);
-				var jailtime = 0;
-				var fine = 0;
+				var crimeBase = crimeBases.FirstOrDefault(x => x.Id == crime.CrimeId);
+				if (crimeBase == null) continue;
 
-				foreach (var crime in crimes)
-				{
-					var crimeBase = crimeBases.FirstOrDefault(x => x.Id == crime.CrimeId);
-					if (crimeBase == null) continue;
-
-					jailtime += crimeBase.JailTime;
-					fine += crimeBase.Fine;
-				}
-
-				var targetAccount = AccountService.Get(targetId);
-				if (targetAccount == null) return;
-
-				targetAccount.Jailtime = jailtime;
-				targetAccount.BankMoney -= fine;
-				AccountService.Update(targetAccount);
-				BankService.AddHistory(new(targetAccount.Id, targetAccount.Name, $"Strafzettel", TransactionType.PLAYER, true, fine, DateTime.Now));
-				CrimeService.RemovePlayerCrimes(targetId);
-				target.Jailtime = jailtime;
-				target.Notify("Information", $"Du wurdest für {jailtime} Hafteinheiten Inhaftiert!", NotificationType.INFO);
+				jailtime += crimeBase.JailTime;
+				fine += crimeBase.Fine;
 			}
+
+			if(jailtime <= 0)
+			{
+				player.Notify("Information", "Die Person hat keine offenen Akten!", Core.Enums.NotificationType.ERROR);
+				return;
+			}
+
+			var targetAccount = AccountService.Get(targetId);
+			if (targetAccount == null) return;
+
+			targetAccount.Jailtime = jailtime;
+			targetAccount.BankMoney -= fine;
+			AccountService.Update(targetAccount);
+			BankService.AddHistory(new(targetAccount.Id, targetAccount.Name, $"Strafzettel", TransactionType.PLAYER, true, fine, DateTime.Now));
+			CrimeService.RemovePlayerCrimes(targetId);
+			target.Jailtime = jailtime;
+			target.Notify("Information", $"Du wurdest für {jailtime} Hafteinheiten Inhaftiert!", NotificationType.INFO);
 
 			var custom = CustomizationService.Get(target.CustomizationId);
 			if (custom == null) return;
 
 			var clothes = ClothesService.Get(target.ClothesId);
 			if (clothes == null) return;
-
-			LoadoutService.ClearPlayerLoadout(target.DbId);
-			target.RemoveAllWeapons(true);
-			player.Weapons.Clear();
 
 			SetJailClothes(clothes, custom.Gender);
 			PlayerController.ApplyPlayerClothes(target, clothes);

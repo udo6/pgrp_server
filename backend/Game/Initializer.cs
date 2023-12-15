@@ -38,7 +38,7 @@ namespace Game
 			}
 
 			var everyFiveSecondTimers = types.SelectMany(t => t.GetMethods()).Where(m => m.GetCustomAttributes(typeof(Core.Attribute.EveryFiveSeconds), false).Length > 0).ToList();
-			foreach (var timer in everyTenSecondTimers)
+			foreach (var timer in everyFiveSecondTimers)
 			{
 				Timer.EveryFiveSecondsActions.Add(timer);
 			}

@@ -35,7 +35,7 @@ namespace Game.Modules
 
 			var price = 20 * value;
 
-			if(account.Money < price)
+			if (vehicle.OwnerType != Core.Enums.OwnerType.PLAYER && account.Money < price)
 			{
 				player.Notify("Information", "Du hast nicht genug Geld dabei!", Core.Enums.NotificationType.ERROR);
 				return;
@@ -44,7 +44,9 @@ namespace Game.Modules
 			player.PlayAnimation(Core.Enums.AnimationType.DRILL);
 			player.StartInteraction(() =>
 			{
-				PlayerController.RemoveMoney(player, price);
+				if (vehicle.OwnerType != Core.Enums.OwnerType.PLAYER)
+					PlayerController.RemoveMoney(player, price);
+
 				VehicleController.SetVehicleFuel(vehicle, vehicle.Fuel + value);
 				player.Notify("Information", $"Du hast {value} Liter in dein Fahrzeug getankt!", Core.Enums.NotificationType.SUCCESS);
 			}, 300 * value);

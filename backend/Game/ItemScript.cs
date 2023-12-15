@@ -42,7 +42,7 @@ namespace Game
 
 		public override void OnUse(RPPlayer player, InventoryModel inventory, InventoryItemModel item, int slot, int amount)
 		{
-			if ((Federal && !player.TeamDuty)/* || player.Level < 3*/) return;
+			if (Federal && !player.TeamDuty/* || player.Level < 3*/) return;
 
 			if(player.Weapons.Any(x => x == Hash))
 			{
@@ -59,7 +59,7 @@ namespace Game
 				return;
 			}
 
-			LoadoutService.Add(new(player.DbId, Hash, 0));
+			LoadoutService.Add(new(player.DbId, Hash, 0, Federal ? LoadoutType.FEDERAL : LoadoutType.DEFAULT));
 			player.AddWeapon(Hash, 0, true);
 			InventoryController.RemoveItem(inventory, item.Slot, 1);
 		}

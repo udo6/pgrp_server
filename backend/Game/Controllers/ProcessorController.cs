@@ -48,7 +48,7 @@ namespace Game.Controllers
 
 			if (steps < 1)
 			{
-				player.Notify("Verarbeiter", $"Du benötigst mind. {inputAmount} {inputItem.Name}!", NotificationType.ERROR);
+				player.Notify("Verarbeiter", $"Du benötigst mind. {model.InputStepAmount} {inputItem.Name}!", NotificationType.ERROR);
 				return;
 			}
 

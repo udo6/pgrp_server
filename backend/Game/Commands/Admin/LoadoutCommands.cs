@@ -14,7 +14,7 @@ namespace Game.Commands.Admin
 		{
 			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
-			var loadout = new LoadoutModel(player.DbId, (uint)weapon, ammo);
+			var loadout = new LoadoutModel(player.DbId, (uint)weapon, ammo, Core.Enums.LoadoutType.DEFAULT);
 			LoadoutService.Add(loadout);
 			PlayerController.ApplyPlayerLoadout(player);
 		}

@@ -1,4 +1,5 @@
-﻿using Core.Attribute;
+﻿using AltV.Net.Elements.Entities;
+using Core.Attribute;
 using System.Reflection;
 using System.Timers;
 
@@ -47,7 +48,7 @@ namespace Game
 
 		public static void EveryMinute(object? sender, ElapsedEventArgs e)
 		{
-			foreach(var action in EveryMinuteActions)
+			foreach (var action in EveryMinuteActions)
 				action.Invoke(null, Array.Empty<object>());
 		}
 

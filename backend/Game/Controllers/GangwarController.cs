@@ -183,8 +183,6 @@ namespace Game.Controllers
 				shape.Destroy();
 			}
 
-			Console.WriteLine(1);
-
 			foreach (var veh in RPVehicle.All.ToList())
 			{
 				if (veh == null || !veh.Exists || veh.Dimension != gw.DbId || !veh.Gangwar) continue;
@@ -192,12 +190,8 @@ namespace Game.Controllers
 				veh.Delete();
 			}
 
-			Console.WriteLine(2);
-
 			MarkerStreamer.RemoveMarkers(gw.Markers);
-			Console.WriteLine(3);
 			RunningGangwars.Remove(gw);
-			Console.WriteLine(4);
 		}
 
 		public static void RespawnPlayer(RPPlayer player)

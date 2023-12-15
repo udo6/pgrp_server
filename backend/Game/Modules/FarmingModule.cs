@@ -55,11 +55,11 @@ namespace Game.Modules
 			var models = FarmingService.GetAll();
 			var random = new Random();
 
-			foreach(var player in RPPlayer.All.ToList())
+			foreach (var player in RPPlayer.All.ToList())
 			{
 				if (!player.IsFarming) continue;
 
-				if(player.FarmingShape == null || player.Position.Distance(player.FarmingShape.Position) > player.FarmingShape.Size)
+				if (player.FarmingShape == null || player.Position.Distance(player.FarmingShape.Position) > player.FarmingShape.Size)
 				{
 					FarmingController.StopFarming(player);
 					continue;

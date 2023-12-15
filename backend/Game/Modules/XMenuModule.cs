@@ -54,7 +54,7 @@ namespace Game.Modules
 
 		private static void ToggleEngine(RPPlayer player)
 		{
-			if (!player.LoggedIn || !player.IsInVehicle || player.Vehicle.Driver != player) return;
+			if (!player.LoggedIn || !player.IsInVehicle || player.Vehicle.Driver != player || ((RPVehicle)player.Vehicle).Fuel <= 0) return;
 
 			var veh = (RPVehicle)player.Vehicle;
 

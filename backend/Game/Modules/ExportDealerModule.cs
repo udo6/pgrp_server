@@ -56,11 +56,14 @@ namespace Game.Modules
 			var itemsCount = InventoryService.HasItems(player.InventoryId, exportItem.ItemId);
 			if (itemsCount < 1) return;
 
+			var item = InventoryService.GetItem(exportItem.ItemId);
+			if (item == null) return;
+
 			var inventory = InventoryService.Get(player.InventoryId);
 			if (inventory == null) return;
 
 			var price = itemsCount * exportItem.Price;
-			InventoryController.RemoveItem(inventory, exportItem.ItemId, itemsCount);
+			InventoryController.RemoveItem(inventory, item, itemsCount);
 			PlayerController.AddMoney(player, price);
 			player.Notify("Information", $"Du hast {itemsCount} Items für ${price} verkauft!", NotificationType.SUCCESS);
 		}

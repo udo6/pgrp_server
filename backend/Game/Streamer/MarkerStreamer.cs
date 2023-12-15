@@ -25,17 +25,14 @@ namespace Game.Streamer
 
 		public static void RemoveMarkers(List<int> ids)
 		{
-			Console.WriteLine(10);
 			foreach(var marker in Markers.ToList())
 			{
 				if (!ids.Any(x => marker.Id == x)) continue;
 
 				Markers.Remove(marker);
 			}
-			Console.WriteLine(11);
 
 			Alt.EmitAllClients("Client:MarkerStreamer:RemoveMarkers", JsonConvert.SerializeObject(ids));
-			Console.WriteLine(12);
 		}
 	}
 }
