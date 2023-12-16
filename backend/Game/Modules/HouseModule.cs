@@ -6,6 +6,7 @@ using Game.Controllers;
 using Core.Enums;
 using Database.Models;
 using Database.Models.Jumpoint;
+using Game.Modules.Jobs;
 
 namespace Game.Modules
 {
@@ -30,6 +31,12 @@ namespace Game.Modules
 
 			var house = HouseService.Get(shape.Id);
 			if (house == null) return;
+
+			if (player.IsInGarbageJob && !player.HasGarbageInHand)
+			{
+                GarbageJobModule.PickupGarbage(player);
+				return;
+            }
 
 			player.ShowNativeMenu(true, new($"Haus {house.Id}", new()
 			{

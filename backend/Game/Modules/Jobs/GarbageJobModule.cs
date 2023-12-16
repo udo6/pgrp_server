@@ -24,6 +24,7 @@ namespace Game.Modules.Jobs
             Alt.OnClient<RPPlayer, int>("Server:GarbageJob:Stop", Stop);
             Alt.OnClient<RPPlayer>("Server:GarbageJob:Return", Return);
             Alt.OnClient<RPPlayer, int>("Server:GarbageJob:Spawn", Spawn);
+            Alt.OnClient<RPPlayer, int>("Server:GarbageJob:Throw", Throw);
         }
 
         private static void Open(RPPlayer player)
@@ -101,26 +102,34 @@ namespace Game.Modules.Jobs
 
         private static void Return(RPPlayer player)
         {
+            Console.WriteLine(01);
             if (!player.LoggedIn || player == null || player.GarbageTruck == null) return;
+            Console.WriteLine(02);
 
             var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == Core.Enums.ColshapeType.GARBAGE_JOB_RETURN && x.Position.Distance(player.Position) <= x.Size);
             if (shape == null) return;
+            Console.WriteLine(03);
 
             var model = GarbageJobService.Get(shape.Id);
             if (model == null) return;
+            Console.WriteLine(04);
 
             if (!player.IsInGarbageJob)
             {
+                Console.WriteLine(05);
                 player.Notify("Müllabfuhr", "Du bist nicht in dem Job.", Core.Enums.NotificationType.ERROR);
                 return;
             }
+            Console.WriteLine(06);
 
             if (player.GarbageTruck.Position.Distance(shape.Position) > 9f)
             {
+                Console.WriteLine(07);
                 player.Notify("Müllabfuhr", "Du bist nicht am Müllplatz.", Core.Enums.NotificationType.ERROR);
                 return;
             }
 
+            Console.WriteLine(08);
             player.GarbageTruck.GetData("GARBAGE_COUNT", out int garbageCount);
 
             player.StartInteraction(() =>
@@ -163,11 +172,57 @@ namespace Game.Modules.Jobs
             garbageTruck.SetFuel(200);
             garbageTruck.SetMaxFuel(200);
             garbageTruck.NumberplateText = "MUELL-0" + player.Id * 2;
-            garbageTruck.SetData("GARBAGE_COUNT", 12);
+            garbageTruck.SetData("GARBAGE_COUNT", 0);
 
             player.GarbageTruck = garbageTruck;
 
             player.Notify("Müllabfuhr", "Du hast einen Müllwagen gespawnt.", Core.Enums.NotificationType.SUCCESS);
+        }
+
+        private static void Throw(RPPlayer player, int vehicleId)
+        {
+            if (!player.LoggedIn || player == null || !player.IsInGarbageJob ||!player.HasGarbageInHand) return;
+
+            RPVehicle vehicle = RPVehicle.All.FirstOrDefault(x => x.Id == vehicleId)!;
+            if (vehicle == null) return;
+
+            vehicle.GetData("GARBAGE_COUNT", out int garbageCount);
+
+            if (garbageCount >= 75)
+            {
+                player.Notify("Müllabfuhr", "Der Müllwagen ist voll.", Core.Enums.NotificationType.ERROR);
+                return;
+            }
+
+            vehicle.SetData("GARBAGE_COUNT", (garbageCount + 1));
+            /* 
+             * TODO: 
+             * Play animation
+             * Clear prop task
+             */
+            player.Emit("Client:PlayerModule:SetGarbageProp", false);
+            player.SetData("HOLDING_GARBAGE", false);
+            player.HasGarbageInHand = false;
+        }
+
+        public static void PickupGarbage(RPPlayer player)
+        {
+            if (!player.LoggedIn || player == null || !player.IsInGarbageJob) return;
+
+            var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == Core.Enums.ColshapeType.HOUSE && x.Position.Distance(player.Position) <= x.Size);
+            if (shape == null) return;
+
+            shape.GetData("GARBAGE_PICKED_UP", out DateTime lastPickedUp);
+
+            if (DateTime.Now < lastPickedUp.AddMinutes(10))
+            {
+                player.Notify("Müllabfuhr", "Der Müll wurde hier vor kurzem abgeholt.", Core.Enums.NotificationType.ERROR);
+                return;
+            }
+
+            shape.SetData("GARBAGE_PICKED_UP", DateTime.Now);
+            player.Emit("Client:PlayerModule:SetGarbageProp", true);
+            player.HasGarbageInHand = true;
         }
     }
 }
