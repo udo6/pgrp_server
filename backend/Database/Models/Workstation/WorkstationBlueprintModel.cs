@@ -11,13 +11,14 @@
         public int NeededItemAmount { get; set; }
         public int Duration { get; set; }
         public int Max { get; set; }
+        public bool Active { get; set; }
 
         public WorkstationBlueprintModel()
         {
 
         }
 
-        public WorkstationBlueprintModel(int stationId, int itemId, int itemAmount, int price, int neededItem, int neededItemAmount, int duration, int max)
+        public WorkstationBlueprintModel(int stationId, int itemId, int itemAmount, int price, int neededItem, int neededItemAmount, int duration, int max, bool active)
         {
             WorkstationId = stationId;
             ItemId = itemId;
@@ -27,6 +28,7 @@
             NeededItemAmount = neededItemAmount;
             Duration = duration;
             Max = max;
+            Active = active;
         }
     }
 }

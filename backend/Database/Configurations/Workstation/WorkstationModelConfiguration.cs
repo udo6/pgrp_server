@@ -14,6 +14,8 @@ namespace Database.Configurations.Workstation
 			builder.HasIndex(x => x.Id).HasDatabaseName("id");
 			builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int(11)");
 			builder.Property(x => x.PositionId).HasColumnName("position_id").HasColumnType("int(11)");
+			builder.Property(x => x.Type).HasColumnName("type").HasColumnType("int(11)");
+			builder.Property(x => x.MaxActiveItems).HasColumnName("max_active").HasColumnType("int(11)");
 		}
 	}
 }

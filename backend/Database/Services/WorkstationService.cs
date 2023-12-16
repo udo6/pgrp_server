@@ -46,10 +46,10 @@ namespace Database.Services
 		}
 
 		// blueprints
-		public static List<WorkstationBlueprintModel> GetBlueprints(int stationId)
+		public static List<WorkstationBlueprintModel> GetBlueprints(int stationId, bool activeOnly)
 		{
 			using var ctx = new Context();
-			return ctx.WorkstationBlueprints.Where(x => x.WorkstationId == stationId).ToList();
+			return ctx.WorkstationBlueprints.Where(x => x.WorkstationId == stationId && (x.Active || !activeOnly)).ToList();
 		}
 
 		public static void AddBlueprint(WorkstationBlueprintModel model)

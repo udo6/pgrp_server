@@ -24,6 +24,27 @@ namespace Game.Controllers
 			ped.Frozen = true;
 			ped.Health = 8000;
 			ped.Armour = 8000;
+
+			if(model.Type == WorkstationType.WEAPON_FACTORY)
+			{
+				var random = new Random();
+				var bps = WorkstationService.GetBlueprints(model.Id, false);
+				foreach (var bp in bps) bp.Active = false;
+
+				if (bps.Count <= 0) return;
+				for(var i = 0; i < model.MaxActiveItems; i++)
+				{
+					var bpss = bps.Where(x => !x.Active).ToList();
+					bpss[random.Next(0, bpss.Count)].Active = true;
+				}
+			}
+		}
+
+		public static bool HasAccess(WorkstationModel workstation, RPPlayer player)
+		{
+			return workstation.Type == WorkstationType.PUBLIC ||
+				(workstation.Type == WorkstationType.TEAM_ONLY && player.TeamId > 5) ||
+				(workstation.Type == WorkstationType.WEAPON_FACTORY && player.TeamId > 5);
 		}
 	}
 }

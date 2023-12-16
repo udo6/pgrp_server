@@ -20,6 +20,7 @@ namespace Database.Configurations.Workstation
 			builder.Property(x => x.NeededItemAmount).HasColumnName("needed_item_amount").HasColumnType("int(11)");
 			builder.Property(x => x.Duration).HasColumnName("duration").HasColumnType("int(11)");
 			builder.Property(x => x.Max).HasColumnName("max").HasColumnType("int(11)");
+			builder.Property(x => x.Active).HasColumnName("active").HasColumnType("tinyint(1)");
 		}
 	}
 }

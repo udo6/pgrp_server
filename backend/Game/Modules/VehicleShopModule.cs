@@ -98,7 +98,7 @@ namespace Game.Modules
 			var tune = new TuningModel();
 			TuningService.Add(tune);
 
-			var veh = new VehicleModel(player.DbId, 0, false, "", "", 100, OwnerType.PLAYER, 16, pos.Id, trunk.Id, glovebox.Id, item.VehicleBaseId, tune.Id);
+			var veh = new VehicleModel(player.DbId, 0, false, "00000000", "", 100, OwnerType.PLAYER, 16, pos.Id, trunk.Id, glovebox.Id, item.VehicleBaseId, tune.Id);
 			VehicleService.AddVehicle(veh);
 			VehicleController.LoadVehicle(veh);
 			player.Notify("Information", $"Du hast ein Fahrzeug für {baseModel.Price} gekauft!", NotificationType.SUCCESS);

@@ -85,9 +85,9 @@ namespace Game.Modules
 		private static void Open(RPPlayer player, int stationId)
 		{
 			var station = WorkstationService.Get(stationId);
-			if (station == null) return;
+			if (station == null || !WorkstationController.HasAccess(station, player)) return;
 
-			var bps = WorkstationService.GetBlueprints(stationId);
+			var bps = WorkstationService.GetBlueprints(stationId, station.Type == Core.Enums.WorkstationType.WEAPON_FACTORY);
 			var items = WorkstationService.GetItems(player.DbId, stationId);
 
 			player.ShowComponent("Workstation", true, JsonConvert.SerializeObject(new
