@@ -194,7 +194,7 @@ namespace Game.Modules
 					tuning.HeadlightColor = val;
 					break;
 				case 1006:
-					vehicle.WheelColor = tuning.WheelColor;
+					vehicle.WheelColor = val;
 					tuning.WheelColor = val;
 					break;
 				case 1007:
