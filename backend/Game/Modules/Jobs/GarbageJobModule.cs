@@ -31,6 +31,12 @@ namespace Game.Modules.Jobs
         {
             if (!player.LoggedIn || player == null) return;
 
+            if (player.TeamDuty)
+            {
+                player.Notify("Müllabfuhr", "Du kannst den Job nicht im Dienst starten.", Core.Enums.NotificationType.ERROR);
+                return;
+            }
+
             var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == Core.Enums.ColshapeType.GARBAGE_JOB_START && x.Position.Distance(player.Position) <= x.Size);
             if (shape == null) return;
 
@@ -102,35 +108,32 @@ namespace Game.Modules.Jobs
 
         private static void Return(RPPlayer player)
         {
-            Console.WriteLine(01);
             if (!player.LoggedIn || player == null || player.GarbageTruck == null) return;
-            Console.WriteLine(02);
 
             var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == Core.Enums.ColshapeType.GARBAGE_JOB_RETURN && x.Position.Distance(player.Position) <= x.Size);
             if (shape == null) return;
-            Console.WriteLine(03);
 
             var model = GarbageJobService.Get(shape.Id);
             if (model == null) return;
-            Console.WriteLine(04);
 
             if (!player.IsInGarbageJob)
             {
-                Console.WriteLine(05);
                 player.Notify("Müllabfuhr", "Du bist nicht in dem Job.", Core.Enums.NotificationType.ERROR);
                 return;
             }
-            Console.WriteLine(06);
 
             if (player.GarbageTruck.Position.Distance(shape.Position) > 9f)
             {
-                Console.WriteLine(07);
                 player.Notify("Müllabfuhr", "Du bist nicht am Müllplatz.", Core.Enums.NotificationType.ERROR);
                 return;
             }
 
-            Console.WriteLine(08);
             player.GarbageTruck.GetData("GARBAGE_COUNT", out int garbageCount);
+            if (garbageCount <= 0)
+            {
+                player.Notify("Müllabfuhr", "Der Müllwagen ist leer.", Core.Enums.NotificationType.ERROR);
+                return;
+            }
 
             player.StartInteraction(() =>
             {
@@ -191,6 +194,9 @@ namespace Game.Modules.Jobs
             if (garbageCount >= 75)
             {
                 player.Notify("Müllabfuhr", "Der Müllwagen ist voll.", Core.Enums.NotificationType.ERROR);
+                player.Emit("Client:PlayerModule:SetGarbageProp", false);
+                player.SetData("HOLDING_GARBAGE", false);
+                player.HasGarbageInHand = false;
                 return;
             }
 
@@ -198,11 +204,12 @@ namespace Game.Modules.Jobs
             /* 
              * TODO: 
              * Play animation
-             * Clear prop task
              */
             player.Emit("Client:PlayerModule:SetGarbageProp", false);
             player.SetData("HOLDING_GARBAGE", false);
             player.HasGarbageInHand = false;
+
+            player.Notify("Müllabfuhr", "Du hast den Müll in den Müllwagen geworfen.", Core.Enums.NotificationType.INFO);
         }
 
         public static void PickupGarbage(RPPlayer player)
@@ -223,6 +230,8 @@ namespace Game.Modules.Jobs
             shape.SetData("GARBAGE_PICKED_UP", DateTime.Now);
             player.Emit("Client:PlayerModule:SetGarbageProp", true);
             player.HasGarbageInHand = true;
+
+            player.Notify("Müllabfuhr", "Du hast den Müll abgeholt.", Core.Enums.NotificationType.INFO);
         }
     }
 }
