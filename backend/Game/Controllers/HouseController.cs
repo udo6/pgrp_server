@@ -57,6 +57,7 @@ namespace Game.Controllers
 				shape.Id = model.Id;
 				shape.ShapeType = ColshapeType.HOUSE;
 				shape.Size = 2f;
+				shape.SetData("GARBAGE_PICKED_UP", DateTime.Now.AddMinutes(-10));
 			}
 
 			var inv = (RPShape)Alt.CreateColShapeCylinder(HouseInventoryPositions[model.Type].Down(), 2f, 2f);

@@ -96,6 +96,8 @@ namespace Core.Entities
 
         // JOBS
         public bool IsInGarbageJob { get; set; } = false;
+		public bool HasGarbageInHand { get; set; } = false;
+
         public bool IsInGardenerJob { get; set; } = false;
         public bool IsInMoneyTruckJob { get; set; } = false;
 

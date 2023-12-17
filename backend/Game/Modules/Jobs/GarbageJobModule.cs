@@ -24,11 +24,18 @@ namespace Game.Modules.Jobs
             Alt.OnClient<RPPlayer, int>("Server:GarbageJob:Stop", Stop);
             Alt.OnClient<RPPlayer>("Server:GarbageJob:Return", Return);
             Alt.OnClient<RPPlayer, int>("Server:GarbageJob:Spawn", Spawn);
+            Alt.OnClient<RPPlayer, int>("Server:GarbageJob:Throw", Throw);
         }
 
         private static void Open(RPPlayer player)
         {
             if (!player.LoggedIn || player == null) return;
+
+            if (player.TeamDuty)
+            {
+                player.Notify("Müllabfuhr", "Du kannst den Job nicht im Dienst starten.", Core.Enums.NotificationType.ERROR);
+                return;
+            }
 
             var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == Core.Enums.ColshapeType.GARBAGE_JOB_START && x.Position.Distance(player.Position) <= x.Size);
             if (shape == null) return;
@@ -122,6 +129,11 @@ namespace Game.Modules.Jobs
             }
 
             player.GarbageTruck.GetData("GARBAGE_COUNT", out int garbageCount);
+            if (garbageCount <= 0)
+            {
+                player.Notify("Müllabfuhr", "Der Müllwagen ist leer.", Core.Enums.NotificationType.ERROR);
+                return;
+            }
 
             player.StartInteraction(() =>
             {
@@ -163,11 +175,63 @@ namespace Game.Modules.Jobs
             garbageTruck.SetFuel(200);
             garbageTruck.SetMaxFuel(200);
             garbageTruck.NumberplateText = "MUELL-0" + player.Id * 2;
-            garbageTruck.SetData("GARBAGE_COUNT", 12);
+            garbageTruck.SetData("GARBAGE_COUNT", 0);
 
             player.GarbageTruck = garbageTruck;
 
             player.Notify("Müllabfuhr", "Du hast einen Müllwagen gespawnt.", Core.Enums.NotificationType.SUCCESS);
+        }
+
+        private static void Throw(RPPlayer player, int vehicleId)
+        {
+            if (!player.LoggedIn || player == null || !player.IsInGarbageJob ||!player.HasGarbageInHand) return;
+
+            RPVehicle vehicle = RPVehicle.All.FirstOrDefault(x => x.Id == vehicleId)!;
+            if (vehicle == null) return;
+
+            vehicle.GetData("GARBAGE_COUNT", out int garbageCount);
+
+            if (garbageCount >= 75)
+            {
+                player.Notify("Müllabfuhr", "Der Müllwagen ist voll.", Core.Enums.NotificationType.ERROR);
+                player.Emit("Client:PlayerModule:SetGarbageProp", false);
+                player.SetData("HOLDING_GARBAGE", false);
+                player.HasGarbageInHand = false;
+                return;
+            }
+
+            vehicle.SetData("GARBAGE_COUNT", (garbageCount + 1));
+            /* 
+             * TODO: 
+             * Play animation
+             */
+            player.Emit("Client:PlayerModule:SetGarbageProp", false);
+            player.SetData("HOLDING_GARBAGE", false);
+            player.HasGarbageInHand = false;
+
+            player.Notify("Müllabfuhr", $"Du hast den Müll in den Müllwagen geworfen ({garbageCount + 1}/75).", Core.Enums.NotificationType.INFO);
+        }
+
+        public static void PickupGarbage(RPPlayer player)
+        {
+            if (!player.LoggedIn || player == null || !player.IsInGarbageJob) return;
+
+            var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == Core.Enums.ColshapeType.HOUSE && x.Position.Distance(player.Position) <= x.Size);
+            if (shape == null) return;
+
+            shape.GetData("GARBAGE_PICKED_UP", out DateTime lastPickedUp);
+
+            if (DateTime.Now < lastPickedUp.AddMinutes(10))
+            {
+                player.Notify("Müllabfuhr", "Der Müll wurde hier vor kurzem abgeholt.", Core.Enums.NotificationType.ERROR);
+                return;
+            }
+
+            shape.SetData("GARBAGE_PICKED_UP", DateTime.Now);
+            player.Emit("Client:PlayerModule:SetGarbageProp", true);
+            player.HasGarbageInHand = true;
+
+            player.Notify("Müllabfuhr", "Du hast den Müll abgeholt.", Core.Enums.NotificationType.INFO);
         }
     }
 }
