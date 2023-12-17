@@ -59,22 +59,25 @@ namespace Game.Modules
 				return;
 			}
 
-			if(InventoryService.HasItems(player.InventoryId, bp.NeededItem) < bp.NeededItemAmount)
+			if(bp.NeededItem > 0)
 			{
-				player.Notify("Information", $"Du hast nicht alle nötigen Materialien dabei!", Core.Enums.NotificationType.ERROR);
-				return;
-			}
+				if (InventoryService.HasItems(player.InventoryId, bp.NeededItem) < bp.NeededItemAmount)
+				{
+					player.Notify("Information", $"Du hast nicht alle nötigen Materialien dabei!", Core.Enums.NotificationType.ERROR);
+					return;
+				}
 
-			var inventory = InventoryService.Get(player.InventoryId);
-			if (inventory == null) return;
+				var inventory = InventoryService.Get(player.InventoryId);
+				if (inventory == null) return;
 
-			var item = InventoryService.GetItem(bp.NeededItem);
-			if (item == null) return;
+				var item = InventoryService.GetItem(bp.NeededItem);
+				if (item == null) return;
 
-			if (!InventoryController.RemoveItem(inventory, item, bp.NeededItemAmount))
-			{
-				player.Notify("Information", $"Es ist ein Fehler aufgetreten!", Core.Enums.NotificationType.ERROR);
-				return;
+				if (!InventoryController.RemoveItem(inventory, item, bp.NeededItemAmount))
+				{
+					player.Notify("Information", $"Es ist ein Fehler aufgetreten!", Core.Enums.NotificationType.ERROR);
+					return;
+				}
 			}
 
 			PlayerController.RemoveMoney(player, bp.Price);
@@ -107,12 +110,12 @@ namespace Game.Modules
 			{
 				var gainItem = items.FirstOrDefault(x => x.Id == model.ItemId);
 				var neededItem = items.FirstOrDefault(x => x.Id == model.NeededItem);
-				if (gainItem == null || neededItem == null) continue;
+				if (gainItem == null) continue;
 
 				result.Add(new
 				{
 					Id = model.Id,
-					Input = neededItem.Name,
+					Input = neededItem == null ? "" : neededItem.Name,
 					InputAmount = model.NeededItemAmount,
 					Output = gainItem.Name,
 					OutputAmount = model.ItemAmount,

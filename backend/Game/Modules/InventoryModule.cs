@@ -275,8 +275,8 @@ namespace Game.Modules
 			account.Backpack = false;
 			AccountService.Update(account);
 
-			inventory.Slots = 8;
-			inventory.MaxWeight = 30f;
+			inventory.Slots = 6;
+			inventory.MaxWeight = 25f;
 			InventoryService.Update(inventory);
 		}
 

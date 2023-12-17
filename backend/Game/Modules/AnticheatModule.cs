@@ -34,7 +34,7 @@ namespace Game.Modules
 
 		private static void DetectedGodmodeTarget(RPPlayer player, RPPlayer target, int allowedHealth)
 		{
-			if (target == null || target.Invincible || target.LastGodmodeChange.AddSeconds(5) >= DateTime.Now) return;
+			if (target == null || target.Invincible || !player.Streamed || !target.Streamed || target.LastGodmodeChange.AddSeconds(5) >= DateTime.Now) return;
 
 			if (player.Position.Distance(target.Position) > 200) return;
 
@@ -46,7 +46,7 @@ namespace Game.Modules
 			AccountService.Update(account);
 
 			LogService.LogPlayerBan(target.DbId, player.DbId, $"[ANTICHEAT] Godmode (Health: {player.Health + player.Armor} Allowed Health: {allowedHealth})");
-			player.Kick("Du wurdest gebannt! Grund: Cheating");
+			target.Kick("Du wurdest gebannt! Grund: Cheating");
 		}
 
 		private static void DetectedDamageModifier(RPPlayer player, uint weapon, int damage, int allowedDamage)

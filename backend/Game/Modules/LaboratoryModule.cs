@@ -105,10 +105,15 @@ namespace Game.Modules
 			var cokeInput = InventoryService.GetItem(277);
 			var weedInput = InventoryService.GetItem(275);
 			var utilityInput = InventoryService.GetItem(5);
+
+			var batteries = InventoryService.GetItem(2);
+
 			var cokeOutput = InventoryService.GetItem(3);
 			var weedOutput = InventoryService.GetItem(276);
-			if (cokeInput == null || weedInput == null || utilityInput == null || cokeOutput == null || weedOutput == null) return;
 
+			if (cokeInput == null || weedInput == null || utilityInput == null || batteries == null || cokeOutput == null || weedOutput == null) return;
+
+			// 1 battery 1 karton 20 droge
 			foreach (var player in RPPlayer.All.ToList())
 			{
 				if (!player.LabRunning) continue;

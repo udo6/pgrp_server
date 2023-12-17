@@ -1,6 +1,5 @@
 ﻿using AltV.Net;
 using AltV.Net.Elements.Entities;
-using AltV.Net.Elements.Pools;
 using Core.Entities;
 using Core.Enums;
 using Core.Extensions;
@@ -22,7 +21,7 @@ namespace Game.Controllers
 			shape.ShapeType = ColshapeType.PROCESSOR;
 			shape.Size = 2f;
 
-			var ped = Alt.CreatePed(3446096293, pos.Position, pos.Rotation);
+			var ped = Alt.CreatePed(model.PedModel, pos.Position, pos.Rotation);
 			ped.Frozen = true;
 			ped.Health = 8000;
 			ped.Armour = 8000;

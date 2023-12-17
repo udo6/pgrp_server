@@ -10,14 +10,14 @@ namespace Game.Commands.Gamedesign
 	public static class ProcessorCommands
 	{
 		[Command("createprocessor")]
-		public static void CreateProcessor(RPPlayer player, int inputItem, int inputStep, int outputItem, int outputStep, int time)
+		public static void CreateProcessor(RPPlayer player, int inputItem, int inputStep, int outputItem, int outputStep, int time, int pedModel)
 		{
 			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);
 
-			var model = new ProcessorModel(pos.Id, inputItem, inputStep, outputItem, outputStep, time);
+			var model = new ProcessorModel(pos.Id, inputItem, inputStep, outputItem, outputStep, time, (uint)pedModel);
 			ProcessorService.Add(model);
 			ProcessorController.LoadProcessor(model);
 			player.Notify("Gamedesign", "Du hast einen Verarbeiter erstellt!", Core.Enums.NotificationType.SUCCESS);

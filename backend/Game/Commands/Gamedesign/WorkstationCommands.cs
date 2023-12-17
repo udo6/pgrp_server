@@ -11,14 +11,14 @@ namespace Game.Commands.Gamedesign
 	public static class WorkstationCommands
 	{
 		[Command("createworkstation")]
-		public static void CreateWorkstation(RPPlayer player, int type, int maxActiveItems)
+		public static void CreateWorkstation(RPPlayer player, int type, int maxActiveItems, int pedModel)
 		{
 			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
 			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);
 
-			var model = new WorkstationModel(pos.Id, (WorkstationType)type, maxActiveItems);
+			var model = new WorkstationModel(pos.Id, (WorkstationType)type, maxActiveItems, (uint)pedModel);
 			WorkstationService.Add(model);
 			WorkstationController.LoadWorkstation(model);
 			player.Notify("Gamedesign", "Du hast eine Workstation erstellt!", Core.Enums.NotificationType.SUCCESS);

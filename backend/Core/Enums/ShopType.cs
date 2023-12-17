@@ -7,6 +7,7 @@
 		TEAM,
 		SWAT,
 		MECHANIC,
-		FOOD
+		FOOD,
+		ALL_TEAMS_ONLY
 	}
 }

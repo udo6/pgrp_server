@@ -146,7 +146,8 @@ namespace Game.Modules
 				type == ShopType.MECHANIC ||
 				type == ShopType.FOOD ||
 				(type == ShopType.TEAM && player.TeamId == owner) ||
-				(type == ShopType.SWAT && player.SWATDuty);
+				(type == ShopType.SWAT && player.SWATDuty) ||
+				(type == ShopType.ALL_TEAMS_ONLY && player.TeamId > 5);
 		}
 	}
 

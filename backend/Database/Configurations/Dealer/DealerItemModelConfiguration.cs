@@ -14,6 +14,8 @@ namespace Database.Configurations.Dealer
 			builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int(11)");
 			builder.Property(x => x.ItemId).HasColumnName("item_id").HasColumnType("int(11)");
 			builder.Property(x => x.Price).HasColumnName("price").HasColumnType("int(11)");
+			builder.Property(x => x.MinPrice).HasColumnName("min_price").HasColumnType("int(11)");
+			builder.Property(x => x.MaxPrice).HasColumnName("max_price").HasColumnType("int(11)");
 		}
 	}
 }

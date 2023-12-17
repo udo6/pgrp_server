@@ -4,7 +4,7 @@ using Database.Models.Workstation;
 using Database.Services;
 using Core.Enums;
 using Core.Extensions;
-using AltV.Net.Elements.Pools;
+using Newtonsoft.Json;
 
 namespace Game.Controllers
 {
@@ -20,7 +20,7 @@ namespace Game.Controllers
 			shape.ShapeType = ColshapeType.WORKSTATION;
 			shape.Size = 1f;
 
-			var ped = Alt.CreatePed(3446096293, pos.Position, pos.Rotation);
+			var ped = Alt.CreatePed(model.PedModel, pos.Position, pos.Rotation);
 			ped.Frozen = true;
 			ped.Health = 8000;
 			ped.Armour = 8000;
@@ -29,14 +29,20 @@ namespace Game.Controllers
 			{
 				var random = new Random();
 				var bps = WorkstationService.GetBlueprints(model.Id, false);
+				if (bps.Count <= 0) return;
+
 				foreach (var bp in bps) bp.Active = false;
 
-				if (bps.Count <= 0) return;
-				for(var i = 0; i < model.MaxActiveItems; i++)
+				for (var i = 0; i < model.MaxActiveItems; i++)
 				{
 					var bpss = bps.Where(x => !x.Active).ToList();
-					bpss[random.Next(0, bpss.Count)].Active = true;
+					var index = random.Next(0, bpss.Count);
+					var bp = bps.FirstOrDefault(x => x.Id == bpss[index].Id);
+					if (bp == null) continue;
+					bp.Active = true;
 				}
+
+				WorkstationService.UpdateBlueprints(bps);
 			}
 		}
 

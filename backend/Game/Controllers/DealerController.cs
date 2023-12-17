@@ -9,8 +9,12 @@ namespace Game.Controllers
 {
 	public static class DealerController
 	{
-		public static void LoadDealer(DealerModel model)
+		private static Random Random = new Random();
+
+		public static void LoadDealer(DealerModel model, bool forceActivate = false)
 		{
+			if (!forceActivate && Random.Next(0, 101) > 10) return;
+
 			var pos = PositionService.Get(model.PositionId);
 			if (pos == null) return;
 
@@ -19,10 +23,20 @@ namespace Game.Controllers
 			shape.ShapeType = ColshapeType.DEALER;
 			shape.Size = 2f;
 
-			var ped = Alt.CreatePed(3446096293, pos.Position, pos.Rotation);
+			var ped = Alt.CreatePed(0xE497BBEF, pos.Position, pos.Rotation);
 			ped.Frozen = true;
 			ped.Health = 8000;
 			ped.Armour = 8000;
+		}
+
+		public static void ResetItemPrices()
+		{
+			var items = DealerService.GetAllItems();
+			var random = new Random();
+			foreach (var item in items)
+				item.Price = random.Next(item.MinPrice, item.MaxPrice);
+
+			DealerService.UpdateItems(items);
 		}
 	}
 }

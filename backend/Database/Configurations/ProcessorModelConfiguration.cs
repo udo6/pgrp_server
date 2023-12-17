@@ -18,6 +18,7 @@ namespace Database.Configurations
 			builder.Property(x => x.OutputItem).HasColumnName("output_item_id").HasColumnType("int(11)");
 			builder.Property(x => x.OutputStepAmount).HasColumnName("output_item_amount").HasColumnType("int(11)");
 			builder.Property(x => x.Time).HasColumnName("time").HasColumnType("int(11)");
+			builder.Property(x => x.PedModel).HasColumnName("ped_model").HasColumnType("uint(11)");
 		}
 	}
 }

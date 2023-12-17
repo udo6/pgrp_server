@@ -9,11 +9,30 @@ namespace Game.Modules
 {
 	public static class DealerModule
 	{
+		private static List<float> TeamDealerTake = new()
+		{
+			0.28f, // R0
+			0.26f, // R1
+			0.24f, // R2
+			0.20f, // R3
+			0.18f, // R4
+			0.16f, // R5
+			0.14f, // R6
+			0.12f, // R7
+			0.10f, // R8
+			0.08f, // R9
+			0.06f, // R10
+			0.04f, // R11
+			0.02f, // R12
+		};
+
 		[Initialize]
 		public static void Initialize()
 		{
 			foreach(var model in DealerService.GetAll())
 				DealerController.LoadDealer(model);
+
+			DealerController.ResetItemPrices();
 
 			Alt.OnClient<RPPlayer>("Server:Dealer:Open", Open);
 			Alt.OnClient<RPPlayer, int, int>("Server:Dealer:Sell", Sell);
@@ -50,6 +69,9 @@ namespace Game.Modules
 				return;
 			}
 
+			var account = AccountService.Get(player.DbId);
+			if (account == null) return;
+
 			var inventory = InventoryService.Get(player.InventoryId);
 			if (inventory == null) return;
 
@@ -58,6 +80,25 @@ namespace Game.Modules
 
 			var itemBase = InventoryService.GetItem(item.ItemId);
 			if (itemBase == null) return;
+
+			var price = item.Price;
+
+			if(item.Id == 3 || item.Id == 276)
+			{
+				var team = TeamService.Get(player.TeamId);
+				if (team != null)
+				{
+					var percentage = TeamDealerTake.Count <= account.TeamRank ? 0 : TeamDealerTake[account.TeamRank];
+					var take = (int)Math.Round(price * percentage);
+					team.Money += take;
+					price -= take;
+					player.Notify("Information", $"Du hast ein Item an den Dealer verkauft! Davon gingen {take} an die Fraktion.", Core.Enums.NotificationType.SUCCESS);
+				}
+			}
+			else
+			{
+				player.Notify("Information", $"Du hast ein Item an den Dealer verkauft!", Core.Enums.NotificationType.SUCCESS);
+			}
 
 			InventoryController.RemoveItem(inventory, itemBase, 1);
 			PlayerController.AddMoney(player, item.Price);

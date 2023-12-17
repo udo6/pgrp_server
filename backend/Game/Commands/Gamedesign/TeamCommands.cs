@@ -49,8 +49,8 @@ namespace Game.Commands.Gamedesign
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
 
-			var fuel = new InventoryModel(8, 40, InventoryType.LAB_FUEL);
-			var rob = new InventoryModel(8, 40, InventoryType.LAB_ROB);
+			var fuel = new InventoryModel(8, 1000, InventoryType.LAB_FUEL);
+			var rob = new InventoryModel(500, 1000000, InventoryType.LAB_ROB);
 			InventoryService.Add(fuel, rob);
 
 			var lab = new LaboratoryModel(teamId, pos.Id, fuel.Id, false, rob.Id, (LaboratoryType)type);

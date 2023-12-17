@@ -1,5 +1,4 @@
 ﻿using AltV.Net;
-using AltV.Net.Data;
 using AltV.Net.Elements.Entities;
 using Core.Entities;
 using Core.Enums;
@@ -8,14 +7,13 @@ using Core.Models.Gangwar;
 using Database.Models.Gangwar;
 using Database.Services;
 using Newtonsoft.Json;
-using AltV.Net.Shared.Enums;
 using Game.Streamer;
 
 namespace Game.Controllers
 {
     public static class GangwarController
 	{
-		public static readonly int GangwarDuration = 1;
+		public static readonly int GangwarDuration = 45;
 		public static readonly List<RunningGangwar> RunningGangwars = new();
 
 		public static List<uint> Weapons = new()

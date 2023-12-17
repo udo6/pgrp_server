@@ -76,7 +76,7 @@ namespace Game.Modules
 						account.BankMoney += 300 * (int)player.AdminRank;
 					}
 
-					account.SocialBonusMoney += 100 * player.Level;
+					account.SocialBonusMoney += 150 * player.Level;
 					AccountService.Update(account);
 				}
 

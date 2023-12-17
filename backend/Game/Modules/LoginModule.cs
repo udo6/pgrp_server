@@ -187,9 +187,9 @@ namespace Game.Modules
 			var clothes = new ClothesModel();
 			ClothesService.Add(clothes);
 
-			var inv = new InventoryModel(8, 30f, InventoryType.PLAYER);
-			var labInput = new InventoryModel(8, 100f, InventoryType.LAB_INPUT);
-			var labOutput = new InventoryModel(8, 100f, InventoryType.LAB_OUTPUT);
+			var inv = new InventoryModel(6, 25f, InventoryType.PLAYER);
+			var labInput = new InventoryModel(8, 30f, InventoryType.LAB_INPUT);
+			var labOutput = new InventoryModel(8, 60f, InventoryType.LAB_OUTPUT);
 			var locker = new InventoryModel(8, 100f, InventoryType.LOCKER);
 			InventoryService.Add(inv, labInput, labOutput, locker);
 

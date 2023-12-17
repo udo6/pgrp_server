@@ -22,7 +22,7 @@ namespace Game.ItemScripts
 			AccountService.Update(account);
 
 			inventory.Slots = 16;
-			inventory.MaxWeight = 50f;
+			inventory.MaxWeight = 60f;
 			InventoryService.Update(inventory);
 		}
 	}
