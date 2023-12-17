@@ -209,7 +209,7 @@ namespace Game.Modules.Jobs
             player.SetData("HOLDING_GARBAGE", false);
             player.HasGarbageInHand = false;
 
-            player.Notify("Müllabfuhr", "Du hast den Müll in den Müllwagen geworfen.", Core.Enums.NotificationType.INFO);
+            player.Notify("Müllabfuhr", $"Du hast den Müll in den Müllwagen geworfen ({garbageCount + 1}/75).", Core.Enums.NotificationType.INFO);
         }
 
         public static void PickupGarbage(RPPlayer player)
