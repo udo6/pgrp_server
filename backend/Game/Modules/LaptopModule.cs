@@ -22,12 +22,14 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
 			// ACP PLAYERS APP
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:Uncuff", ACPToggleUncuffPlayer);
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ToggleFreeze", ACPTogglePlayerFreeze);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ResetHardware", ACPResetHardware);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ResetSocial", ACPResetSocial);
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPPlayers:SetAdmin", ACPSetAdmin);
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPPlayers:SetMoney", ACPSetMoney);
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPPlayers:SetTeam", ACPSetTeam);
-			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:UnbanPlayer", ACPUnbanPlayer);
+			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:UnbanPlayer", ACPUnbanPlayer);
 			Alt.OnClient<RPPlayer, int, string, string>("Server:Laptop:ACPPlayers:BanPlayer", ACPBanPlayer);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:KickPlayer", ACPKickPlayer);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:WarnPlayer", ACPWarnPlayer);
@@ -73,6 +75,32 @@ namespace Game.Modules
 		}
 
 		#region ACP Players
+
+		private static void ACPToggleUncuffPlayer(RPPlayer player, int id)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
+			if (target == null) return;
+
+			PlayerController.SetPlayerCuffed(target, false);
+			PlayerController.SetPlayerRoped(target, false);
+
+			target.Notify("Information", $"Du wurdest von {player.Name} entfesselt.", NotificationType.INFO);
+			player.Notify("Administration", $"Du hast {target.Name} entfesselt.", NotificationType.INFO);
+		}
+
+		private static void ACPTogglePlayerFreeze(RPPlayer player, int id)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
+			if (target == null) return;
+
+			target.Frozen = !target.Frozen;
+			target.Notify("Information", $"Du wurdest von {target.Name} {(player.Frozen ? "gefreezed" : "unfreezed")}.", NotificationType.INFO);
+			player.Notify("Administration", $"Du hast {target.Name} {(target.Frozen ? "gefreezed" : "unfreezed")}.", NotificationType.INFO);
+		}
 
 		private static void ACPResetHardware(RPPlayer player, int id)
 		{
@@ -157,7 +185,7 @@ namespace Game.Modules
 			targetAccount.TeamBank = rank >= 10;
 			AccountService.Update(targetAccount);
 
-			player.Notify("Administration", $"Du hast {targetAccount.Name} in die Fraktion {team.ShortName} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Administration", $"Du hast {targetAccount.Name} in die Fraktion {team.ShortName} gesetzt!", NotificationType.SUCCESS);
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
@@ -166,26 +194,26 @@ namespace Game.Modules
 			target.Notify("Administration", $"Du wurdest von {player.Name} in die Fraktion {team.ShortName} gesetzt!", Core.Enums.NotificationType.SUCCESS);
 		}
 
-		private static void ACPUnbanPlayer(RPPlayer player, int id)
+		private static void ACPUnbanPlayer(RPPlayer player, int id, string reason)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.ADMINISTRATOR) return;
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
 
 			var targetAccount = AccountService.Get(id);
 			if (targetAccount == null) return;
 
-			targetAccount.BanReason = $"Entbannt von {player.Name}";
+			targetAccount.BanReason = $"Entbannt von {player.Name}: {reason}";
 			targetAccount.BannedUntil = DateTime.Now;
 			AccountService.Update(targetAccount);
 
-			player.Notify("Administration", $"Du hast {targetAccount.Name} entbannt!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Administration", $"Du hast {targetAccount.Name} entbannt!", NotificationType.SUCCESS);
 
-			var history = new AdminHistoryModel(targetAccount.Id, "", player.DbId, player.Name, DateTime.Now, AdminHistoryType.UNBAN);
+			var history = new AdminHistoryModel(targetAccount.Id, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.UNBAN);
 			AccountService.AddAdminHistory(history);
 		}
 
 		private static void ACPBanPlayer(RPPlayer player, int id, string reason, string datetime)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.MODERATOR) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			var targetAccount = AccountService.Get(id);
 			if (targetAccount == null) return;
@@ -194,7 +222,7 @@ namespace Game.Modules
 			targetAccount.BannedUntil = DateTime.Parse(datetime);
 			AccountService.Update(targetAccount);
 
-			player.Notify("Administration", $"Du hast {targetAccount.Name} vom Server gebannt!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Administration", $"Du hast {targetAccount.Name} vom Server gebannt!", NotificationType.SUCCESS);
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
@@ -219,7 +247,7 @@ namespace Game.Modules
 
 		private static void ACPKickPlayer(RPPlayer player, int id, string reason)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if(target == null)
@@ -831,7 +859,7 @@ namespace Game.Modules
 				Name = player.Name,
 				Team = account.TeamId,
 				TeamLeader = account.TeamAdmin,
-				Admin = (player.AdminRank > Core.Enums.AdminRank.GUIDE && player.AdminDuty) || player.AdminRank >= AdminRank.SUPERADMIN
+				Admin = (int)player.AdminRank
 			}));
 		}
 

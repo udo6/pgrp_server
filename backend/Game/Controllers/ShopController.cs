@@ -17,6 +17,8 @@ namespace Game.Controllers
 			{ ShopType.TEAM, 1581098148 },
 			{ ShopType.SWAT, 2374966032 },
 			{ ShopType.MECHANIC, 3446096293 },
+			{ ShopType.ALL_TEAMS_ONLY, 416176080 },
+			{ ShopType.NO_BLIP, 416176080 },
 		};
 
 		public static void LoadShop(ShopModel model)

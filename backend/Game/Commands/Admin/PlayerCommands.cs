@@ -2,7 +2,6 @@
 using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
-using Core.Models.NativeMenu;
 using Game.Controllers;
 
 namespace Game.Commands.Admin
@@ -12,7 +11,6 @@ namespace Game.Commands.Admin
 		[Initialize]
 		public static void Initialize()
 		{
-			Alt.OnClient<RPPlayer, int>("Server:PlayerCommands:ViewPlayer", ViewPlayer);
 			Alt.OnClient<RPPlayer, int>("Server:PlayerCommands:Goto", GotoPlayer);
 			Alt.OnClient<RPPlayer, int>("Server:PlayerCommands:Bring", BringPlayer);
 			Alt.OnClient<RPPlayer, int>("Server:PlayerCommands:Revive", RevivePlayer);
@@ -121,52 +119,42 @@ namespace Game.Commands.Admin
 			target.SetPosition(player.Position);
 		}
 
-		// players
-		[Command("players")]
-		public static void GetAllPlayers(RPPlayer player)
+		[Command("spectate")]
+		public static void SpectatePlayer(RPPlayer player, string targetName)
 		{
 			if (player.AdminRank < AdminRank.SUPPORTER) return;
 
-			var all = RPPlayer.All.Where(x => x.LoggedIn).ToList();
-			var nativeItems = new List<NativeMenuItem>();
-			foreach(var target in all)
-			{
-				nativeItems.Add(new($"{target.Name} ({target.DbId})", false, "Server:PlayerCommands:ViewPlayer", target.DbId));
-			}
-
-			player.ShowNativeMenu(true, new($"Online Spieler (Gesamt: {all.Count})", nativeItems));
-		}
-
-		[Command("players2")]
-		public static void GetAllPlayers2(RPPlayer player, string search)
-		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
-
-			var all = RPPlayer.All.Where(x => x.LoggedIn && x.Name.ToLower().Contains(search.ToLower())).ToList();
-			var nativeItems = new List<NativeMenuItem>();
-			foreach (var target in all)
-			{
-				nativeItems.Add(new($"{target.Name} ({target.DbId})", false, "Server:PlayerCommands:ViewPlayer", target.DbId));
-			}
-
-			player.ShowNativeMenu(true, new($"Suche '{search}' ({all.Count})", nativeItems));
-		}
-
-		private static void ViewPlayer(RPPlayer player, int targetId)
-		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
-
-			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
+			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
 			if (target == null) return;
 
-			player.ShowNativeMenu(true, new(target.Name, new()
-			{
-				new("Goto", true, "Server:PlayerCommands:Goto", target.DbId),
-				new("Bring", true, "Server:PlayerCommands:Bring", target.DbId),
-				new("Revive", true, "Server:PlayerCommands:Revive", target.DbId),
-				new("Respawn", true, "Server:PlayerCommands:Respawn", target.DbId),
-			}));
+			player.InInterior = true;
+			player.OutsideInteriorPosition = player.Position;
+			player.Emit("Client:AdminModule:StartSpectating", target);
 		}
+
+		[Command("stopspectate")]
+		public static void StopSpectatePlayer(RPPlayer player)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			player.Emit("Client:AdminModule:StopSpectating");
+			player.InInterior = false;
+			player.SetPosition(player.OutsideInteriorPosition);
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// stuff
 
 		private static void GotoPlayer(RPPlayer player, int targetId)
 		{
