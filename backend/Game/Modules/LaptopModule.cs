@@ -3,6 +3,7 @@ using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
 using Core.Models.Laptop;
+using Database.Models.Account;
 using Database.Models.Crimes;
 using Database.Services;
 using Game.Controllers;
@@ -21,9 +22,12 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
 			// ACP PLAYERS APP
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ResetHardware", ACPResetHardware);
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ResetSocial", ACPResetSocial);
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPPlayers:SetAdmin", ACPSetAdmin);
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPPlayers:SetMoney", ACPSetMoney);
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPPlayers:SetTeam", ACPSetTeam);
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:UnbanPlayer", ACPUnbanPlayer);
 			Alt.OnClient<RPPlayer, int, string, string>("Server:Laptop:ACPPlayers:BanPlayer", ACPBanPlayer);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:KickPlayer", ACPKickPlayer);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:WarnPlayer", ACPWarnPlayer);
@@ -70,6 +74,33 @@ namespace Game.Modules
 
 		#region ACP Players
 
+		private static void ACPResetHardware(RPPlayer player, int id)
+		{
+			if (player.AdminRank < AdminRank.MODERATOR) return;
+
+			var targetAccount = AccountService.Get(id);
+			if (targetAccount == null) return;
+
+			targetAccount.HardwareId = 0;
+			targetAccount.HardwareIdEx = 0;
+			AccountService.Update(targetAccount);
+
+			player.Notify("Administration", $"Du hast den Socialclub von {targetAccount.Name} zurück gesetzt!", NotificationType.SUCCESS);
+		}
+
+		private static void ACPResetSocial(RPPlayer player, int id)
+		{
+			if (player.AdminRank < AdminRank.MODERATOR) return;
+
+			var targetAccount = AccountService.Get(id);
+			if (targetAccount == null) return;
+
+			targetAccount.SocialclubId = 0;
+			AccountService.Update(targetAccount);
+
+			player.Notify("Administration", $"Du hast den Socialclub von {targetAccount.Name} zurück gesetzt!", NotificationType.SUCCESS);
+		}
+
 		private static void ACPSetAdmin(RPPlayer player, int id, int rank)
 		{
 			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN || rank > Enum.GetValues<AdminRank>().Length) return;
@@ -80,7 +111,7 @@ namespace Game.Modules
 			targetAccount.AdminRank = (AdminRank)rank;
 			AccountService.Update(targetAccount);
 
-			player.Notify("Administration", $"Du hast {targetAccount.Name} auf ${rank} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Administration", $"Du hast {targetAccount.Name} auf ${rank} gesetzt!", NotificationType.SUCCESS);
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
@@ -135,6 +166,23 @@ namespace Game.Modules
 			target.Notify("Administration", $"Du wurdest von {player.Name} in die Fraktion {team.ShortName} gesetzt!", Core.Enums.NotificationType.SUCCESS);
 		}
 
+		private static void ACPUnbanPlayer(RPPlayer player, int id)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.ADMINISTRATOR) return;
+
+			var targetAccount = AccountService.Get(id);
+			if (targetAccount == null) return;
+
+			targetAccount.BanReason = $"Entbannt von {player.Name}";
+			targetAccount.BannedUntil = DateTime.Now;
+			AccountService.Update(targetAccount);
+
+			player.Notify("Administration", $"Du hast {targetAccount.Name} entbannt!", Core.Enums.NotificationType.SUCCESS);
+
+			var history = new AdminHistoryModel(targetAccount.Id, "", player.DbId, player.Name, DateTime.Now, AdminHistoryType.UNBAN);
+			AccountService.AddAdminHistory(history);
+		}
+
 		private static void ACPBanPlayer(RPPlayer player, int id, string reason, string datetime)
 		{
 			if (player.AdminRank < Core.Enums.AdminRank.MODERATOR) return;
@@ -158,14 +206,15 @@ namespace Game.Modules
 				Duration = 10000
 			});
 
-			target.Kick($"Du wurdest von {player.Name} gebannt! Grund: {reason}");
-
 			foreach (var user in RPPlayer.All.ToList())
 			{
 				user.EmitBrowser("Hud:ShowGlobalNotification", data);
 			}
 
-			// add history
+			var history = new AdminHistoryModel(target.DbId, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.BAN);
+			AccountService.AddAdminHistory(history);
+
+			target.Kick($"Du wurdest von {player.Name} gebannt! Grund: {reason}");
 		}
 
 		private static void ACPKickPlayer(RPPlayer player, int id, string reason)
@@ -188,20 +237,30 @@ namespace Game.Modules
 				Duration = 10000
 			});
 
-			target.Kick($"Du wurdest von {player.Name} gekickt! Grund: {reason}");
-
 			foreach (var user in RPPlayer.All.ToList())
 			{
 				user.EmitBrowser("Hud:ShowGlobalNotification", data);
 			}
-			// add history
+
+			var history = new AdminHistoryModel(target.DbId, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.KICK);
+			AccountService.AddAdminHistory(history);
+
+			target.Kick($"Du wurdest von {player.Name} gekickt! Grund: {reason}");
 		}
 
 		private static void ACPWarnPlayer(RPPlayer player, int id, string reason)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
 
-			// warn stuff
+			var account = AccountService.Get(id);
+			if (account == null) return;
+
+			var warn = new WarnModel(account.Id, reason, player.DbId, DateTime.Now);
+			WarnService.Add(warn);
+			player.Notify("Administration", $"Du hast {account.Name} verwarnt!", NotificationType.SUCCESS);
+
+			var history = new AdminHistoryModel(account.Id, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.WARN);
+			AccountService.AddAdminHistory(history);
 		}
 
 		private static void SaveACPRecord(RPPlayer player, int id, string description)
@@ -229,10 +288,24 @@ namespace Game.Modules
 
 			var team = TeamService.Get(account.TeamId);
 
+			var history = AccountService.GetPlayerAdminHistory(account.Id);
+			var historyData = new List<object>();
+
+			foreach(var model in history)
+			{
+				historyData.Add(new
+				{
+					Id = model.Id,
+					Reason = model.Reason,
+					AdminId = model.AdminId,
+					AdminName = model.AdminName,
+					Date = model.Date.ToString("HH:mm dd.MM.yyyy"),
+					Type = model.Type
+				});
+			}
+
 			var data = new
 			{
-				// Todo: add warns
-
 				Id = account.Id,
 				Name = account.Name,
 				House = house?.Id,
@@ -247,10 +320,10 @@ namespace Game.Modules
 				Description = account.AdminRecordDescription,
 				Rank = account.AdminRank.ToString(),
 				LastOnline = account.LastOnline.ToString("HH:mm dd.MM.yyyy"),
-				Warns = 0,
+				Warns = WarnService.GetPlayerWarnsCount(account.Id),
 				Money = account.Money,
 				BankMoney = account.BankMoney,
-				AdminHistory = new List<object>()
+				AdminHistory = historyData
 			};
 
 			player.EmitBrowser("Laptop:ACPPlayers:SetUserData", JsonConvert.SerializeObject(data));
@@ -258,7 +331,7 @@ namespace Game.Modules
 
 		private static void SearchACPPlayers(RPPlayer player, string search)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER || search.Length < 1) return;
+			if (player.AdminRank < AdminRank.SUPPORTER || search.Length < 1) return;
 
 			var accounts = AccountService.Search(search, 10);
 			var data = new List<object>();
@@ -266,15 +339,13 @@ namespace Game.Modules
 			{
 				data.Add(new
 				{
-					// Todo: add warns
-
 					Id = account.Id,
 					Name = account.Name,
 					Team = account.TeamId,
 					Rank = account.AdminRank.ToString(),
 					Phone = account.PhoneNumber,
 					LastOnline = account.LastOnline.ToString("HH:mm dd.MM.yyyy"),
-					Warns = 0
+					Warns = WarnService.GetPlayerWarnsCount(account.Id)
 				});
 			}
 
@@ -760,7 +831,7 @@ namespace Game.Modules
 				Name = player.Name,
 				Team = account.TeamId,
 				TeamLeader = account.TeamAdmin,
-				Admin = player.AdminRank > Core.Enums.AdminRank.GUIDE && player.AdminDuty
+				Admin = (player.AdminRank > Core.Enums.AdminRank.GUIDE && player.AdminDuty) || player.AdminRank >= AdminRank.SUPERADMIN
 			}));
 		}
 

@@ -31,7 +31,7 @@ namespace Game.Modules
 			var custom = CustomizationService.Get(player.CustomizationId);
 			if (custom == null) return;
 
-			var styles = BarberService.GetStyleFromBarber(barberId, custom.Gender ? 1 : 0);
+			var styles = BarberService.GetStylesFromBarber(custom.Gender ? 1 : 0);
 			var colors = BarberService.GetAllColors();
 
 			player.Rotation = pos.Rotation;

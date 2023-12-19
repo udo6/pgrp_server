@@ -1,4 +1,5 @@
 ﻿using Database.Models.Account;
+using Database.Models.Bank;
 
 namespace Database.Services
 {
@@ -106,6 +107,48 @@ namespace Database.Services
 		{
 			using var ctx = new Context();
 			ctx.Accounts.UpdateRange(models);
+			ctx.SaveChanges();
+		}
+
+		// admin history
+
+		public static List<AdminHistoryModel> GetPlayerAdminHistory(int accountId)
+		{
+			using var ctx = new Context();
+			return ctx.AdminHistory.Where(x => x.AccountId == accountId).ToList();
+		}
+
+		public static void AddAdminHistory(AdminHistoryModel model)
+		{
+			using var ctx = new Context();
+			ctx.AdminHistory.Add(model);
+			ctx.SaveChanges();
+		}
+
+		public static void RemoveAdminHistory(AdminHistoryModel model)
+		{
+			using var ctx = new Context();
+			ctx.AdminHistory.Remove(model);
+			ctx.SaveChanges();
+		}
+
+		public static AdminHistoryModel? GetAdminHistory(int id)
+		{
+			using var ctx = new Context();
+			return ctx.AdminHistory.FirstOrDefault(x => x.Id == id);
+		}
+
+		public static void UpdateAdminHistory(AdminHistoryModel model)
+		{
+			using var ctx = new Context();
+			ctx.AdminHistory.Update(model);
+			ctx.SaveChanges();
+		}
+
+		public static void UpdateAdminHistory(IEnumerable<AdminHistoryModel> models)
+		{
+			using var ctx = new Context();
+			ctx.AdminHistory.UpdateRange(models);
 			ctx.SaveChanges();
 		}
 	}

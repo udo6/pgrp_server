@@ -4,7 +4,7 @@ using Database.Models.Account;
 
 namespace Database.Configurations
 {
-    internal class AccountModelConfiguration : IEntityTypeConfiguration<AccountModel>
+    public class AccountModelConfiguration : IEntityTypeConfiguration<AccountModel>
 	{
 		public void Configure(EntityTypeBuilder<AccountModel> builder)
 		{
