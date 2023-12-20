@@ -58,7 +58,7 @@ namespace Game.Modules
 			var targetPos = shape.JumppointEnterType ? inside : outside;
 			var targetDim = shape.JumppointEnterType ? jumppoint.InsideDimension : jumppoint.OutsideDimension;
 
-			if (jumppoint.InsideDimension > 0 && jumppoint.OutsideDimension > 0)
+			if (jumppoint.InsideDimension > 0 || jumppoint.OutsideDimension > 0)
 			{
 				player.InInterior = shape.JumppointEnterType;
 				player.OutsideInteriorPosition = outside.Position;
