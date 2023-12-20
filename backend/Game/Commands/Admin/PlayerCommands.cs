@@ -2,6 +2,7 @@
 using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
+using Core.Models.NativeMenu;
 using Game.Controllers;
 
 namespace Game.Commands.Admin
@@ -142,8 +143,35 @@ namespace Game.Commands.Admin
 			player.SetPosition(player.OutsideInteriorPosition);
 		}
 
+		[Command("players")]
+		public static void GetAllPlayers(RPPlayer player)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
 
+			var all = RPPlayer.All.Where(x => x.LoggedIn).ToList();
+			var nativeItems = new List<NativeMenuItem>();
+			foreach (var target in all)
+			{
+				nativeItems.Add(new($"{target.Name} ({target.DbId})", true, ""));
+			}
 
+			player.ShowNativeMenu(true, new($"Online Spieler (Gesamt: {all.Count})", nativeItems));
+		}
+
+		[Command("players2")]
+		public static void GetAllPlayers2(RPPlayer player, string search)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var all = RPPlayer.All.Where(x => x.LoggedIn && x.Name.ToLower().Contains(search.ToLower())).ToList();
+			var nativeItems = new List<NativeMenuItem>();
+			foreach (var target in all)
+			{
+				nativeItems.Add(new($"{target.Name} ({target.DbId})", true, ""));
+			}
+
+			player.ShowNativeMenu(true, new($"Suche '{search}' ({all.Count})", nativeItems));
+		}
 
 
 
