@@ -24,7 +24,7 @@ namespace Game.Commands.Admin
 		{
 			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
-			var loadout = LoadoutService.Get(player.CurrentWeapon);
+			var loadout = LoadoutService.GetLoadout(player.DbId, player.CurrentWeapon);
 			if (loadout == null) return;
 
 			var attatchment = new LoadoutAttatchmentModel(loadout.Id, (uint)hash);

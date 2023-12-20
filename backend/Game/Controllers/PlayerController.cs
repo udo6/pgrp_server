@@ -242,6 +242,7 @@ namespace Game.Controllers
 				var attatchments = LoadoutService.GetLoadoutAttatchments(weapon.Id);
 
 				player.AddWeapon(weapon.Hash, weapon.Ammo, false);
+				player.SetWeaponTintIndex(weapon.Hash, (byte)weapon.TintIndex);
 
 				foreach(var attatchment in attatchments)
 				{

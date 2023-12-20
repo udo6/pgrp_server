@@ -38,12 +38,6 @@ namespace Database.Services
 			return ctx.Loadouts.FirstOrDefault(x => x.Id == id);
 		}
 
-		public static LoadoutModel? Get(uint hash)
-		{
-			using var ctx = new Context();
-			return ctx.Loadouts.FirstOrDefault(x => x.Hash == hash);
-		}
-
 		public static LoadoutModel? GetLoadout(int accountId, uint hash)
 		{
 			using var ctx = new Context();

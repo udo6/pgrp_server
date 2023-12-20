@@ -15,6 +15,7 @@ namespace Database.Configurations
 			builder.Property(x => x.AccountId).HasColumnName("account_id").HasColumnType("int(11)");
 			builder.Property(x => x.Hash).HasColumnName("hash").HasColumnType("uint(11)");
 			builder.Property(x => x.Ammo).HasColumnName("ammo").HasColumnType("int(11)");
+			builder.Property(x => x.TintIndex).HasColumnName("tint_index").HasColumnType("int(11)");
 			builder.Property(x => x.Type).HasColumnName("type").HasColumnType("int(11)");
 		}
 	}

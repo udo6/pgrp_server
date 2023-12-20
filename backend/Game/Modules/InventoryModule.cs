@@ -283,7 +283,7 @@ namespace Game.Modules
 		{
 			if (player.CurrentWeapon == 2725352035 || player.IsInVehicle) return;
 
-			var loadout = LoadoutService.Get(player.CurrentWeapon);
+			var loadout = LoadoutService.GetLoadout(player.DbId, player.CurrentWeapon);
 			if (loadout == null) return;
 
 			var attatchments = LoadoutService.GetLoadoutAttatchments(loadout.Id);
