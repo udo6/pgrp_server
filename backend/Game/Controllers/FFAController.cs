@@ -33,7 +33,8 @@ namespace Game.Controllers
 			var pos = GetSpawn(player.FFAId);
 			if (pos == null) return;
 
-			player.Spawn(pos.Position, 0);
+			player.Spawn(player.Position, 0);
+			player.SetPosition(pos.Position);
 			player.Rotation = pos.Rotation;
 			player.SetHealth(200);
 			player.SetArmor(100);
