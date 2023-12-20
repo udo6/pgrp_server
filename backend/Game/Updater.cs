@@ -30,10 +30,22 @@ namespace Game
 			{
 				if(player.DbId < 1) continue;
 
+				var account = AccountService.Get(player.DbId);
+				if (account == null) continue;
+
+				account.Health = player.Health;
+				account.Armor = player.Armor;
+				account.Alive = player.Alive;
+				account.InjuryType = player.InjuryType;
+				AccountService.Update(account);
+
 				var pos = PositionService.Get(player.PositionId);
 				if (pos == null) continue;
 
-				pos.Position = player.Position;
+				if (player.InInterior)
+					pos.Position = player.OutsideInteriorPosition;
+				else
+					pos.Position = player.Position;
 				pos.Rotation = player.Rotation;
 				PositionService.Update(pos);
 			}
