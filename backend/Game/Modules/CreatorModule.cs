@@ -24,7 +24,6 @@ namespace Game.Modules
 			if(custom.Id != player.CustomizationId) custom.Id = player.CustomizationId;
 
 			custom.Finished = true;
-
 			CustomizationService.Update(custom);
 
 			player.Visible = true;
