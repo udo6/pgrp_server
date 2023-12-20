@@ -40,6 +40,8 @@ namespace Game.Modules
 			// JOBS
 			(ColshapeType.GARBAGE_JOB_START, ("KEY_E", "GARBAGE_JOB_START")),
             (ColshapeType.GARBAGE_JOB_RETURN, ("KEY_E", "GARBAGE_JOB_RETURN")),
+            (ColshapeType.MONEY_TRUCK_JOB_START, ("KEY_E", "MONEY_TRUCK_JOB_START")),
+            (ColshapeType.MONEY_TRUCK_JOB_PICKUP, ("KEY_E", "MONEY_TRUCK_JOB_PICKUP")),
         };
 
 		[ServerEvent(ServerEventType.ENTITY_COLSHAPE)]
