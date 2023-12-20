@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Database.Services.Jobs
 {
-    public class GarbageJobRoutesService
+    public class MoneyTruckJobRoutesService
     {
         public static List<MoneyTruckJobRouteModel> GetAll()
         {
