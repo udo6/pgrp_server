@@ -1,5 +1,6 @@
 ﻿using Core.Attribute;
 using Core.Entities;
+using Game.Controllers;
 
 namespace Game.Commands.Player
 {
@@ -15,8 +16,11 @@ namespace Game.Commands.Player
 		[Command("ooc", true)]
 		public static void OutOfCharacter(RPPlayer player, string message)
 		{
-			if(BlacklistedWords.Any(x => x == message.ToLower()))
+			var blacklistedWord = BlacklistedWords.FirstOrDefault(x => x == message.ToLower());
+
+			if (blacklistedWord != null)
 			{
+				AdminController.BroadcastTeam("OOC Chat Alarm", $"{player.Name} hat folgendes im OOC geschrieben: {message}", Core.Enums.NotificationType.WARN);
 				player.Notify("Information", "Du hast versucht ein verbotenes Wort zu schreiben", Core.Enums.NotificationType.ERROR);
 				return;
 			}
