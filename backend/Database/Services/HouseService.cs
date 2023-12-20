@@ -30,6 +30,12 @@ namespace Database.Services
 			return ctx.Houses.FirstOrDefault(x => x.Id == id);
 		}
 
+		public static bool HasPlayerHouse(int ownerId)
+		{
+			using var ctx = new Context();
+			return ctx.Houses.Any(x => x.OwnerId == ownerId);
+		}
+
 		public static HouseModel? GetByOwner(int accountid)
 		{
 			using var ctx = new Context();

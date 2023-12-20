@@ -86,6 +86,12 @@ namespace Game.Modules
 			var house = HouseService.Get(houseId);
 			if (house == null || house.OwnerId > 0) return;
 
+			if (HouseService.HasPlayerHouse(player.DbId))
+			{
+				player.Notify("Information", "Du hast bereits ein Haus!", NotificationType.ERROR);
+				return;
+			}
+
 			var price = HouseController.HousePrices[house.Type];
 
 			var account = AccountService.Get(player.DbId);
