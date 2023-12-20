@@ -63,12 +63,13 @@ namespace Game.Modules
 			player.LastLifeinvaderPost = DateTime.Now;
 			PlayerController.RemoveMoney(player, price);
 
-			Posts.Add(new(player.DbId, text, player.PhoneNumber, DateTime.Now.ToString("HH:mm")));
+			var post = new LifeinvaderPost(player.DbId, text, player.PhoneNumber, DateTime.Now.ToString("HH:mm"));
+			Posts.Insert(0, post);
 			foreach(var user in RPPlayer.All.ToList())
 			{
 				if (user.AdminRank > AdminRank.SPIELER)
 				{
-					user.Notify("Lifeinvader", $"Spieler {player.Name}({player.DbId}): {text}", NotificationType.INFO);
+					user.Notify("Lifeinvader", $"POST ID: {post.Id} | Spieler {player.Name}({player.DbId}): {text}", NotificationType.INFO);
 					continue;
 				}
 
