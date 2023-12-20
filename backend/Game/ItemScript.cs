@@ -1,6 +1,5 @@
 ﻿using Core.Entities;
 using Core.Enums;
-using Database.Models;
 using Database.Models.Account;
 using Database.Models.Inventory;
 using Database.Services;
@@ -21,7 +20,6 @@ namespace Game
 			Type = type;
 		}
 
-		/// <returns>return value represent wether the item should be removed or not</returns>
 		public abstract void OnUse(RPPlayer player, InventoryModel inventory, InventoryItemModel item, int slot, int amount);
 	}
 
@@ -59,9 +57,11 @@ namespace Game
 				return;
 			}
 
-			LoadoutService.Add(new(player.DbId, Hash, 0, Federal ? LoadoutType.FEDERAL : LoadoutType.DEFAULT));
-			player.AddWeapon(Hash, 0, true);
-			InventoryController.RemoveItem(inventory, item.Slot, 1);
+			if(InventoryController.RemoveItem(inventory, item.Slot, 1))
+			{
+				LoadoutService.Add(new(player.DbId, Hash, 0, Federal ? LoadoutType.FEDERAL : LoadoutType.DEFAULT));
+				player.AddWeapon(Hash, 0, true);
+			}
 		}
 	}
 
@@ -93,10 +93,12 @@ namespace Game
 			{
 				if (player == null || !player.Exists) return;
 
-				var comp = new LoadoutAttatchmentModel(loadout.Id, Hash);
-				LoadoutService.AddAttatchment(comp);
-				player.AddWeaponComponent(WeaponHash, Hash);
-				InventoryController.RemoveItem(inventory, item.Slot, 1);
+				if(InventoryController.RemoveItem(inventory, item.Slot, 1))
+				{
+					var comp = new LoadoutAttatchmentModel(loadout.Id, Hash);
+					LoadoutService.AddAttatchment(comp);
+					player.AddWeaponComponent(WeaponHash, Hash);
+				}
 			}, 4000);
 		}
 	}
@@ -121,12 +123,14 @@ namespace Game
 			var loadout = LoadoutService.GetLoadout(player.DbId, WeaponHash);
 			if (loadout == null) return;
 
-			var ammo = amount * MagSize;
+			if(InventoryController.RemoveItem(inventory, item.Slot, amount))
+			{
+				var ammo = amount * MagSize;
 
-			loadout.Ammo += ammo;
-			player.AddAmmo(WeaponHash, ammo);
-			LoadoutService.Update(loadout);
-			InventoryController.RemoveItem(inventory, item.Slot, amount);
+				loadout.Ammo += ammo;
+				player.AddAmmo(WeaponHash, ammo);
+				LoadoutService.Update(loadout);
+			}
 		}
 	}
 
