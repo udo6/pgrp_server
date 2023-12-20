@@ -10,7 +10,7 @@ namespace Game.Modules
 {
 	public static class DeathModule
 	{
-		private static readonly Position RespawnPosition = new();
+		private static readonly Position RespawnPosition = new(355.58243f, -596.3604f, 28.757568f);
 		private static readonly Dictionary<uint, InjuryType> SpecialInjuries = new()
 		{
 			{ Weapons.Fall, InjuryType.FALL_DAMAGE },
