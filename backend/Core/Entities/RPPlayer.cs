@@ -50,7 +50,7 @@ namespace Core.Entities
 		public int XpTicks { get; set; }
 		public bool TeamDuty { get; set; }
 		public bool DamageCap { get; set; }
-		public bool AdminNotifications { get; set; }
+		public bool AdminNotifications { get; set; } = true;
 
 		public int CallPartner { get; set; }
 		public CallState CallState { get; set; }
