@@ -5,11 +5,11 @@ namespace Game.Controllers
 {
 	public static class AdminController
 	{
-		public static void BroadcastTeam(string title, string message, NotificationType type)
+		public static void BroadcastTeam(string title, string message, NotificationType type, AdminRank minRank = AdminRank.SUPPORTER)
 		{
 			foreach(var player in RPPlayer.All.ToList())
 			{
-				if (player.AdminRank < AdminRank.SUPPORTER || !player.AdminNotifications) continue;
+				if (player.AdminRank < minRank || !player.AdminNotifications) continue;
 
 				player.Notify(title, message, type);
 			}

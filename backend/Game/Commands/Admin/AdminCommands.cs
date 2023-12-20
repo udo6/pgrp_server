@@ -40,7 +40,15 @@ namespace Game.Commands.Admin
 		{
 			if (player.AdminRank < AdminRank.GUIDE) return;
 
-			AdminController.BroadcastTeam("Admin-Chat", $"{player.Name}: {message}", NotificationType.INFO);
+			AdminController.BroadcastTeam("Admin-Chat", $"{player.Name}: {message}", NotificationType.INFO, AdminRank.ADMINISTRATOR);
+		}
+
+		[Command("t", true)]
+		public static void TeamChat(RPPlayer player, string message)
+		{
+			if (player.AdminRank < AdminRank.GUIDE) return;
+
+			AdminController.BroadcastTeam("Team-Chat", $"{player.Name}: {message}", NotificationType.INFO, AdminRank.SUPPORTER);
 		}
 
 		[Command("toggleadmininfo")]
