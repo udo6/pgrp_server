@@ -52,7 +52,7 @@ namespace Game.Modules.Jobs
                 new NativeMenuItem("Job beenden", true, "Server:MoneyTruckJob:Stop", model.Id),
             };
 
-            var jobMenu = new NativeMenu("Geldtransport", player.IsInGarbageJob ? inJobItems : jobItems);
+            var jobMenu = new NativeMenu("Geldtransport", player.IsInMoneyTruckJob ? inJobItems : jobItems);
             player.ShowNativeMenu(true, jobMenu);
         }
     }
