@@ -18,7 +18,6 @@ namespace Database.Configurations.Jobs
             builder.HasIndex(x => x.Id).HasDatabaseName("id");
             builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int(11)");
             builder.Property(x => x.StartLocationId).HasColumnName("start_location_id").HasColumnType("int(11)");
-            builder.Property(x => x.RouteId).HasColumnName("route_id").HasColumnType("int(11)");
             builder.Property(x => x.Reward).HasColumnName("reward").HasColumnType("int(11)");
         }
     }
