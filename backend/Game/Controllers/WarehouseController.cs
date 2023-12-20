@@ -152,6 +152,7 @@ namespace Game.Controllers
 			};
 
 			inv.Object = Alt.CreateObject(2107849419, pos.Position, pos.Rotation);
+			inv.Object.Dimension = model.Id;
 		}
 
 		public static List<PositionModel> GetPositions(WarehouseType type)

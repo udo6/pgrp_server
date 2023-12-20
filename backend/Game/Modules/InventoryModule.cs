@@ -9,6 +9,7 @@ using Database.Models.Account;
 using Database.Models.Inventory;
 using Logs;
 using System.Diagnostics;
+using Core.Extensions;
 
 namespace Game.Modules
 {
@@ -60,12 +61,13 @@ namespace Game.Modules
 				var vehicle = RPVehicle.All.FirstOrDefault(x => !x.Locked && !x.TrunkLocked && x.DbId > 0 && x.Position.Distance(player.Position) <= 4);
 				if (vehicle == null)
 				{
-					var shapes = RPShape.All.Where(x => x.Dimension == player.Dimension && x.Position.Distance(player.Position) <= x.Size).ToList();
+					var shapes = RPShape.All.Where(x => x.Dimension == player.Dimension && x.Position.Distance(player.Position.Down()) <= x.Size).ToList();
 
 					var shape = shapes.FirstOrDefault(x => x.InventoryId > 0 && CheckOwnerType(player, x) && !x.InventoryLocked);
 					if (shape != null)
 					{
 						container = InventoryService.Get(shape.InventoryId);
+						Console.WriteLine($"{player.Name}: {shape.InventoryId}");
 					}
 					else if(shapes.Count > 0)
 					{
