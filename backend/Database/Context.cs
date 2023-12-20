@@ -32,6 +32,7 @@ using Database.Models.Dealer;
 using Database.Models.Door;
 using Database.Models.Tuner;
 using Database.Models.GarbageJob;
+using Database.Models.MoneyTruckJob;
 
 namespace Database
 {
@@ -116,8 +117,11 @@ namespace Database
 		public DbSet<TunerCategoryModel> TunerCategories { get; set; }
 		public DbSet<TunerItemModel> TunerItems { get; set; }
         public DbSet<GarbageJobModel> GarbageJobs { get; set; }
-		public DbSet<WarnModel> Warns { get; set; }
-		public DbSet<AdminHistoryModel> AdminHistory { get; set; }
+        public DbSet<WarnModel> Warns { get; set; }
+        public DbSet<AdminHistoryModel> AdminHistory { get; set; }
+        public DbSet<MoneyTruckJobModel> MoneyTruckJobs { get; set; }
+        public DbSet<MoneyTruckJobRouteModel> MoneyTruckJobRoutes { get; set; }
+        public DbSet<MoneyTruckJobRoutePositionModel> MoneyTruckJobRoutePosition { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

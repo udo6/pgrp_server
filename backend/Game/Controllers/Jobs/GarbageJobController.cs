@@ -39,6 +39,12 @@ namespace Game.Controllers.Jobs
             ped.Frozen = true;
             ped.Health = 8000;
             ped.Armour = 8000;
+
+            var blip = Alt.CreateBlip(true, BlipType.Destination, startPosition.Position, Array.Empty<IPlayer>());
+            blip.Name = "Müllmann";
+            blip.Sprite = (ushort)318;
+            blip.Color = 47;
+            blip.ShortRange = true;
         }
     }
 }

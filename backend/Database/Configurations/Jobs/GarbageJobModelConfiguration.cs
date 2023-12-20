@@ -1,5 +1,6 @@
 ﻿using Database.Models.GarbageJob;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Database.Configurations.Jobs
 {
     public class GarbageJobModelConfiguration : IEntityTypeConfiguration<GarbageJobModel>
     {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<GarbageJobModel> builder)
+        public void Configure(EntityTypeBuilder<GarbageJobModel> builder)
         {
             builder.HasKey(x => x.Id);
             builder.ToTable("server_garbage_job");
