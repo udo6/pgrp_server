@@ -113,13 +113,15 @@ namespace Game.Modules
 
 			if (cokeInput == null || weedInput == null || utilityInput == null || batteries == null || cokeOutput == null || weedOutput == null) return;
 
-			// 1 battery 1 karton 20 droge
 			foreach (var player in RPPlayer.All.ToList())
 			{
 				if (!player.LabRunning) continue;
 
 				var team = teams.FirstOrDefault(x => x.Id == player.TeamId);
 				if (team == null) continue;
+
+				var lab = TeamService.GetLaboratoryByTeam(team.Id);
+				if (lab == null) continue;
 
 				var inputItem = team.Type == TeamType.GANG ? weedInput : cokeInput;
 
@@ -136,12 +138,14 @@ namespace Game.Modules
 
 				var inputInventory = InventoryService.Get(player.LaboratoryInputInventoryId);
 				var outputInvnetory = InventoryService.Get(player.LaboratoryInputInventoryId);
-				if (inputInventory == null || outputInvnetory == null) continue;
+				var batteryInventory = InventoryService.Get(lab.FuelInventoryId);
+				if (inputInventory == null || outputInvnetory == null || batteryInventory == null) continue;
 
 				var outputItem = team.Type == TeamType.GANG ? weedOutput : cokeOutput;
 
 				InventoryController.RemoveItem(inputInventory, inputItem, 20);
-				InventoryController.RemoveItem(inputInventory, utilityInput, 10);
+				InventoryController.RemoveItem(inputInventory, utilityInput, 1);
+				InventoryController.RemoveItem(batteryInventory, batteries, 1);
 				InventoryController.AddItem(outputInvnetory, outputItem, 1);
 			}
 		}
