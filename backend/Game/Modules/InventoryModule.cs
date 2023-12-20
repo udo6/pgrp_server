@@ -67,7 +67,6 @@ namespace Game.Modules
 					if (shape != null)
 					{
 						container = InventoryService.Get(shape.InventoryId);
-						Console.WriteLine($"{player.Name}: {shape.InventoryId}");
 					}
 					else if(shapes.Count > 0)
 					{
@@ -106,7 +105,7 @@ namespace Game.Modules
 			var label = container == null ? "" : GetContainerLabel(container.Type);
 			var ctnItems = InventoryController.GetInventoryItems(inventoryItems.Items2, itemBases);
 
-			var json = JsonConvert.SerializeObject(new
+			player.ShowComponent("Inventory", true, JsonConvert.SerializeObject(new
 			{
 				Inventory = inventory,
 				InventoryItems = invItems,
@@ -116,9 +115,7 @@ namespace Game.Modules
 				Loadout = Array.Empty<LoadoutModel>(),
 				GiveItemTarget = targetId,
 				SearchTargetId = 0
-			});
-
-			player.ShowComponent("Inventory", true, json);
+			}));
 		}
 
 		private static void MoveAll(RPPlayer player, int rootInventoryId, int targetInventoryId, int oldSlot, int newSlot)
@@ -450,6 +447,8 @@ namespace Game.Modules
 
 		private static string GetContainerLabel(InventoryType type)
 		{
+			if (!ContainerLabels.ContainsKey(type)) return "Unbekannt";
+
 			return ContainerLabels[type];
 		}
 	}

@@ -51,6 +51,23 @@ namespace Game.Controllers
 				return;
 			}
 
+			var currentWeight = InventoryController.CalcInventoryWeight(items);
+			var currentSlots = items.Count;
+
+			var inputAmount2 = model.InputStepAmount * steps;
+			var inputWeight = inputItem.Weight * inputAmount2;
+			var inputSlots = (int)Math.Ceiling((decimal)(inputAmount2 / inputItem.StackSize));
+
+			var outputAmount2 = model.OutputStepAmount * steps;
+			var outputWeight = outputItem.Weight * outputAmount2;
+			var outputSlots = (int)Math.Ceiling((decimal)(outputAmount2 / outputItem.StackSize));
+
+			if(currentWeight - inputWeight + outputWeight > inventory.MaxWeight || currentSlots - inputSlots + outputSlots > inventory.Slots)
+			{
+				player.Notify("Information", "Die verarbeiteten Items würden nicht mehr passen!", NotificationType.ERROR);
+				return;
+			}
+
 			player.StartInteraction(() =>
 			{
 				if (pos.Position.Distance(entity.Position) > 30f)
@@ -59,7 +76,13 @@ namespace Game.Controllers
 					return;
 				}
 
-				if(!InventoryController.RemoveItem(inventory, inputItem, model.InputStepAmount * steps))
+				if (currentWeight - inputWeight + outputWeight > inventory.MaxWeight || currentSlots - inputSlots + outputSlots > inventory.Slots)
+				{
+					player.Notify("Information", "Die verarbeiteten Items würden nicht mehr passen!", NotificationType.ERROR);
+					return;
+				}
+
+				if (!InventoryController.RemoveItem(inventory, inputItem, model.InputStepAmount * steps))
 				{
 					player.Notify("Information", "Es ist ein Fehler aufgetreten!", NotificationType.ERROR);
 					return;
