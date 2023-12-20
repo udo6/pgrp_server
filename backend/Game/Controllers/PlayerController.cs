@@ -40,6 +40,7 @@ namespace Game.Controllers
 			player.IsInHospital = account.IsInHospital;
 			player.VestItemId = account.ArmorItemId;
 			player.SWATDuty = account.SWATDuty;
+			player.DamageCap = account.DamageCap;
 
 			player.ApplyTeam();
 			player.ApplyAdmin();
@@ -71,6 +72,7 @@ namespace Game.Controllers
 				player.Frozen = true;
 
 			player.Emit("Client:DoorModule:Init", DoorModule.JSONData);
+			player.Emit("Client:PlayerModule:SetSuperSecretFeature", player.DamageCap);
 
 			account.LastOnline = DateTime.Now;
 			AccountService.Update(account);

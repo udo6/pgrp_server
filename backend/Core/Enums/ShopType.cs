@@ -8,6 +8,7 @@
 		SWAT,
 		MECHANIC,
 		FOOD,
-		ALL_TEAMS_ONLY
+		ALL_TEAMS_ONLY,
+		NO_BLIP
 	}
 }

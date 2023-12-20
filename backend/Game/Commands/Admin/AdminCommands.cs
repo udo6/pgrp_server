@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Enums;
 using Database.Services;
+using Game.Controllers;
 
 namespace Game.Commands.Admin
 {
@@ -32,6 +33,23 @@ namespace Game.Commands.Admin
 
 			player.Streamed = !player.Streamed;
 			player.Visible = player.Streamed;
+		}
+
+		[Command("a", true)]
+		public static void AdminChat(RPPlayer player, string message)
+		{
+			if (player.AdminRank < AdminRank.GUIDE) return;
+
+			AdminController.BroadcastTeam("Admin-Chat", $"{player.Name}: {message}", NotificationType.INFO);
+		}
+
+		[Command("toggleadmininfo")]
+		public static void ToggleAdminInfo(RPPlayer player)
+		{
+			if (player.AdminRank < AdminRank.GUIDE) return;
+
+			player.AdminNotifications = !player.AdminNotifications;
+			player.Notify("Information", $"Du hast deine Admin-Nachrichten {(player.AdminNotifications ? "eingeschaltet" : "ausgeschaltet")}.", NotificationType.INFO);
 		}
 	}
 }

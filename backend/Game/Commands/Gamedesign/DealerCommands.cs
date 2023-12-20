@@ -17,7 +17,7 @@ namespace Game.Commands.Gamedesign
 			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);
 
-			var dealer = new DealerModel(pos.Id);
+			var dealer = new DealerModel(pos.Id, true);
 			DealerService.Add(dealer);
 			DealerController.LoadDealer(dealer, true);
 			player.Notify("Gamedesign", "Du hast einen Dealer erstellt!", Core.Enums.NotificationType.SUCCESS);

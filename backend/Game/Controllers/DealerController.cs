@@ -27,6 +27,9 @@ namespace Game.Controllers
 			ped.Frozen = true;
 			ped.Health = 8000;
 			ped.Armour = 8000;
+
+			model.Active = true;
+			DealerService.Update(model);
 		}
 
 		public static void ResetItemPrices()
@@ -37,6 +40,15 @@ namespace Game.Controllers
 				item.Price = random.Next(item.MinPrice, item.MaxPrice);
 
 			DealerService.UpdateItems(items);
+		}
+
+		public static void ResetDealers(List<DealerModel> models)
+		{
+			foreach(var model in models)
+				model.Active = false;
+
+			DealerService.Update(models);
+			ResetItemPrices();
 		}
 	}
 }

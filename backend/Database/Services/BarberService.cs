@@ -47,10 +47,10 @@ namespace Database.Services
 
 		// styles
 
-		public static List<BarberStyleModel> GetStyleFromBarber(int barberId, int gender)
+		public static List<BarberStyleModel> GetStylesFromBarber(/*int barberId, */int gender)
 		{
 			using var ctx = new Context();
-			return ctx.BarberStyles.Where(x => x.BarberId == barberId && x.Gender == gender).ToList();
+			return ctx.BarberStyles.Where(x => /*x.BarberId == barberId &&*/ x.Gender == gender).ToList();
 		}
 
 		public static void AddStyle(BarberStyleModel model)

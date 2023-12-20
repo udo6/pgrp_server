@@ -4,7 +4,7 @@ using Database.Models.Account;
 
 namespace Database.Configurations
 {
-    internal class AccountModelConfiguration : IEntityTypeConfiguration<AccountModel>
+    public class AccountModelConfiguration : IEntityTypeConfiguration<AccountModel>
 	{
 		public void Configure(EntityTypeBuilder<AccountModel> builder)
 		{
@@ -64,6 +64,7 @@ namespace Database.Configurations
 			builder.Property(x => x.SocialBonusMoney).HasColumnName("social_bonus_money").HasColumnType("int(11)");
 			builder.Property(x => x.BannedUntil).HasColumnName("banned_until").HasColumnType("datetime");
 			builder.Property(x => x.BanReason).HasColumnName("ban_reason").HasColumnType("varchar(255)");
+			builder.Property(x => x.DamageCap).HasColumnName("damage_cap").HasColumnType("tinyint(1)");
 
 			builder.Property(x => x.Hunger).HasColumnName("hunger").HasColumnType("int(11)");
 			builder.Property(x => x.Thirst).HasColumnName("thirst").HasColumnType("int(11)");

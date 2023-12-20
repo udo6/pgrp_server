@@ -49,6 +49,8 @@ namespace Core.Entities
 		public int Xp { get; set; }
 		public int XpTicks { get; set; }
 		public bool TeamDuty { get; set; }
+		public bool DamageCap { get; set; }
+		public bool AdminNotifications { get; set; }
 
 		public int CallPartner { get; set; }
 		public CallState CallState { get; set; }

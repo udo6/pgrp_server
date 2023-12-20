@@ -29,10 +29,12 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
-			foreach(var model in DealerService.GetAll())
-				DealerController.LoadDealer(model);
+			var models = DealerService.GetAll();
 
-			DealerController.ResetItemPrices();
+			DealerController.ResetDealers(models);
+
+			foreach (var model in models)
+				DealerController.LoadDealer(model);
 
 			Alt.OnClient<RPPlayer>("Server:Dealer:Open", Open);
 			Alt.OnClient<RPPlayer, int, int>("Server:Dealer:Sell", Sell);
@@ -78,21 +80,31 @@ namespace Game.Modules
 			var item = DealerService.GetItem(itemId);
 			if (item == null) return;
 
+			if (InventoryService.HasItems(player.InventoryId, item.ItemId) < 1)
+			{
+				player.ShowNativeMenu(false, new());
+				player.Notify("Information", "Du hast dieses Item nicht dabei!", Core.Enums.NotificationType.ERROR);
+				return;
+			}
+
 			var itemBase = InventoryService.GetItem(item.ItemId);
 			if (itemBase == null) return;
 
 			var price = item.Price;
 
-			if(item.Id == 3 || item.Id == 276)
+			if(item.ItemId == 3 || item.ItemId == 276)
 			{
 				var team = TeamService.Get(player.TeamId);
 				if (team != null)
 				{
 					var percentage = TeamDealerTake.Count <= account.TeamRank ? 0 : TeamDealerTake[account.TeamRank];
 					var take = (int)Math.Round(price * percentage);
+
 					team.Money += take;
+					TeamService.Update(team);
+
 					price -= take;
-					player.Notify("Information", $"Du hast ein Item an den Dealer verkauft! Davon gingen {take} an die Fraktion.", Core.Enums.NotificationType.SUCCESS);
+					player.Notify("Information", $"Du hast ein Item an den Dealer verkauft! Davon gingen ${take} an die Fraktion.", Core.Enums.NotificationType.SUCCESS);
 				}
 			}
 			else

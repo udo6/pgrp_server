@@ -31,6 +31,20 @@ namespace Database.Services
 			return ctx.Dealers.FirstOrDefault(x => x.Id == id);
 		}
 
+		public static void Update(DealerModel model)
+		{
+			using var ctx = new Context();
+			ctx.Dealers.Update(model);
+			ctx.SaveChanges();
+		}
+
+		public static void Update(IEnumerable<DealerModel> model)
+		{
+			using var ctx = new Context();
+			ctx.Dealers.UpdateRange(model);
+			ctx.SaveChanges();
+		}
+
 		// items
 		public static List<DealerItemModel> GetAllItems()
 		{

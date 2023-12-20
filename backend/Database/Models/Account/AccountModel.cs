@@ -34,6 +34,7 @@ namespace Database.Models.Account
         public int XpTicks { get; set; }
         public DateTime BannedUntil { get; set; }
         public string BanReason { get; set; }
+        public bool DamageCap { get; set; }
 
         public bool Phone { get; set; }
         public bool Laptop { get; set; }
