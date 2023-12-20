@@ -121,6 +121,7 @@ namespace Database
         public DbSet<AdminHistoryModel> AdminHistory { get; set; }
         public DbSet<MoneyTruckJobModel> MoneyTruckJobs { get; set; }
         public DbSet<MoneyTruckJobRouteModel> MoneyTruckJobRoutes { get; set; }
+        public DbSet<MoneyTruckJobRoutePositionModel> MoneyTruckJobRoutePosition { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

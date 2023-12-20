@@ -18,8 +18,8 @@ namespace Database.Configurations.Jobs
             builder.ToTable("server_money_truck_job_routes");
             builder.HasIndex(x => x.Id).HasDatabaseName("id");
             builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int(11)");
-            builder.Property(x => x.SectionId).HasColumnName("section_id").HasColumnType("int(11)");
-            builder.Property(x => x.PositionId).HasColumnName("position_id").HasColumnType("int(11)");
+            builder.Property(x => x.Name).HasColumnName("name").HasColumnType("varchar(50)");
+            builder.Property(x => x.Reward).HasColumnName("reward").HasColumnType("int(11)");
         }
     }
 }

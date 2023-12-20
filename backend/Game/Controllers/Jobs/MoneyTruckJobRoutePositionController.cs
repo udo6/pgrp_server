@@ -15,9 +15,9 @@ using Core.Extensions;
 
 namespace Game.Controllers.Jobs
 {
-    public class MoneyTruckJobRouteController
+    public class MoneyTruckJobRoutePositionController
     {
-        public static void LoadMoneyTruckJobRoutes(MoneyTruckJobRouteModel model)
+        public static void LoadMoneyTruckJobRoutePostion(MoneyTruckJobRoutePositionModel model)
         {
             var position = PositionService.Get(model.PositionId);
             if (position == null) return;

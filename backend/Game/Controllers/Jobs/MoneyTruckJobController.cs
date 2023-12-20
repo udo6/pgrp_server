@@ -22,10 +22,10 @@ namespace Game.Controllers.Jobs
             var position = PositionService.Get(model.StartLocationId);
             if (position == null) return;
 
-            var startJobShape = (RPShape)Alt.CreateColShapeCylinder(position.Position.Down(), 4f, 4f);
+            var startJobShape = (RPShape)Alt.CreateColShapeCylinder(position.Position.Down(), 2f, 2f);
             startJobShape.Id = model.Id;
             startJobShape.ShapeType = ColshapeType.MONEY_TRUCK_JOB_START;
-            startJobShape.Size = 4f;
+            startJobShape.Size = 2f;
 
             var ped = Alt.CreatePed(PedModel.Casey, position.Position, position.Rotation);
             ped.Frozen = true;

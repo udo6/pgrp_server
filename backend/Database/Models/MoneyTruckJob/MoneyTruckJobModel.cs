@@ -10,6 +10,6 @@ namespace Database.Models.MoneyTruckJob
     {
         public int Id { get; set; }
         public int StartLocationId { get; set; }
-        public int Reward { get; set; }
+        public int SpawnLocationId { get; set; }
     }
 }
