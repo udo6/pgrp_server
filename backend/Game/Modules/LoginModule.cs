@@ -191,33 +191,18 @@ namespace Game.Modules
 			var locker = new InventoryModel(8, 100f, InventoryType.LOCKER);
 			InventoryService.Add(inv, labInput, labOutput, locker);
 
+			var license = new LicenseModel();
+			LicenseService.Add(license);
+
 			var account = new AccountModel(
 				player.Name,
 				player.SocialClubId,
 				player.HardwareIdHash,
 				player.HardwareIdExHash,
 				player.DiscordId,
-				false,
 				5000,
 				45000,
-				200,
-				0,
-				0,
-				true,
-				false,
-				false,
-				AdminRank.SPIELER,
-				DateTime.Now,
-				100,
-				100,
-				false,
-				false,
-				false,
-				false,
-				false,
-				false,
 				AccountService.GenerateUniquePhoneNumber(),
-				0,
 				pos.Id,
 				custom.Id,
 				clothes.Id,
@@ -226,17 +211,7 @@ namespace Game.Modules
 				labOutput.Id,
 				locker.Id,
 				0,
-				0,
-				0,
-				false,
-				false,
-				false,
-				DateTime.Now,
-				false,
-				"",
-				"",
-				"",
-				0);
+				license.Id);
 			AccountService.Add(account);
 
 			if(login) Login(player, account);

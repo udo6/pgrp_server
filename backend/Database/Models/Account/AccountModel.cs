@@ -75,6 +75,8 @@ namespace Database.Models.Account
         public AccountModel()
         {
             Name = string.Empty;
+            BanReason = string.Empty;
+            SupportCallMessage = string.Empty;
             FederalRecordTeam = string.Empty;
             FederalRecordDescription = string.Empty;
             FederalRecordPhone = string.Empty;
@@ -83,56 +85,66 @@ namespace Database.Models.Account
 
 		}
 
-        public AccountModel(string name, ulong socialclubId, ulong hardwareId, ulong hardwareIdEx, long discordId, bool whitelisted, int money, int bankMoney, ushort health, ushort armor, InjuryType injuryType, bool alive, bool coma, bool stabilized, AdminRank adminRank, DateTime lastOnline, int hunger, int thirst, bool cuffed, bool roped, bool sWATDuty, bool phone, bool laptop, bool backpack, int phoneNumber, int phoneBackground, int positionId, int customizationId, int clothesId, int inventoryId, int laboratoryInputInventoryId, int laboratoryOutputInventoryId, int lockerInventoryId, int businessId, int teamId, int teamRank, bool teamAdmin, bool teamBank, bool teamStorage, DateTime teamJoinDate, bool teamDuty, string federalRecordTeam, string federalRecordDescription, string federalRecordPhone, int jailtime)
+        public AccountModel(string name, ulong social, ulong hwid, ulong hwidEx, long discord, int money, int bankMoney, int phoneNumber, int positionId, int customId, int clothesId, int inventoryId, int labInputInventoryId, int labOutputInventoryId, int lockerInventoryId, int businessId, int licenseId)
         {
             Name = name;
-            SocialclubId = socialclubId;
-            HardwareId = hardwareId;
-            HardwareIdEx = hardwareIdEx;
-            DiscordId = discordId;
-            Whitelisted = whitelisted;
+            SocialclubId = social;
+            HardwareId = hwid;
+            HardwareIdEx = hwidEx;
+            DiscordId = discord;
+            Whitelisted = false;
             Money = money;
             BankMoney = bankMoney;
-            Health = health;
-            Armor = armor;
-            InjuryType = injuryType;
-            Alive = alive;
-            Coma = coma;
-            Stabilized = stabilized;
-            AdminRank = adminRank;
-            LastOnline = lastOnline;
-            Hunger = hunger;
-            Thirst = thirst;
-            Cuffed = cuffed;
-            Roped = roped;
-            SWATDuty = sWATDuty;
-            Phone = phone;
-            Laptop = laptop;
-            Backpack = backpack;
-            PhoneNumber = phoneNumber;
-            PhoneBackground = phoneBackground;
-            PositionId = positionId;
-            CustomizationId = customizationId;
-            ClothesId = clothesId;
-            InventoryId = inventoryId;
-            LaboratoryInputInventoryId = laboratoryInputInventoryId;
-            LaboratoryOutputInventoryId = laboratoryOutputInventoryId;
-            LockerInventoryId = lockerInventoryId;
-            BusinessId = businessId;
-            TeamId = teamId;
-            TeamRank = teamRank;
-            TeamAdmin = teamAdmin;
-            TeamBank = teamBank;
-            TeamStorage = teamStorage;
-            TeamJoinDate = teamJoinDate;
-            TeamDuty = teamDuty;
-            FederalRecordTeam = federalRecordTeam;
-            FederalRecordDescription = federalRecordDescription;
-            FederalRecordPhone = federalRecordPhone;
-            Jailtime = jailtime;
+            Health = 200;
+            Armor = 0;
+            ArmorItemId = 0;
+            InjuryType = 0;
+            Alive = true;
+            Coma = false;
+            Stabilized = false;
+            AdminRank = AdminRank.SPIELER;
+            LastOnline = DateTime.Now;
+            Hunger = 100;
+            Thirst = 100;
+            Cuffed = false;
+            Roped = false;
+            SWATDuty = false;
+            Created = DateTime.Now;
             Level = 1;
-			BanReason = string.Empty;
-			AdminRecordDescription = string.Empty;
+            Xp = 0;
+            SocialBonusMoney = 0;
+            XpTicks = 0;
+            BannedUntil = DateTime.Now.AddYears(-1);
+            BanReason = string.Empty;
+            DamageCap = false;
+            SupportCallMessage = string.Empty;
+            Phone = false;
+            Laptop = false;
+            Backpack = false;
+            PhoneNumber = phoneNumber;
+            PhoneBackground = 0;
+            PositionId = positionId;
+			CustomizationId = customId;
+			ClothesId = clothesId;
+			InventoryId = inventoryId;
+			LaboratoryInputInventoryId = labInputInventoryId;
+			LaboratoryOutputInventoryId = labOutputInventoryId;
+			LockerInventoryId = lockerInventoryId;
+			BusinessId = businessId;
+			LicenseId = licenseId;
+            TeamId = 0;
+            TeamRank = 0;
+            TeamAdmin = false;
+            TeamBank = false;
+            TeamStorage = false;
+            TeamJoinDate = DateTime.Now;
+            TeamDuty = false;
+            FederalRecordTeam = string.Empty;
+            FederalRecordPhone = string.Empty;
+            FederalRecordDescription = string.Empty;
+            AdminRecordDescription = string.Empty;
+            Jailtime = 0;
+            IsInHospital = false;
 		}
-    }
+	}
 }
