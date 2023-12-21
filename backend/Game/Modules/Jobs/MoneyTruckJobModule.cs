@@ -37,7 +37,7 @@ namespace Game.Modules.Jobs
 
             if (player.TeamDuty)
             {
-                player.Notify("Müllabfuhr", "Du kannst den Job nicht im Dienst starten.", NotificationType.ERROR);
+                player.Notify("Geldtransporter", "Du kannst den Job nicht im Dienst starten.", NotificationType.ERROR);
                 return;
             }
 
@@ -47,7 +47,7 @@ namespace Game.Modules.Jobs
             var model = MoneyTruckJobService.Get(shape.Id);
             if (model == null) return;
 
-            var jobMenu = new NativeMenu("Geldtransport", new List<NativeMenuItem>()
+            var jobMenu = new NativeMenu("Geldtransporter", new List<NativeMenuItem>()
             {
                 new NativeMenuItem(player.IsInMoneyTruckJob ? "Job beenden" : "Job starten", true, player.IsInMoneyTruckJob ? "Server:MoneyTruckJob:Stop" : "Server:MoneyTruckJob:Start", model.Id),
             });
@@ -68,17 +68,11 @@ namespace Game.Modules.Jobs
             var model = MoneyTruckJobService.Get(id);
             if (model == null) return;
 
-            var freeRoute = MoneyTruckJobRouteService.GetAll().FirstOrDefault(x => !x.InWork);
+            var freeRoute = MoneyTruckJobRouteService.GetAll().FirstOrDefault(x => !x.InWork && DateTime.Now >= x.LastUsed.AddMinutes(10));
             if (freeRoute == null) return;
-
-            player.IsInMoneyTruckJob = true;
 
             var customization = CustomizationService.Get(player.CustomizationId);
             if (customization == null) return;
-
-            player.TempClothesId = customization.Gender ? 92 : 93;
-            PlayerController.ApplyPlayerClothes(player);
-            player.Notify("Geldtransporter", "Du hast den Job gestartet.", NotificationType.SUCCESS);
 
             if (player.JobVehicle != null)
             {
@@ -89,6 +83,12 @@ namespace Game.Modules.Jobs
             var spawnPosition = PositionService.Get(model.SpawnLocationId);
             if (spawnPosition == null) return;
 
+            player.IsInMoneyTruckJob = true;
+            player.TempClothesId = customization.Gender ? 92 : 93;
+            PlayerController.ApplyPlayerClothes(player);
+            player.Notify("Geldtransporter", "Du hast den Job gestartet.", NotificationType.SUCCESS);
+            player.Notify("Geldtransporter", $"Du hast die Route {freeRoute.Name} erhalten", NotificationType.INFO);
+
             RPVehicle moneyTruck = (RPVehicle)Alt.CreateVehicle(VehicleModel.Stockade, spawnPosition.Position, spawnPosition.Rotation);
             moneyTruck.OwnerId = player.DbId;
             moneyTruck.OwnerType = OwnerType.PLAYER;
@@ -97,7 +97,9 @@ namespace Game.Modules.Jobs
             moneyTruck.SetEngineState(false);
             moneyTruck.SetFuel(150);
             moneyTruck.SetMaxFuel(150);
-            moneyTruck.NumberplateText = "MONEYTRUCK-0" + player.Id * 2;
+            moneyTruck.NumberplateText = "MONEY-0" + player.Id * 2;
+
+            player.JobVehicle = moneyTruck;
         }
 
         private static void Stop(RPPlayer player, int id)
