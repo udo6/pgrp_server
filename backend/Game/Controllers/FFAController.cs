@@ -24,7 +24,8 @@ namespace Game.Controllers
 			player.FFAId = 0;
 			player.InInterior = false;
 			player.SetDimension(0);
-			player.Spawn(FFAModule.Position.Position, 0);
+			player.Spawn(player.Position, 0);
+			player.SetPosition(FFAModule.Position.Position);
 			PlayerController.ApplyPlayerLoadout(player);
 		}
 

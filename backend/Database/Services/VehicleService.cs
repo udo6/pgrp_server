@@ -1,4 +1,5 @@
 ﻿using Core.Enums;
+using Database.Models.Team;
 using Database.Models.Vehicle;
 
 namespace Database.Services
@@ -15,6 +16,60 @@ namespace Database.Services
 		{
 			using var ctx = new Context();
 			return ctx.Vehicles.Where(x => x.Type == OwnerType.PLAYER && (x.OwnerId == accId || x.KeyHolderId == accId)).ToList();
+		}
+
+		public static List<VehicleModel> Search(string search, List<VehicleBaseModel> vehBases, List<TeamModel> teams, int max)
+		{
+			using var ctx = new Context();
+			var result = new List<VehicleModel>();
+			foreach(var vehicle in ctx.Vehicles)
+			{
+				if (vehicle.Plate.ToLower().Contains(search.ToLower()))
+				{
+					result.Add(vehicle);
+					continue;
+				}
+
+				var vehBase = vehBases.FirstOrDefault(x => x.Id == vehicle.BaseId);
+				if (vehBase == null) continue;
+
+				if(vehBase.Name.ToLower().Contains(search.ToLower()))
+				{
+					result.Add(vehicle);
+					continue;
+				}
+
+				switch (vehicle.Type)
+				{
+					case OwnerType.PLAYER:
+						var account = AccountService.Get(vehicle.OwnerId);
+						if (account != null && account.Name.ToLower().Contains(search.ToLower()))
+						{
+							result.Add(vehicle);
+							continue;
+						}
+						break;
+					case OwnerType.TEAM:
+						var team = teams.FirstOrDefault(x => x.Id == vehicle.OwnerId);
+						if(team != null && (team.Name.ToLower().Contains(search.ToLower()) || team.ShortName.ToLower().Contains(search.ToLower())))
+						{
+							result.Add(vehicle);
+							continue;
+						}
+						break;
+					case OwnerType.SWAT:
+						if ("swat".Contains(search.ToLower()))
+						{
+							result.Add(vehicle);
+							continue;
+						}
+						break;
+				}
+
+				if(result.Count >= max) break;
+			}
+
+			return result;
 		}
 
 		public static List<VehicleModel> GetAllPlayerVehicles(int accId, int teamId, int businessId)

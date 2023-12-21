@@ -1,4 +1,5 @@
 ﻿using AltV.Net;
+using AltV.Net.Data;
 using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
@@ -8,7 +9,6 @@ using Database.Models.Crimes;
 using Database.Services;
 using Game.Controllers;
 using Newtonsoft.Json;
-using System;
 
 namespace Game.Modules
 {
@@ -22,7 +22,17 @@ namespace Game.Modules
 		{
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
+			// ACP VEHICLES APP
+			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:SetKeyHolder", ACPSetVehicleKeyHolder);
+			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPVehicles:SetOwner", ACPSetVehicleOwner);
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPVehicles:DeleteVehicle", ACPDeleteVehicle);
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPVehicles:Goto", ACPGotoVehicle);
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPVehicles:Bring", ACPBringVehicle);
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPVehicles:RequestVehicleData", ACPRequestVehicleData);
+			Alt.OnClient<RPPlayer, string>("Server:Laptop:ACPVehicles:Search", ACPVehiclesSearch);
+
 			// ACP PLAYERS APP
+			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:UnwarnPlayer", ACPUnwarnPlayer);
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPPlayers:SetDimension", ACPSetPlayerDimension);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:Uncuff", ACPToggleUncuffPlayer);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ToggleFreeze", ACPTogglePlayerFreeze);
@@ -75,6 +85,144 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:Dispatch:Accept", AcceptDispatch);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:Dispatch:Close", CloseDispatch);
 		}
+
+		#region ACP Vehicles
+
+		private static void ACPSetVehicleKeyHolder(RPPlayer player, int vehId, int keyHolderId)
+		{
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
+
+			var vehicle = VehicleService.Get(vehId);
+			if (vehicle == null) return;
+
+			vehicle.KeyHolderId = keyHolderId;
+			VehicleService.UpdateVehicle(vehicle);
+
+			var veh = RPVehicle.All.FirstOrDefault(x => x.DbId == vehId);
+			if (veh == null) return;
+
+			veh.KeyHolderId = keyHolderId;
+			player.Notify("Administration", "Du hast den Schlüsselbesitzer umgesetzt!", NotificationType.SUCCESS);
+		}
+
+		private static void ACPSetVehicleOwner(RPPlayer player, int vehId, int ownerId, int ownerType)
+		{
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
+
+			var vehicle = VehicleService.Get(vehId);
+			if (vehicle == null) return;
+
+			vehicle.OwnerId = ownerId;
+			vehicle.Type = (OwnerType)ownerType;
+			VehicleService.UpdateVehicle(vehicle);
+
+			var veh = RPVehicle.All.FirstOrDefault(x => x.DbId == vehId);
+			if (veh == null) return;
+
+			veh.OwnerId = ownerId;
+			veh.OwnerType = (OwnerType)ownerType;
+			player.Notify("Administration", "Du hast den Owner umgesetzt!", NotificationType.SUCCESS);
+		}
+
+		private static void ACPDeleteVehicle(RPPlayer player, int vehId)
+		{
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
+
+			var vehicle = VehicleService.Get(vehId);
+			if (vehicle == null) return;
+
+			vehicle.OwnerId = -1;
+			VehicleService.UpdateVehicle(vehicle);
+
+			var veh = RPVehicle.All.FirstOrDefault(x => x.DbId == vehId);
+			if (veh == null) return;
+
+			veh.Delete();
+			player.Notify("Administration", "Du hast ein Fahrzeug gelöscht!", NotificationType.SUCCESS);
+		}
+
+		private static void ACPGotoVehicle(RPPlayer player, int vehId)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var vehicle = RPVehicle.All.FirstOrDefault(x => x.DbId == vehId);
+			if (vehicle == null) return;
+
+			player.SetPosition(vehicle.Position);
+			player.Notify("Administration", "Du hast dich zu einem Fahrzeug teleportiert!", NotificationType.SUCCESS);
+		}
+
+		private static void ACPBringVehicle(RPPlayer player, int vehId)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var vehicle = RPVehicle.All.FirstOrDefault(x => x.DbId == vehId);
+			if (vehicle == null) return;
+
+			vehicle.Position = player.Position;
+			vehicle.Rotation = Rotation.Zero;
+			player.Notify("Administration", "Du hast ein Fahrzeug zu dir teleportiert!", NotificationType.SUCCESS);
+		}
+
+		private static void ACPRequestVehicleData(RPPlayer player, int vehId)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var vehicle = VehicleService.Get(vehId);
+			if (vehicle == null) return;
+
+			var vehBase = VehicleService.GetBase(vehicle.BaseId);
+			if (vehBase == null) return;
+
+			var garage = GarageService.Get(vehicle.GarageId);
+			if (garage == null) return;
+
+			player.EmitBrowser("Laptop:ACPVehicles:SetVehicleData", JsonConvert.SerializeObject(new
+			{
+				Id = vehicle.Id,
+				Name = vehBase.Name,
+				Note = vehicle.Note,
+				Plate = vehicle.Plate,
+				Fuel = vehicle.Fuel,
+				MaxFuel = vehBase.MaxFuel,
+				GarageId = vehicle.GarageId,
+				GarageName = garage.Name,
+				Parked = vehicle.Parked
+			}));
+		}
+
+		private static void ACPVehiclesSearch(RPPlayer player, string search)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var bases = VehicleService.GetAllBases();
+			var teams = TeamService.GetAll();
+			var vehicles = VehicleService.Search(search, bases, teams, 10);
+			var data = new List<object>();
+
+			foreach(var vehicle in vehicles)
+			{
+				var vehBase = bases.FirstOrDefault(x => x.Id == vehicle.BaseId);
+				if (vehBase == null) continue;
+
+				var ownerName = vehicle.Type == OwnerType.TEAM ? teams.FirstOrDefault(x => x.Id == vehicle.OwnerId)?.Name : vehicle.Type == OwnerType.PLAYER ? AccountService.Get(vehicle.OwnerId)?.Name : "SWAT";
+				var keyHolder = vehicle.Type == OwnerType.PLAYER ? AccountService.Get(vehicle.KeyHolderId)?.Name : "NONE";
+
+				data.Add(new
+				{
+					Id = vehicle.Id,
+					Name = vehBase.Name,
+					Owner = ownerName,
+					KeyHolder = keyHolder,
+					Plate = vehicle.Plate,
+					Parked = vehicle.Parked
+				});
+			}
+
+			player.EmitBrowser("Laptop:ACPVehicles:SetData", JsonConvert.SerializeObject(data));
+		}
+
+		#endregion
 
 		#region ACP Players
 
