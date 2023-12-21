@@ -1,4 +1,5 @@
 ﻿using AltV.Net;
+using AltV.Net.Data;
 using Core.Attribute;
 using Core.Entities;
 using Database.Models.Account;
@@ -14,6 +15,15 @@ namespace Game.Modules
 		public static void Initialize()
 		{
 			Alt.OnClient<RPPlayer, string>("Server:Creator:Finish", Finish);
+		}
+
+		public static void SendToCreator(RPPlayer player, CustomizationModel customization, Position outsidePos)
+		{
+			player.InInterior = true;
+			player.OutsideInteriorPosition = outsidePos;
+			player.SetPosition(new(402.8664f, -996.4108f, -100f));
+			player.Visible = false;
+			player.ShowComponent("Creator", true, JsonConvert.SerializeObject(customization));
 		}
 
 		private static void Finish(RPPlayer player, string data)

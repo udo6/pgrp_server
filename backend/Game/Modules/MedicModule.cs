@@ -1,6 +1,9 @@
-﻿using AltV.Net.Elements.Entities;
+﻿using AltV.Net;
+using AltV.Net.Data;
+using AltV.Net.Elements.Entities;
 using Core.Attribute;
 using Core.Entities;
+using Core.Enums;
 using Database.Models.Hospital;
 using Database.Services;
 using Game.Controllers;
@@ -9,14 +12,36 @@ namespace Game.Modules
 {
 	public static class MedicModule
 	{
+		private static Position CreatorPosition = new(-499.68793f, -342.75165f, 34.48645f);
+
 		[Initialize]
 		public static void Initialize()
 		{
 			foreach(var model in HospitalService.GetAll())
 				HospitalController.LoadHospital(model);
+
+			var shape = (RPShape)Alt.CreateColShapeCylinder(CreatorPosition, 1.5f, 2f);
+			shape.Id = 1;
+			shape.ShapeType = ColshapeType.CREATOR;
+			shape.Size = 1.5f;
+
+			var ped = Alt.CreatePed(0xE497BBEF, CreatorPosition, new(0, 0, -1.5831648f));
+			ped.Frozen = true;
+			ped.Health = 8000;
+			ped.Armour = 8000;
+
+			Alt.OnClient<RPPlayer>("Server:Creator:Enter", EnterCreator);
 		}
 
-		[ServerEvent(Core.Enums.ServerEventType.ENTITY_COLSHAPE)]
+		private static void EnterCreator(RPPlayer player)
+		{
+			var custom = CustomizationService.Get(player.CustomizationId);
+			if (custom == null) return;
+
+			CreatorModule.SendToCreator(player, custom, player.Position);
+		}
+
+		[Core.Attribute.ServerEvent(Core.Enums.ServerEventType.ENTITY_COLSHAPE)]
 		public static void OnColshape(RPShape shape, IWorldObject entity, bool entered)
 		{
 			if (!entered || shape.ShapeType != Core.Enums.ColshapeType.HOSPITAL || entity.Type != BaseObjectType.Vehicle) return;

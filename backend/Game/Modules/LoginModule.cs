@@ -139,11 +139,7 @@ namespace Game.Modules
 
 			if (!custom.Finished)
 			{
-				player.InInterior = true;
-				player.OutsideInteriorPosition = new(-1042.4572f, -2745.323f, 21.343628f);
-				player.SetPosition(new(402.8664f, -996.4108f, -100f));
-				player.Visible = false;
-				player.ShowComponent("Creator", true, JsonConvert.SerializeObject(custom));
+				CreatorModule.SendToCreator(player, custom, new(-1042.4572f, -2745.323f, 21.343628f));
 				return;
 			}
 
