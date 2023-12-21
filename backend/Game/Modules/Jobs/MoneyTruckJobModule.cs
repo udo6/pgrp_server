@@ -76,7 +76,7 @@ namespace Game.Modules.Jobs
             var customization = CustomizationService.Get(player.CustomizationId);
             if (customization == null) return;
 
-            player.TempClothesId = customization.Gender ? 65 : 66;
+            player.TempClothesId = customization.Gender ? 92 : 93;
             PlayerController.ApplyPlayerClothes(player);
             player.Notify("Geldtransporter", "Du hast den Job gestartet.", NotificationType.SUCCESS);
 
