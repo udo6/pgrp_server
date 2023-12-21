@@ -98,7 +98,7 @@ namespace Game.Modules
 			if (target == null) return;
 
 			target.Frozen = !target.Frozen;
-			target.Notify("Information", $"Du wurdest von {target.Name} {(target.Frozen ? "gefreezed" : "unfreezed")}.", NotificationType.INFO);
+			target.Notify("Information", $"Du wurdest von {player.Name} {(target.Frozen ? "gefreezed" : "unfreezed")}.", NotificationType.INFO);
 			player.Notify("Administration", $"Du hast {target.Name} {(target.Frozen ? "gefreezed" : "unfreezed")}.", NotificationType.INFO);
 		}
 
