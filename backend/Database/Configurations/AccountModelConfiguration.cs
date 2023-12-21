@@ -65,6 +65,7 @@ namespace Database.Configurations
 			builder.Property(x => x.BannedUntil).HasColumnName("banned_until").HasColumnType("datetime");
 			builder.Property(x => x.BanReason).HasColumnName("ban_reason").HasColumnType("varchar(255)");
 			builder.Property(x => x.DamageCap).HasColumnName("damage_cap").HasColumnType("tinyint(1)");
+			builder.Property(x => x.SupportCallMessage).HasColumnName("support_call_message").HasColumnType("varchar(255)");
 
 			builder.Property(x => x.Hunger).HasColumnName("hunger").HasColumnType("int(11)");
 			builder.Property(x => x.Thirst).HasColumnName("thirst").HasColumnType("int(11)");

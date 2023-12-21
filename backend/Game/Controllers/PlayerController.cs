@@ -76,6 +76,11 @@ namespace Game.Controllers
 
 			account.LastOnline = DateTime.Now;
 			AccountService.Update(account);
+
+			if(account.SupportCallMessage.Length > 0)
+			{
+				AdminController.BroadcastTeam("Support Aufruf", $"{player.Name} hat sich eingeloggt! Offener Supportaufruf: {account.SupportCallMessage}", NotificationType.WARN);
+			}
 		}
 
 		public static void ApplyPlayerCustomization(RPPlayer player)

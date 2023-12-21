@@ -35,6 +35,7 @@ namespace Database.Models.Account
         public DateTime BannedUntil { get; set; }
         public string BanReason { get; set; }
         public bool DamageCap { get; set; }
+        public string SupportCallMessage { get; set; }
 
         public bool Phone { get; set; }
         public bool Laptop { get; set; }
