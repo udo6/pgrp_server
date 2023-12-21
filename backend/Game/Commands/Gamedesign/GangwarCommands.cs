@@ -1,5 +1,4 @@
-﻿using Core;
-using Core.Attribute;
+﻿using Core.Attribute;
 using Core.Entities;
 using Database.Models;
 using Database.Models.Gangwar;
@@ -27,7 +26,7 @@ namespace Game.Commands.Gamedesign
 				new(400, 400, 400),
 				new(0, 155, 255, 255),
 				0,
-				0));
+				gw.Id));
 		}
 
 		[Command("addgwspawn1")]

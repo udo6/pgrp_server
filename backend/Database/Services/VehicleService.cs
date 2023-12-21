@@ -30,6 +30,12 @@ namespace Database.Services
 					continue;
 				}
 
+				if (vehicle.Id.ToString().ToLower().Contains(search.ToLower()))
+				{
+					result.Add(vehicle);
+					continue;
+				}
+
 				var vehBase = vehBases.FirstOrDefault(x => x.Id == vehicle.BaseId);
 				if (vehBase == null) continue;
 

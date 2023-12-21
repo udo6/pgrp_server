@@ -423,7 +423,7 @@ namespace Game.Modules
 			var history = new AdminHistoryModel(target.DbId, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.BAN);
 			AccountService.AddAdminHistory(history);
 
-			target.Kick($"Du wurdest von {player.Name} gebannt! Grund: {reason}");
+			target.Kick($"Du wurdest vom Gameserver gebannt! Grund: {reason}");
 		}
 
 		private static void ACPKickPlayer(RPPlayer player, int id, string reason, bool anonym)
@@ -457,7 +457,7 @@ namespace Game.Modules
 			var history = new AdminHistoryModel(target.DbId, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.KICK);
 			AccountService.AddAdminHistory(history);
 
-			target.Kick($"Du wurdest von {player.Name} gekickt! Grund: {reason}");
+			target.Kick($"Du wurdest vom Gameserver gekickt! Grund: {reason}");
 		}
 
 		private static void ACPWarnPlayer(RPPlayer player, int id, string reason)
