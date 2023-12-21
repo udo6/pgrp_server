@@ -11,6 +11,7 @@ namespace Core.Enums
 		WARN,
 		KICK,
 		BAN,
-		UNBAN
+		UNBAN,
+		UNWARN
 	}
 }

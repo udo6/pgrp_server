@@ -8,6 +8,7 @@ using Database.Models.Crimes;
 using Database.Services;
 using Game.Controllers;
 using Newtonsoft.Json;
+using System;
 
 namespace Game.Modules
 {
@@ -22,6 +23,7 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
 			// ACP PLAYERS APP
+			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPPlayers:SetDimension", ACPSetPlayerDimension);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:Uncuff", ACPToggleUncuffPlayer);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ToggleFreeze", ACPTogglePlayerFreeze);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ResetHardware", ACPResetHardware);
@@ -30,8 +32,8 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPPlayers:SetMoney", ACPSetMoney);
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPPlayers:SetTeam", ACPSetTeam);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:UnbanPlayer", ACPUnbanPlayer);
-			Alt.OnClient<RPPlayer, int, string, string>("Server:Laptop:ACPPlayers:BanPlayer", ACPBanPlayer);
-			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:KickPlayer", ACPKickPlayer);
+			Alt.OnClient<RPPlayer, int, string, string, bool>("Server:Laptop:ACPPlayers:BanPlayer", ACPBanPlayer);
+			Alt.OnClient<RPPlayer, int, string, bool>("Server:Laptop:ACPPlayers:KickPlayer", ACPKickPlayer);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:WarnPlayer", ACPWarnPlayer);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:SaveRecord", SaveACPRecord);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:RequestPlayerData", RequestACPPlayerData);
@@ -75,6 +77,34 @@ namespace Game.Modules
 		}
 
 		#region ACP Players
+
+		private static void ACPUnwarnPlayer(RPPlayer player, int id, string reason)
+		{
+			if (player.AdminRank < AdminRank.MODERATOR) return;
+
+			var warns = WarnService.GetPlayerWarns(id);
+			if (warns.Count < 1) return;
+
+			WarnService.Remove(warns[0]);
+
+			player.Notify("Administration", $"Du hast einen Warn entfernt!", NotificationType.SUCCESS);
+
+			var history = new AdminHistoryModel(id, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.UNWARN);
+			AccountService.AddAdminHistory(history);
+		}
+
+		private static void ACPSetPlayerDimension(RPPlayer player, int id, int dimension)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
+			if (target == null) return;
+
+			target.SetDimension(dimension);
+
+			target.Notify("Information", $"Du wurdest von {player.Name} in Dimesion {dimension} gesetzt.", NotificationType.INFO);
+			player.Notify("Administration", $"Du hast {target.Name} in Dimesion {dimension} gesetzt.", NotificationType.INFO);
+		}
 
 		private static void ACPToggleUncuffPlayer(RPPlayer player, int id)
 		{
@@ -211,7 +241,7 @@ namespace Game.Modules
 			AccountService.AddAdminHistory(history);
 		}
 
-		private static void ACPBanPlayer(RPPlayer player, int id, string reason, string datetime)
+		private static void ACPBanPlayer(RPPlayer player, int id, string reason, string datetime, bool anonym)
 		{
 			if (player.AdminRank < AdminRank.MODERATOR) return;
 
@@ -227,16 +257,19 @@ namespace Game.Modules
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
 
-			var data = JsonConvert.SerializeObject(new
+			if(!anonym)
 			{
-				Title = $"ADMINISTRATIVE NACHRICHT",
-				Message = $"{player.Name} hat {target.Name} vom Server gebannt! Grund: {reason}",
-				Duration = 10000
-			});
+				var data = JsonConvert.SerializeObject(new
+				{
+					Title = $"ADMINISTRATIVE NACHRICHT",
+					Message = $"{player.Name} hat {target.Name} vom Server gebannt! Grund: {reason}",
+					Duration = 10000
+				});
 
-			foreach (var user in RPPlayer.All.ToList())
-			{
-				user.EmitBrowser("Hud:ShowGlobalNotification", data);
+				foreach (var user in RPPlayer.All.ToList())
+				{
+					user.EmitBrowser("Hud:ShowGlobalNotification", data);
+				}
 			}
 
 			var history = new AdminHistoryModel(target.DbId, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.BAN);
@@ -245,7 +278,7 @@ namespace Game.Modules
 			target.Kick($"Du wurdest von {player.Name} gebannt! Grund: {reason}");
 		}
 
-		private static void ACPKickPlayer(RPPlayer player, int id, string reason)
+		private static void ACPKickPlayer(RPPlayer player, int id, string reason, bool anonym)
 		{
 			if (player.AdminRank < AdminRank.SUPPORTER) return;
 
@@ -258,16 +291,19 @@ namespace Game.Modules
 
 			player.Notify("Administration", $"Du hast {target.Name} vom Server gekickt!", Core.Enums.NotificationType.SUCCESS);
 
-			var data = JsonConvert.SerializeObject(new
+			if(!anonym)
 			{
-				Title = $"ADMINISTRATIVE NACHRICHT",
-				Message = $"{player.Name} hat {target.Name} vom Server gekickt! Grund: {reason}",
-				Duration = 10000
-			});
+				var data = JsonConvert.SerializeObject(new
+				{
+					Title = $"ADMINISTRATIVE NACHRICHT",
+					Message = $"{player.Name} hat {target.Name} vom Server gekickt! Grund: {reason}",
+					Duration = 10000
+				});
 
-			foreach (var user in RPPlayer.All.ToList())
-			{
-				user.EmitBrowser("Hud:ShowGlobalNotification", data);
+				foreach (var user in RPPlayer.All.ToList())
+				{
+					user.EmitBrowser("Hud:ShowGlobalNotification", data);
+				}
 			}
 
 			var history = new AdminHistoryModel(target.DbId, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.KICK);
@@ -363,6 +399,8 @@ namespace Game.Modules
 
 			var accounts = AccountService.Search(search, 10);
 			var data = new List<object>();
+			var onlinePlayers = RPPlayer.All.ToList();
+
 			foreach(var account in accounts)
 			{
 				data.Add(new
@@ -373,7 +411,8 @@ namespace Game.Modules
 					Rank = account.AdminRank.ToString(),
 					Phone = account.PhoneNumber,
 					LastOnline = account.LastOnline.ToString("HH:mm dd.MM.yyyy"),
-					Warns = WarnService.GetPlayerWarnsCount(account.Id)
+					Warns = WarnService.GetPlayerWarnsCount(account.Id),
+					Online = onlinePlayers.Any(x => x.DbId == account.Id)
 				});
 			}
 

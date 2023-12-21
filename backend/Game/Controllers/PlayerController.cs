@@ -273,7 +273,6 @@ namespace Game.Controllers
 			player.Coma = false;
 			player.SetInvincible(false);
 			player.IsInHospital = false;
-			player.Frozen = false;
 			player.SetStreamSyncedMetaData("ALIVE", true);
 			player.SetStreamSyncedMetaData("STABILIZED", false);
 			player.StopAnimation();

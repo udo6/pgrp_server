@@ -32,7 +32,6 @@ namespace Game.Controllers
 			var pos = PositionService.Get(bed.PositionId);
 			if (pos == null) return;
 
-			player.Frozen = true;
 			player.SetPosition(pos.Position);
 			player.Rotation = pos.Rotation;
 			player.IsInHospital = true;

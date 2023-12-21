@@ -573,7 +573,18 @@ namespace Game.Modules
 				return;
 			}
 
-			if(InventoryService.HasItems(player.InventoryId, 10) < 1)
+			var itemId = 0;
+
+			if (player.TeamDuty && InventoryService.HasItems(player.InventoryId, 173) >= 1)
+			{
+				itemId = 173;
+			}
+			else if (InventoryService.HasItems(player.InventoryId, 10) >= 1)
+			{
+				itemId = 10;
+			}
+
+			if (itemId == 0)
 			{
 				player.Notify("Information", "Du benötigst einen Verbandskasten!", NotificationType.ERROR);
 				return;

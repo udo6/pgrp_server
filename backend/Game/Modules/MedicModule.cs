@@ -47,6 +47,8 @@ namespace Game.Modules
 			if (!entered || shape.ShapeType != Core.Enums.ColshapeType.HOSPITAL || entity.Type != BaseObjectType.Vehicle) return;
 
 			var vehicle = (RPVehicle)entity;
+			var driver = (RPPlayer)vehicle.Driver;
+			if (driver.TeamId != 3) return;
 
 			var players = RPPlayer.All.Where(x => x.LoggedIn && x.Vehicle == vehicle && !x.Alive).ToList();
 			if (players.Count < 1) return;
@@ -54,7 +56,6 @@ namespace Game.Modules
 			var beds = HospitalService.GetBeds(shape.Id);
 			foreach(var player in players)
 			{
-				var driver = (RPPlayer)vehicle.Driver;
 				var bed = beds.FirstOrDefault(IsBedAvailable);
 				if (bed == null)
 				{
