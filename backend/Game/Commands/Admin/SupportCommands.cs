@@ -21,7 +21,7 @@ namespace Game.Commands.Admin
 				Name = player.Name,
 				Team = account.TeamId,
 				TeamLeader = account.TeamAdmin,
-				Admin = player.AdminRank > Core.Enums.AdminRank.GUIDE
+				Admin = player.AdminRank
 			}));
 		}
 	}

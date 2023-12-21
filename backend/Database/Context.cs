@@ -33,10 +33,11 @@ using Database.Models.Door;
 using Database.Models.Tuner;
 using Database.Models.GarbageJob;
 using Database.Models.MoneyTruckJob;
+using Database.Models.Case;
 
 namespace Database
 {
-    internal class Context : DbContext
+    public class Context : DbContext
 	{
 		public DbSet<AccountModel> Accounts { get; set; }
 		public DbSet<PositionModel> Positions { get; set; }
@@ -122,6 +123,7 @@ namespace Database
         public DbSet<MoneyTruckJobModel> MoneyTruckJobs { get; set; }
         public DbSet<MoneyTruckJobRouteModel> MoneyTruckJobRoutes { get; set; }
         public DbSet<MoneyTruckJobRoutePositionModel> MoneyTruckJobRoutePosition { get; set; }
+		public DbSet<CaseLootModel> CaseLootTable { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
