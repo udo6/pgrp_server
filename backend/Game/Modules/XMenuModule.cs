@@ -609,10 +609,17 @@ namespace Game.Modules
 					return;
 				}
 
-				player.Notify("Information", "Du hast jemanden Stabilisiert!", NotificationType.INFO);
-				player.Notify("Information", "Du wurdest Stabilisiert!", NotificationType.INFO);
+				var inventory = InventoryService.Get(player.InventoryId);
+				if (inventory == null) return;
+
+				var item = InventoryService.GetItem(itemId);
+				if (item == null) return;
+
+				InventoryController.RemoveItem(inventory, item, 1);
 				target.Stabilized = true;
 				player.SetStreamSyncedMetaData("STABILIZED", true);
+				player.Notify("Information", "Du hast jemanden Stabilisiert!", NotificationType.INFO);
+				player.Notify("Information", "Du wurdest Stabilisiert!", NotificationType.INFO);
 			}, 20000);
 		}
 
