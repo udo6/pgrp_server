@@ -322,8 +322,9 @@ namespace Game.Modules
 
 			var inventory = InventoryService.Get(player.InventoryId);
 			var container = InventoryService.Get(target.InventoryId);
+			if (inventory == null || container == null) return;
 
-			var inventoryItems = InventoryService.GetInventoryItems2(inventory.Id, container?.Id);
+			var inventoryItems = InventoryService.GetInventoryItems2(inventory.Id, container.Id);
 			var invItems = InventoryController.GetInventoryItems(inventoryItems.Items1, itemBases);
 			var ctnItems = InventoryController.GetInventoryItems(inventoryItems.Items2, itemBases);
 
@@ -333,9 +334,11 @@ namespace Game.Modules
 				{
 					Inventory = inventory,
 					InventoryItems = invItems,
+					ContainerLabel = InventoryModule.GetContainerLabel(container.Type),
 					Container = container,
 					ContainerItems = ctnItems,
 					Loadout = loadoutData,
+					GiveItemTarget = -1,
 					SearchTargetId = target.DbId
 				}));
 				return;
@@ -351,9 +354,11 @@ namespace Game.Modules
 				{
 					Inventory = inventory,
 					InventoryItems = invItems,
+					ContainerLabel = InventoryModule.GetContainerLabel(container.Type),
 					Container = container,
 					ContainerItems = ctnItems,
 					Loadout = loadoutData,
+					GiveItemTarget = -1,
 					SearchTargetId = target.DbId
 				}));
 			}, 10000);

@@ -46,6 +46,7 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Inventory:Throw", ThrowItem);
 			Alt.OnClient<RPPlayer, int>("Server:Inventory:QuickUse", QuickUse);
 			Alt.OnClient<RPPlayer, int>("Server:Inventory:PackItem", PackItem);
+			Alt.OnClient<RPPlayer, int, int>("Server:Inventory:PackTargetItem", PackTargetItem);
 			Alt.OnClient<RPPlayer, int, int>("Server:Inventory:DropWeapon", DropWeapon);
 		}
 
@@ -209,6 +210,27 @@ namespace Game.Modules
 					break;
 				case 5:
 					StoreVest(player);
+					break;
+			}
+		}
+
+		private static void PackTargetItem(RPPlayer player, int targetId, int item)
+		{
+			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
+			if (target == null || target.Position.Distance(player.Position) > 5f) return;
+
+			var account = AccountService.Get(target.DbId);
+			if (account == null || (account.Alive && !account.Cuffed && !account.Roped)) return;
+
+			switch (item)
+			{
+				case 1:
+					if (!account.Phone) return;
+					StorePhone(target, account);
+					break;
+				case 2:
+					if (!account.Laptop) return;
+					StoreLaptop(target, account);
 					break;
 			}
 		}
@@ -445,7 +467,7 @@ namespace Game.Modules
 			return shape.InventoryAccess.Count == 0 || shape.InventoryAccess.Any(x => (x.Type == OwnerType.PLAYER && x.Id == player.DbId) || (x.Type == OwnerType.TEAM && x.Id == player.TeamId));
 		}
 
-		private static string GetContainerLabel(InventoryType type)
+		public static string GetContainerLabel(InventoryType type)
 		{
 			if (!ContainerLabels.ContainsKey(type)) return "Unbekannt";
 
