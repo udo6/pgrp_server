@@ -19,6 +19,13 @@ namespace Game.Modules
 
 		public static void SendToCreator(RPPlayer player, CustomizationModel customization, Position outsidePos)
 		{
+			var pos = PositionService.Get(player.PositionId);
+			if(pos != null)
+			{
+				pos.Position = outsidePos;
+				PositionService.Update(pos);
+			}
+
 			player.InInterior = true;
 			player.OutsideInteriorPosition = outsidePos;
 			player.SetPosition(new(402.8664f, -996.4108f, -100f));

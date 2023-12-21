@@ -59,7 +59,7 @@ namespace Game
 
 			if(InventoryController.RemoveItem(inventory, item.Slot, 1))
 			{
-				LoadoutService.Add(new(player.DbId, Hash, 0, Federal ? LoadoutType.FEDERAL : LoadoutType.DEFAULT));
+				LoadoutService.Add(new(player.DbId, Hash, 0, 0, Federal ? LoadoutType.FEDERAL : LoadoutType.DEFAULT));
 				player.AddWeapon(Hash, 0, true);
 			}
 		}
