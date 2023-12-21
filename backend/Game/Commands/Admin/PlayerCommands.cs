@@ -173,6 +173,18 @@ namespace Game.Commands.Admin
 			player.ShowNativeMenu(true, new($"Suche '{search}' ({all.Count})", nativeItems));
 		}
 
+		[Command("afind")]
+		public static void FindPlayer(RPPlayer player, string targetName)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
+			if (target == null) return;
+
+			player.Emit("Client:PlayerModule:SetWaypoint", target.Position.X, target.Position.Y);
+			player.Notify("Administration", "Du hast einen Spieler lokalisiert!", NotificationType.SUCCESS);
+		}
+
 
 
 
