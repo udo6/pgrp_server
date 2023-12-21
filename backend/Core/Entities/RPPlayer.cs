@@ -106,7 +106,21 @@ namespace Core.Entities
         // JOB VEHICLES
         public RPVehicle? JobVehicle = null;
 
-        public bool IsInJob()
+		// CLOTHES
+		public bool HatState { get; set; } = true;
+		public bool MaskState { get; set; } = true;
+		public bool GlassesState { get; set; } = true;
+		public bool EarsState { get; set; } = true;
+		public bool TopState { get; set; } = true;
+		public bool UndershirtState { get; set; } = true;
+		public bool WatchState { get; set; } = true;
+		public bool BraceletState { get; set; } = true;
+		public bool PantsState { get; set; } = true;
+		public bool ShoesState { get; set; } = true;
+		public bool AccessoriesState { get; set; } = true;
+		public bool DecalsState { get; set; } = true;
+
+		public bool IsInJob()
         {
             return (IsInGarbageJob || IsInGardenerJob || IsInMoneyTruckJob);
         }

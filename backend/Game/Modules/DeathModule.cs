@@ -133,7 +133,7 @@ namespace Game.Modules
 
 		private static InjuryType GetInjuryType(uint weapon)
 		{
-			var weaponItemScript = (WeaponItemScript)InventoryController.ItemScripts.FirstOrDefault(x => x.Type == ItemType.WEAPON && ((WeaponItemScript)x).Hash == weapon)!;
+			var weaponItemScript = InventoryController.GetWeaponItemScripts().FirstOrDefault(x => x.Hash == weapon);
 			if(weaponItemScript != null) return weaponItemScript.Injury;
 
 			if (SpecialInjuries.ContainsKey(weapon)) return SpecialInjuries[weapon];

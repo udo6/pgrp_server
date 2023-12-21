@@ -81,7 +81,7 @@ namespace Game.Controllers
 			var mainMarker = MarkerStreamer.AddMarker(new(
 				1,
 				new(gwPos.Position.X, gwPos.Position.Y, gwPos.Position.Z - 30),
-				new(300, 300, 300),
+				new(400, 400, 400),
 				new(0, 155, 255, 255),
 				0,
 				gangwar.Id));

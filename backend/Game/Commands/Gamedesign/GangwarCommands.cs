@@ -5,6 +5,7 @@ using Database.Models;
 using Database.Models.Gangwar;
 using Database.Services;
 using Game.Controllers;
+using Game.Streamer;
 
 namespace Game.Commands.Gamedesign
 {
@@ -18,8 +19,15 @@ namespace Game.Commands.Gamedesign
 			var pos = new PositionModel(player.Position, player.Rotation);
 			PositionService.Add(pos);
 
-			var gw = new GangwarModel(name.Replace('_', ' '), pos.Id, 0, DateTime.Now.AddHours(-48), 0, 0);
+			var gw = new GangwarModel(name.Replace('_', ' '), pos.Id, 0, DateTime.Now.AddHours(-72), 0, 0);
 			GangwarService.Add(gw);
+			MarkerStreamer.AddMarker(new(
+				1,
+				new(pos.X, pos.Y, pos.Z - 30),
+				new(400, 400, 400),
+				new(0, 155, 255, 255),
+				0,
+				0));
 		}
 
 		[Command("addgwspawn1")]
