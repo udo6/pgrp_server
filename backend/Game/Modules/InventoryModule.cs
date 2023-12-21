@@ -219,18 +219,26 @@ namespace Game.Modules
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
 			if (target == null || target.Position.Distance(player.Position) > 5f) return;
 
-			var account = AccountService.Get(target.DbId);
-			if (account == null || (account.Alive && !account.Cuffed && !account.Roped)) return;
+			var targetAccount = AccountService.Get(target.DbId);
+			if (targetAccount == null || (targetAccount.Alive && !targetAccount.Cuffed && !targetAccount.Roped)) return;
 
 			switch (item)
 			{
 				case 1:
-					if (!account.Phone) return;
-					StorePhone(target, account);
+					if (!targetAccount.Phone || !InventoryController.AddItem(target.InventoryId, 12, 1)) return;
+
+					player.ShowComponent("Inventory", false);
+					target.Phone = false;
+					targetAccount.Phone = false;
+					AccountService.Update(targetAccount);
 					break;
 				case 2:
-					if (!account.Laptop) return;
-					StoreLaptop(target, account);
+					if (!targetAccount.Laptop || !InventoryController.AddItem(target.InventoryId, 13, 1)) return;
+
+					player.ShowComponent("Inventory", false);
+					target.Laptop = false;
+					targetAccount.Laptop = false;
+					AccountService.Update(targetAccount);
 					break;
 			}
 		}
