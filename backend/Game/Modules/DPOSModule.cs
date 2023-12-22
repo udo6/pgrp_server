@@ -15,8 +15,41 @@ namespace Game.Modules
 			foreach(var model in ImpoundService.GetAll())
 				ImpoundController.LoadImpound(model);
 
+			Alt.OnClient<RPPlayer, string>("Server:Impound:SetPlate", SetVehiclePlate);
 			Alt.OnClient<RPPlayer>("Server:Impound:Open", Open);
 			Alt.OnClient<RPPlayer, int>("Server:Impound:TakeVehicle", TakeVehicle);
+		}
+
+		private static void SetVehiclePlate(RPPlayer player, string plate)
+		{
+			if (player.TeamId != 4 || !player.TeamDuty || !player.IsInVehicle) return;
+
+			if (plate.Length > 8)
+			{
+				player.Notify("Information", "Das Kennzeichen darf nicht länger als 8 Zeichen lang sein!", Core.Enums.NotificationType.ERROR);
+				return;
+			}
+
+			var vehicle = (RPVehicle)player.Vehicle;
+			if (vehicle.DbId < 1) return;
+
+			var dbVehicle = VehicleService.Get(vehicle.DbId);
+			if (dbVehicle == null) return;
+
+			var account = AccountService.Get(player.DbId);
+			if (account == null) return;
+
+			if (account.Money < 5000)
+			{
+				player.Notify("Information", "Du benötigst $5000 um das Kennzeichen eunzuba", Core.Enums.NotificationType.ERROR);
+				return;
+			}
+
+			PlayerController.RemoveMoney(player, 5000);
+			vehicle.NumberplateText = plate;
+			dbVehicle.Plate = plate;
+			VehicleService.UpdateVehicle(dbVehicle);
+			player.Notify("Information", "Du hast ein Kennzeichen verbaut!", Core.Enums.NotificationType.SUCCESS);
 		}
 
 		private static void Open(RPPlayer player)

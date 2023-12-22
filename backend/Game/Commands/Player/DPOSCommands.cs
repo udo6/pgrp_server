@@ -1,6 +1,5 @@
 ﻿using Core.Attribute;
 using Core.Entities;
-using Database.Services;
 using Game.Controllers;
 
 namespace Game.Commands.Player
