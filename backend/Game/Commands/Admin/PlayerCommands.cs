@@ -133,6 +133,7 @@ namespace Game.Commands.Admin
 			player.InInterior = true;
 			player.OutsideInteriorPosition = player.Position;
 			player.Emit("Client:AdminModule:StartSpectating", target);
+			player.SetDimension(target.Dimension);
 		}
 
 		[Command("stopspectate")]
@@ -143,6 +144,7 @@ namespace Game.Commands.Admin
 			player.Emit("Client:AdminModule:StopSpectating");
 			player.InInterior = false;
 			player.SetPosition(player.OutsideInteriorPosition);
+			player.SetDimension(0);
 		}
 
 		[Command("players")]
