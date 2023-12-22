@@ -253,7 +253,7 @@ namespace Game.Modules
 
 		private static void RevivePlayer(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn || player.TeamId != 3) return;
+			if (!player.LoggedIn || player.TeamId != 3 || player.IsGangwar) return;
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
@@ -292,7 +292,7 @@ namespace Game.Modules
 
 		private static void SearchPlayer(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsGangwar) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn) return;
@@ -366,7 +366,7 @@ namespace Game.Modules
 
 		private static void CuffPlayer(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsGangwar) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn || !target.Alive) return;
@@ -388,7 +388,7 @@ namespace Game.Modules
 
 		private static void RopePlayer(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsGangwar) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn || !target.Alive) return;
@@ -418,7 +418,7 @@ namespace Game.Modules
 
 		private static void GrabIntoVehicle(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsGangwar) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn) return;
@@ -454,7 +454,7 @@ namespace Game.Modules
 
 		private static void TakeLicense(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsGangwar) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn) return;
@@ -478,7 +478,7 @@ namespace Game.Modules
 
 		private static void GiveLicense(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsGangwar) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn) return;
@@ -502,7 +502,7 @@ namespace Game.Modules
 
 		private static void TakeID(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsGangwar) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn) return;
@@ -524,7 +524,7 @@ namespace Game.Modules
 
 		private static void GiveID(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsGangwar) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn) return;
@@ -546,7 +546,7 @@ namespace Game.Modules
 
 		private static void GiveMoney(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsGangwar) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn) return;
@@ -561,7 +561,7 @@ namespace Game.Modules
 
 		private static void StabilizePlayer(RPPlayer player, int targetId)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsGangwar) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn) return;

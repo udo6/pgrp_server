@@ -23,6 +23,8 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
 			// ACP VEHICLES APP
+			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPVehicles:SetPlate", ACPSetVehiclePlate);
+			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:ParkVehicle", ACPParkVehicle);
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:SetKeyHolder", ACPSetVehicleKeyHolder);
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPVehicles:SetOwner", ACPSetVehicleOwner);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPVehicles:DeleteVehicle", ACPDeleteVehicle);
@@ -87,6 +89,42 @@ namespace Game.Modules
 		}
 
 		#region ACP Vehicles
+
+		private static void ACPSetVehiclePlate(RPPlayer player, int vehId, string plate)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var vehicle = VehicleService.Get(vehId);
+			if (vehicle == null) return;
+
+			vehicle.Plate = plate;
+			vehicle.Parked = true;
+			VehicleService.UpdateVehicle(vehicle);
+
+			var veh = RPVehicle.All.FirstOrDefault(x => x.DbId == vehId);
+			if (veh == null) return;
+
+			veh.NumberplateText = plate;
+			player.Notify("Administration", "Du hast das Kennzeichen verändert!", NotificationType.SUCCESS);
+		}
+
+		private static void ACPParkVehicle(RPPlayer player, int vehId, int garageId)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var vehicle = VehicleService.Get(vehId);
+			if (vehicle == null) return;
+
+			vehicle.GarageId = garageId;
+			vehicle.Parked = true;
+			VehicleService.UpdateVehicle(vehicle);
+
+			var veh = RPVehicle.All.FirstOrDefault(x => x.DbId == vehId);
+			if (veh == null) return;
+
+			veh.Delete();
+			player.Notify("Administration", "Du hast ein Fahrzeug eingeparkt!", NotificationType.SUCCESS);
+		}
 
 		private static void ACPSetVehicleKeyHolder(RPPlayer player, int vehId, int keyHolderId)
 		{
