@@ -12,7 +12,5 @@ namespace Database.Models.MoneyTruckJob
         public int Id { get; set; }
         public int RouteId { get; set; }
         public int PositionId { get; set; }
-
-        [NotMapped] public bool HasBeenPickedUp { get; set; } = false;
     }
 }

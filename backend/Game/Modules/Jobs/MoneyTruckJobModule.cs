@@ -1,4 +1,5 @@
 ﻿using AltV.Net;
+using AltV.Net.Elements.Entities;
 using AltV.Net.Enums;
 using Core.Attribute;
 using Core.Entities;
@@ -28,7 +29,7 @@ namespace Game.Modules.Jobs
             Alt.OnClient<RPPlayer>("Server:MoneyTruckJob:Open", Open);
             Alt.OnClient<RPPlayer, int>("Server:MoneyTruckJob:Start", Start);
             Alt.OnClient<RPPlayer, int>("Server:MoneyTruckJob:Stop", Stop);
-            Alt.OnClient<RPPlayer, int>("Server:MoneyTruckJob:Pickup", Pickup);
+            Alt.OnClient<RPPlayer>("Server:MoneyTruckJob:Pickup", Pickup);
         }
 
         private static void Open(RPPlayer player)
@@ -71,14 +72,11 @@ namespace Game.Modules.Jobs
             var freeRoute = MoneyTruckJobRouteService.GetAll().FirstOrDefault(x => !x.InWork && DateTime.Now >= x.LastUsed.AddMinutes(10));
             if (freeRoute == null) return;
 
+            var routePositions = MoneyTruckJobRoutePositionService.GetAll().Where(x => x.RouteId == freeRoute.Id).ToList();
+            if (routePositions.Count == 0) return;
+
             var customization = CustomizationService.Get(player.CustomizationId);
             if (customization == null) return;
-
-            if (player.JobVehicle != null)
-            {
-                player.JobVehicle.Delete();
-                player.JobVehicle = null!;
-            }
 
             var spawnPosition = PositionService.Get(model.SpawnLocationId);
             if (spawnPosition == null) return;
@@ -88,6 +86,12 @@ namespace Game.Modules.Jobs
             PlayerController.ApplyPlayerClothes(player);
             player.Notify("Geldtransporter", "Du hast den Job gestartet.", NotificationType.SUCCESS);
             player.Notify("Geldtransporter", $"Du hast die Route {freeRoute.Name} erhalten", NotificationType.INFO);
+
+            if (player.JobVehicle != null)
+            {
+                player.JobVehicle.Delete();
+                player.JobVehicle = null!;
+            }
 
             RPVehicle moneyTruck = (RPVehicle)Alt.CreateVehicle(VehicleModel.Stockade, spawnPosition.Position, spawnPosition.Rotation);
             moneyTruck.OwnerId = player.DbId;
@@ -100,6 +104,15 @@ namespace Game.Modules.Jobs
             moneyTruck.NumberplateText = "MONEY-0" + player.Id * 2;
 
             player.JobVehicle = moneyTruck;
+            freeRoute.LastUsed = DateTime.Now;
+
+            routePositions.ForEach(position =>
+            {
+                var pos = PositionService.Get(position.PositionId);
+                if (pos == null) return;
+
+                player.TemporaryBlips.Add(Alt.CreateBlip(false, BlipType.Destination, pos.Position, new[] { player }));
+            });
         }
 
         private static void Stop(RPPlayer player, int id)
@@ -117,6 +130,7 @@ namespace Game.Modules.Jobs
 
             player.IsInMoneyTruckJob = false;
             player.Notify("Geldtransporter", "Du hast den Job beendet.", NotificationType.SUCCESS);
+            player.Emit("Client:PropSyncModule:Clear");
             player.TempClothesId = 0;
             PlayerController.ApplyPlayerClothes(player);
 
@@ -125,23 +139,38 @@ namespace Game.Modules.Jobs
                 player.JobVehicle.Delete();
                 player.JobVehicle = null!;
             }
+
+            player.TemporaryBlips.ForEach(blip =>
+            {
+                if (blip == null) return;
+
+                blip.Destroy();
+                player.TemporaryBlips.Remove(blip);
+            });
         }
 
-        private static void Pickup(RPPlayer player, int id)
+        private static void Pickup(RPPlayer player)
         {
             if (!player.LoggedIn || player == null || !player.IsInMoneyTruckJob) return;
 
-            var model = MoneyTruckJobRoutePositionService.Get(id);
+            var shape = RPShape.All.FirstOrDefault(x => player.Position.Distance(x.Position) <= x.Size && x.ShapeType == ColshapeType.MONEY_TRUCK_JOB_PICKUP && player.Dimension == x.Dimension);
+            if (shape == null) return;
+
+            var model = MoneyTruckJobRoutePositionService.Get(shape.Id);
             if (model == null) return;
-            
-            if (model.HasBeenPickedUp)
+
+            shape.GetData("MONEY_TRUCK_PICKED_UP", out bool pickedUp);
+
+            if (pickedUp)
             {
                 player.Notify("Geldtransporter", "Das Geld wurde hier bereits abgeholt.", NotificationType.ERROR);
                 return;
             }
 
-            model.HasBeenPickedUp = true;
-            // TODO: Player animation and set prop
+            shape.SetData("MONEY_TRUCK_PICKED_UP", true);
+            player.Notify("Geldtransporter", "Du hast das Geld abgeholt.", NotificationType.SUCCESS);
+            player.Emit("Client:PropSyncModule:AddProp", "prop_money_bag_01", 57005, 0, 0, 0, 0, 0, 0);
+            // TODO: Play animation
         }
     }
 }
