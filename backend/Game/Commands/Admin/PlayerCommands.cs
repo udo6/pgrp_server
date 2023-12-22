@@ -106,7 +106,9 @@ namespace Game.Commands.Admin
 			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
 			if (target == null) return;
 
-			player.SetPosition(target.Position);
+			var targetPos = target.InInterior ? target.OutsideInteriorPosition : target.Position;
+
+			player.SetPosition(targetPos);
 		}
 
 		[Command("bring")]
@@ -203,7 +205,9 @@ namespace Game.Commands.Admin
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
 			if (target == null) return;
 
-			player.SetPosition(target.Position);
+			var targetPos = target.InInterior ? target.OutsideInteriorPosition : target.Position;
+
+			player.SetPosition(targetPos);
 			player.Notify("Administration", $"Du hast dich zu {target.Name} teleportiert!", NotificationType.SUCCESS);
 		}
 
