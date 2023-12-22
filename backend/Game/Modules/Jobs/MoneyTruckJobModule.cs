@@ -118,6 +118,7 @@ namespace Game.Modules.Jobs
 
             player.IsInMoneyTruckJob = false;
             player.Notify("Geldtransporter", "Du hast den Job beendet.", NotificationType.SUCCESS);
+            player.Emit("Client:PropSyncModule:Clear");
             player.TempClothesId = 0;
             PlayerController.ApplyPlayerClothes(player);
 
@@ -148,8 +149,8 @@ namespace Game.Modules.Jobs
 
             shape.SetData("MONEY_TRUCK_PICKED_UP", true);
             player.Notify("Geldtransporter", "Du hast das Geld abgeholt.", NotificationType.SUCCESS);
-            player.Emit("Client:MoneyTruckModule:AddProp", true);
-            // TODO: Player animation and set prop
+            player.Emit("Client:PropSyncModule:AddProp", "prop_money_bag_01", 57005, 0, 0, 0, 0, 0, 0);
+            // TODO: Player animation
         }
     }
 }
