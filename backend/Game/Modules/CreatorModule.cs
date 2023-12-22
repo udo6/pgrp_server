@@ -43,6 +43,7 @@ namespace Game.Modules
 			custom.Finished = true;
 			CustomizationService.Update(custom);
 
+			player.InInterior = false;
 			player.Visible = true;
 			PlayerController.LoadPlayer(player);
 
