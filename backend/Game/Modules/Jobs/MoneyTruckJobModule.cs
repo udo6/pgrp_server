@@ -111,7 +111,7 @@ namespace Game.Modules.Jobs
                 var pos = PositionService.Get(position.PositionId);
                 if (pos == null) return;
 
-                player.TemporaryBlips.ToList().Add(Alt.CreateBlip(false, BlipType.Destination, pos.Position, new[] { player }));
+                player.TemporaryBlips.Add(Alt.CreateBlip(false, BlipType.Destination, pos.Position, new[] { player }));
             });
         }
 
@@ -140,12 +140,12 @@ namespace Game.Modules.Jobs
                 player.JobVehicle = null!;
             }
 
-            player.TemporaryBlips.ToList().ForEach(blip =>
+            player.TemporaryBlips.ForEach(blip =>
             {
                 if (blip == null) return;
 
                 blip.Destroy();
-                player.TemporaryBlips.ToList().Remove(blip);
+                player.TemporaryBlips.Remove(blip);
             });
         }
 
