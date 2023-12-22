@@ -45,7 +45,7 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, int, string, string, bool>("Server:Laptop:ACPPlayers:BanPlayer", ACPBanPlayer);
 			Alt.OnClient<RPPlayer, int, string, bool>("Server:Laptop:ACPPlayers:KickPlayer", ACPKickPlayer);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:WarnPlayer", ACPWarnPlayer);
-			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:SaveRecord", SaveACPRecord);
+			Alt.OnClient<RPPlayer, int, string, string>("Server:Laptop:ACPPlayers:SaveRecord", SaveACPRecord);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:RequestPlayerData", RequestACPPlayerData);
 			Alt.OnClient<RPPlayer, string>("Server:Laptop:ACPPlayers:Search", SearchACPPlayers);
 
@@ -475,7 +475,7 @@ namespace Game.Modules
 			AccountService.AddAdminHistory(history);
 		}
 
-		private static void SaveACPRecord(RPPlayer player, int id, string description)
+		private static void SaveACPRecord(RPPlayer player, int id, string description, string supportCallMessage)
 		{
 			if (player.AdminRank < Core.Enums.AdminRank.MODERATOR) return;
 
@@ -483,6 +483,7 @@ namespace Game.Modules
 			if (account == null) return;
 
 			account.AdminRecordDescription = description;
+			account.SupportCallMessage = supportCallMessage;
 			AccountService.Update(account);
 
 			player.Notify("Administration", $"Du hast die Beschreibung von {account.Name} bearbeitet!", Core.Enums.NotificationType.SUCCESS);
