@@ -3,8 +3,6 @@ using Core.Attribute;
 using Core.Entities;
 using Database.Services;
 using Newtonsoft.Json;
-using System.ComponentModel;
-using System.Security.Principal;
 
 namespace Game.Modules
 {
@@ -79,6 +77,9 @@ namespace Game.Modules
 
 		private static void ToggleClothes(RPPlayer player, int id)
 		{
+			var custom = CustomizationService.Get(player.CustomizationId);
+			if (custom == null) return;
+
 			var clothes = ClothesService.Get(player.ClothesId);
 			if (clothes == null) return;
 
@@ -102,11 +103,12 @@ namespace Game.Modules
 					break;
 				case 5:
 					player.TopState = !player.TopState;
-					player.SetClothing(11, player.TopState ? clothes.Top : 0, player.TopState ? clothes.TopColor : 0, player.TopState ? clothes.TopDlc : 0);
+					player.SetClothing(11, player.TopState ? clothes.Top : 15, player.TopState ? clothes.TopColor : 0, player.TopState ? clothes.TopDlc : 0);
+					player.SetClothing(3, player.TopState ? clothes.Body : 15, player.TopState ? clothes.BodyColor : 0, player.TopState ? clothes.BodyDlc : 0);
 					break;
 				case 6:
 					player.UndershirtState = !player.UndershirtState;
-					player.SetClothing(8, player.UndershirtState ? clothes.Undershirt : 0, player.UndershirtState ? clothes.UndershirtColor : 0, player.UndershirtState ? clothes.UndershirtDlc : 0);
+					player.SetClothing(8, player.UndershirtState ? clothes.Undershirt : 15, player.UndershirtState ? clothes.UndershirtColor : 0, player.UndershirtState ? clothes.UndershirtDlc : 0);
 					break;
 				case 7:
 					player.WatchState = !player.WatchState;
@@ -118,11 +120,11 @@ namespace Game.Modules
 					break;
 				case 9:
 					player.PantsState = !player.PantsState;
-					player.SetClothing(4, player.PantsState ? clothes.Pants : 0, player.PantsState ? clothes.PantsColor : 0, player.PantsState ? clothes.PantsDlc : 0);
+					player.SetClothing(4, player.PantsState ? clothes.Pants : 21, player.PantsState ? clothes.PantsColor : 0, player.PantsState ? clothes.PantsDlc : 0);
 					break;
 				case 10:
 					player.ShoesState = !player.ShoesState;
-					player.SetClothing(6, player.ShoesState ? clothes.Shoes : 0, player.ShoesState ? clothes.ShoesColor : 0, player.ShoesState ? clothes.ShoesDlc : 0);
+					player.SetClothing(6, player.ShoesState ? clothes.Shoes : custom.Gender ? 34 : 35, player.ShoesState ? clothes.ShoesColor : 0, player.ShoesState ? clothes.ShoesDlc : 0);
 					break;
 				case 11:
 					player.AccessoriesState = !player.AccessoriesState;
