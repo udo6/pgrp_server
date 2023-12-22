@@ -8,6 +8,8 @@ using Database.Models.Account;
 using Database.Models.Crimes;
 using Database.Services;
 using Game.Controllers;
+using Logs;
+using Logs.Enums;
 using Newtonsoft.Json;
 
 namespace Game.Modules
@@ -36,7 +38,7 @@ namespace Game.Modules
 			// ACP PLAYERS APP
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:UnwarnPlayer", ACPUnwarnPlayer);
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPPlayers:SetDimension", ACPSetPlayerDimension);
-			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:Uncuff", ACPToggleUncuffPlayer);
+			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:Uncuff", ACPUncuffPlayer);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ToggleFreeze", ACPTogglePlayerFreeze);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ResetHardware", ACPResetHardware);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:ResetSocial", ACPResetSocial);
@@ -106,6 +108,7 @@ namespace Game.Modules
 
 			veh.NumberplateText = plate;
 			player.Notify("Administration", "Du hast das Kennzeichen verändert!", NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_SETPLATE);
 		}
 
 		private static void ACPParkVehicle(RPPlayer player, int vehId, int garageId)
@@ -124,6 +127,7 @@ namespace Game.Modules
 
 			veh.Delete();
 			player.Notify("Administration", "Du hast ein Fahrzeug eingeparkt!", NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_PARK);
 		}
 
 		private static void ACPSetVehicleKeyHolder(RPPlayer player, int vehId, int keyHolderId)
@@ -141,6 +145,7 @@ namespace Game.Modules
 
 			veh.KeyHolderId = keyHolderId;
 			player.Notify("Administration", "Du hast den Schlüsselbesitzer umgesetzt!", NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_SETKEYHOLDER);
 		}
 
 		private static void ACPSetVehicleOwner(RPPlayer player, int vehId, int ownerId, int ownerType)
@@ -160,6 +165,7 @@ namespace Game.Modules
 			veh.OwnerId = ownerId;
 			veh.OwnerType = (OwnerType)ownerType;
 			player.Notify("Administration", "Du hast den Owner umgesetzt!", NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_SETOWNER);
 		}
 
 		private static void ACPDeleteVehicle(RPPlayer player, int vehId)
@@ -177,6 +183,7 @@ namespace Game.Modules
 
 			veh.Delete();
 			player.Notify("Administration", "Du hast ein Fahrzeug gelöscht!", NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_DELETE);
 		}
 
 		private static void ACPGotoVehicle(RPPlayer player, int vehId)
@@ -188,6 +195,7 @@ namespace Game.Modules
 
 			player.SetPosition(vehicle.Position);
 			player.Notify("Administration", "Du hast dich zu einem Fahrzeug teleportiert!", NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_GOTO);
 		}
 
 		private static void ACPBringVehicle(RPPlayer player, int vehId)
@@ -200,6 +208,7 @@ namespace Game.Modules
 			vehicle.Position = player.Position;
 			vehicle.Rotation = Rotation.Zero;
 			player.Notify("Administration", "Du hast ein Fahrzeug zu dir teleportiert!", NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_BRING);
 		}
 
 		private static void ACPRequestVehicleData(RPPlayer player, int vehId)
@@ -277,6 +286,7 @@ namespace Game.Modules
 
 			var history = new AdminHistoryModel(id, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.UNWARN);
 			AccountService.AddAdminHistory(history);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_UNWARN);
 		}
 
 		private static void ACPSetPlayerDimension(RPPlayer player, int id, int dimension)
@@ -290,9 +300,10 @@ namespace Game.Modules
 
 			target.Notify("Information", $"Du wurdest von {player.Name} in Dimesion {dimension} gesetzt.", NotificationType.INFO);
 			player.Notify("Administration", $"Du hast {target.Name} in Dimesion {dimension} gesetzt.", NotificationType.INFO);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SETDIMENSION);
 		}
 
-		private static void ACPToggleUncuffPlayer(RPPlayer player, int id)
+		private static void ACPUncuffPlayer(RPPlayer player, int id)
 		{
 			if (player.AdminRank < AdminRank.SUPPORTER) return;
 
@@ -304,6 +315,7 @@ namespace Game.Modules
 
 			target.Notify("Information", $"Du wurdest von {player.Name} entfesselt.", NotificationType.INFO);
 			player.Notify("Administration", $"Du hast {target.Name} entfesselt.", NotificationType.INFO);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_UNCUFF);
 		}
 
 		private static void ACPTogglePlayerFreeze(RPPlayer player, int id)
@@ -316,6 +328,7 @@ namespace Game.Modules
 			target.Frozen = !target.Frozen;
 			target.Notify("Information", $"Du wurdest von {player.Name} {(target.Frozen ? "gefreezed" : "unfreezed")}.", NotificationType.INFO);
 			player.Notify("Administration", $"Du hast {target.Name} {(target.Frozen ? "gefreezed" : "unfreezed")}.", NotificationType.INFO);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_TOGGLE_FREEZE);
 		}
 
 		private static void ACPResetHardware(RPPlayer player, int id)
@@ -330,6 +343,7 @@ namespace Game.Modules
 			AccountService.Update(targetAccount);
 
 			player.Notify("Administration", $"Du hast den Socialclub von {targetAccount.Name} zurück gesetzt!", NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_HWID_RESET);
 		}
 
 		private static void ACPResetSocial(RPPlayer player, int id)
@@ -343,6 +357,7 @@ namespace Game.Modules
 			AccountService.Update(targetAccount);
 
 			player.Notify("Administration", $"Du hast den Socialclub von {targetAccount.Name} zurück gesetzt!", NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SCID_RESET);
 		}
 
 		private static void ACPSetAdmin(RPPlayer player, int id, int rank)
@@ -362,6 +377,7 @@ namespace Game.Modules
 
 			target.AdminRank = (AdminRank)rank;
 			target.Notify("Administration", $"Du wurdest von {player.Name} auf Rang {rank} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SETADMIN);
 		}
 
 		private static void ACPSetMoney(RPPlayer player, int id, int money, int bank)
@@ -382,6 +398,7 @@ namespace Game.Modules
 
 			target.EmitBrowser("Hud:SetMoney", money);
 			target.Notify("Administration", $"Dein Geld wurde von {player.Name} auf ${money} und ${bank} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SETMONEY);
 		}
 
 		private static void ACPSetTeam(RPPlayer player, int id, int teamId, int rank)
@@ -408,6 +425,7 @@ namespace Game.Modules
 
 			target.TeamId = teamId;
 			target.Notify("Administration", $"Du wurdest von {player.Name} in die Fraktion {team.ShortName} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SETTEAM);
 		}
 
 		private static void ACPUnbanPlayer(RPPlayer player, int id, string reason)
@@ -425,6 +443,7 @@ namespace Game.Modules
 
 			var history = new AdminHistoryModel(targetAccount.Id, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.UNBAN);
 			AccountService.AddAdminHistory(history);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_UNBAN);
 		}
 
 		private static void ACPBanPlayer(RPPlayer player, int id, string reason, string datetime, bool anonym)
@@ -462,6 +481,7 @@ namespace Game.Modules
 			AccountService.AddAdminHistory(history);
 
 			target.Kick($"Du wurdest vom Gameserver gebannt! Grund: {reason}");
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_BAN);
 		}
 
 		private static void ACPKickPlayer(RPPlayer player, int id, string reason, bool anonym)
@@ -496,6 +516,7 @@ namespace Game.Modules
 			AccountService.AddAdminHistory(history);
 
 			target.Kick($"Du wurdest vom Gameserver gekickt! Grund: {reason}");
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_KICK);
 		}
 
 		private static void ACPWarnPlayer(RPPlayer player, int id, string reason)
@@ -511,6 +532,7 @@ namespace Game.Modules
 
 			var history = new AdminHistoryModel(account.Id, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.WARN);
 			AccountService.AddAdminHistory(history);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_WARN);
 		}
 
 		private static void SaveACPRecord(RPPlayer player, int id, string description, string supportCallMessage)
@@ -525,6 +547,7 @@ namespace Game.Modules
 			AccountService.Update(account);
 
 			player.Notify("Administration", $"Du hast die Beschreibung von {account.Name} bearbeitet!", Core.Enums.NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SAVEDATA);
 		}
 
 		private static void RequestACPPlayerData(RPPlayer player, int id)

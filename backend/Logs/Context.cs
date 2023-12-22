@@ -12,6 +12,7 @@ namespace Logs
 		public DbSet<PlayerConnectionModel> PlayerConnectionLogs { get; set; }
 		public DbSet<BanModel> BanLogs { get; set; }
 		public DbSet<ExplosionModel> Explosions { get; set; }
+		public DbSet<ACPActionModel> ACPActions { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

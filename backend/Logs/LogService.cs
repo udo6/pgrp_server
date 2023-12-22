@@ -50,5 +50,14 @@ namespace Logs
 			ctx.Explosions.Add(model);
 			ctx.SaveChanges();
 		}
+
+		public static void LogACPAction(int accountId, int targetId, TargetType targetType, ACPActionType actionType)
+		{
+			var model = new ACPActionModel(accountId, targetId, targetType, actionType, DateTime.Now);
+
+			using var ctx = new Context();
+			ctx.ACPActions.Add(model);
+			ctx.SaveChanges();
+		}
 	}
 }
