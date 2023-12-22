@@ -128,7 +128,9 @@ namespace Game.Modules
 				return;
 			}
 
-			PlayerController.SetPlayerDead(player, GetInjuryType(weapon));
+			var injury = GetInjuryType(weapon);
+			Console.WriteLine($"[PLAYER DEATH] {weapon}: {injury}");
+			PlayerController.SetPlayerDead(player, injury);
 		}
 
 		private static InjuryType GetInjuryType(uint weapon)
