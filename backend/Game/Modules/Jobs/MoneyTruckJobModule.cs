@@ -28,7 +28,7 @@ namespace Game.Modules.Jobs
             Alt.OnClient<RPPlayer>("Server:MoneyTruckJob:Open", Open);
             Alt.OnClient<RPPlayer, int>("Server:MoneyTruckJob:Start", Start);
             Alt.OnClient<RPPlayer, int>("Server:MoneyTruckJob:Stop", Stop);
-            Alt.OnClient<RPPlayer, int>("Server:MoneyTruckJob:Pickup", Pickup);
+            Alt.OnClient<RPPlayer>("Server:MoneyTruckJob:Pickup", Pickup);
         }
 
         private static void Open(RPPlayer player)
@@ -100,6 +100,7 @@ namespace Game.Modules.Jobs
             moneyTruck.NumberplateText = "MONEY-0" + player.Id * 2;
 
             player.JobVehicle = moneyTruck;
+            freeRoute.LastUsed = DateTime.Now;
         }
 
         private static void Stop(RPPlayer player, int id)
@@ -127,20 +128,27 @@ namespace Game.Modules.Jobs
             }
         }
 
-        private static void Pickup(RPPlayer player, int id)
+        private static void Pickup(RPPlayer player)
         {
             if (!player.LoggedIn || player == null || !player.IsInMoneyTruckJob) return;
 
-            var model = MoneyTruckJobRoutePositionService.Get(id);
+            var shape = RPShape.All.FirstOrDefault(x => player.Position.Distance(x.Position) <= x.Size && x.ShapeType == ColshapeType.MONEY_TRUCK_JOB_PICKUP && player.Dimension == x.Dimension);
+            if (shape == null) return;
+
+            var model = MoneyTruckJobRoutePositionService.Get(shape.Id);
             if (model == null) return;
-            
-            if (model.HasBeenPickedUp)
+
+            shape.GetData("MONEY_TRUCK_PICKED_UP", out bool pickedUp);
+
+            if (pickedUp)
             {
                 player.Notify("Geldtransporter", "Das Geld wurde hier bereits abgeholt.", NotificationType.ERROR);
                 return;
             }
 
-            model.HasBeenPickedUp = true;
+            shape.SetData("MONEY_TRUCK_PICKED_UP", true);
+            player.Notify("Geldtransporter", "Du hast das Geld abgeholt.", NotificationType.SUCCESS);
+            player.Emit("Client:MoneyTruckModule:AddProp", true);
             // TODO: Player animation and set prop
         }
     }
