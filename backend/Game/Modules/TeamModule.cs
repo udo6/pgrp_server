@@ -169,11 +169,19 @@ namespace Game.Modules
 		{
 			if (!player.LoggedIn || player.TeamId < 1) return;
 
+			var loadout = LoadoutService.GetPlayerLoadout(player.DbId);
+
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
 
 			var team = TeamService.Get(player.TeamId);
 			if (team == null) return;
+
+			if (loadout.Any(x => x.Hash == 3219281620 || x.Hash == team.MeeleWeaponHash || x.Hash == 911657153u || x.Hash == 1233104067u))
+			{
+				player.Notify("Information", "Du hast bereits eine der Waffen dabei!", NotificationType.ERROR);
+				return;
+			}
 
 			var weapons = new List<LoadoutModel>()
 			{
@@ -194,6 +202,7 @@ namespace Game.Modules
 					return;
 				}
 
+				player.EmitBrowser("Hud:SetMoney", account.Money - 2500);
 				account.Money -= 2500;
 				AccountService.Update(account);
 			}
