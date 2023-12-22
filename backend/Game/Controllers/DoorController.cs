@@ -1,10 +1,9 @@
-﻿using Database.Models.Door;
+﻿using AltV.Net;
+using Core.Entities;
+using Core.Enums;
+using Core.Extensions;
+using Database.Models.Door;
 using Database.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Game.Controllers
 {
@@ -12,7 +11,13 @@ namespace Game.Controllers
 	{
 		public static void LoadDoor(DoorModel model)
 		{
+			var pos = PositionService.Get(model.PositionId);
+			if (pos == null) return;
 
+			var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), model.Radius, 2f);
+			shape.Id = model.Id;
+			shape.ShapeType = ColshapeType.DOOR;
+			shape.Size = model.Radius;
 		}
 
 		public static bool HasDoorAccess(int doorId, int playerId, int teamId)

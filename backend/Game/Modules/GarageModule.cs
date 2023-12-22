@@ -32,7 +32,11 @@ namespace Game.Modules
 			if (pos == null || player.Position.Distance(pos.Position) > 2f) return;
 
 			var parkedVehicles = VehicleService.GetParkedPlayerVehicles(GetOwnerId(player, garage.OwnerType), garage.Id, garage.OwnerType);
-			var tookVehicles = RPVehicle.All.Where(x => x.Position.Distance(pos.Position) < 55f && VehicleController.IsVehicleOwner(x, player) && x.GarageType == garage.Type && x.OwnerType == garage.OwnerType).ToList();
+			var tookVehicles = RPVehicle.All.Where(x =>
+			x.Position.Distance(pos.Position) < 55f &&
+			VehicleController.IsVehicleOwner(x, player) &&
+			x.GarageType == garage.Type &&
+			x.OwnerType == garage.OwnerType).ToList();
 
 			player.ShowComponent("Garage", true, JsonConvert.SerializeObject(new { Id = garage.Id, Vehicles = GetVehicleData(parkedVehicles, tookVehicles) }));
 		}
@@ -61,27 +65,13 @@ namespace Game.Modules
 			vehicle.Parked = false;
 			VehicleService.UpdateVehicle(vehicle);
 
-			var veh = (RPVehicle)Alt.CreateVehicle(baseModel.Hash, pos.Position, pos.Rotation);
-			if (veh == null) return;
-			veh.DbId = vehicle.Id;
-			veh.OwnerId = vehicle.OwnerId;
-			veh.TuningId = vehicle.TuningId;
-			veh.TrunkId = vehicle.TrunkId;
-			veh.GloveBoxId = vehicle.GloveBoxId;
-			veh.BaseId = vehicle.BaseId;
-			veh.PositionId = vehicle.PositionId;
-			veh.OwnerType = vehicle.Type;
-			veh.GarageType = baseModel.GarageType;
-			veh.NumberplateText = vehicle.Plate;
-			veh.SetFuel(vehicle.Fuel);
-			veh.SetMaxFuel(baseModel.MaxFuel);
-			VehicleController.ApplyVehicleTuning(veh);
+			VehicleController.LoadVehicle(vehicle, pos);
 
 			var vehPos = PositionService.Get(vehicle.PositionId);
 			if (vehPos == null) return;
 
-			vehPos.Position = veh.Position;
-			vehPos.Rotation = veh.Rotation;
+			vehPos.Position = pos.Position;
+			vehPos.Rotation = pos.Rotation;
 			PositionService.Update(vehPos);
 		}
 

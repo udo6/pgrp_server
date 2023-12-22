@@ -20,6 +20,7 @@ namespace Game.Controllers
 			if (pos == null) return;
 
 			var veh = (RPVehicle)Alt.CreateVehicle(baseModel.Hash, pos.Position, pos.Rotation);
+			if (veh == null) return;
 			veh.DbId = model.Id;
 			veh.OwnerId = model.OwnerId;
 			veh.KeyHolderId = model.KeyHolderId;

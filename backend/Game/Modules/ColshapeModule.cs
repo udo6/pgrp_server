@@ -2,6 +2,8 @@
 using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
+using Database.Services;
+using Game.Controllers;
 
 namespace Game.Modules
 {
@@ -58,6 +60,53 @@ namespace Game.Modules
 			{
 				if (entered) player.SetInteraction(item.Item2.Item1, item.Item2.Item2);
 				else player.SetInteraction(item.Item2.Item1, "");
+			}
+
+			if(entered && shape.ShapeType == ColshapeType.JUMP_POINT)
+			{
+				var jumppoint = JumppointService.Get(shape.Id);
+				if (jumppoint == null) return;
+
+				if(jumppoint.Type == JumppointType.HOUSE)
+				{
+					var house = HouseService.GetByOwner(jumppoint.OwnerId);
+					if (house == null) return;
+
+					if(house.OwnerId > 0)
+					{
+						var owner = AccountService.Get(house.OwnerId);
+						if (owner == null) return;
+
+						player.Notify("Lagerhalle", $"Besitzer: {owner.Name}", NotificationType.INFO);
+					}
+					else
+					{
+						player.Notify("Lagerhalle", $"Kaufpreis: {HouseController.HousePrices[house.Type]}", NotificationType.INFO);
+					}
+				}
+				else if(jumppoint.Type == JumppointType.WAREHOUSE)
+				{
+					if (jumppoint.OwnerType == OwnerType.PLAYER)
+					{
+						var owner = AccountService.Get(jumppoint.OwnerId);
+
+						if (owner != null)
+						{
+							player.Notify("Lagerhalle", $"Besitzer: {owner.Name}", NotificationType.INFO);
+						}
+						else
+						{
+							player.Notify("Lagerhalle", $"Kaufpreis: {WarehouseController.WarehouseBuyPrice}", NotificationType.INFO);
+						}
+					}
+					else
+					{
+						var team = TeamService.Get(jumppoint.OwnerId);
+						if (team == null) return;
+
+						player.Notify("Lagerhalle", $"Besitzer: {team.ShortName}", NotificationType.INFO);
+					}
+				}
 			}
 		}
 	}

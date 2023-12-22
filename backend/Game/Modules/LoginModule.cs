@@ -61,7 +61,7 @@ namespace Game.Modules
 
 			if (account.BannedUntil > DateTime.Now)
 			{
-				player.Kick($"Du bist noch bis zum {account.BannedUntil:dd.MM.yyyy} vom Gameserver gesperrt! Grund: {account.BanReason}");
+				player.Kick($"Du bist noch bis zum {account.BannedUntil:dd.MM.yyyy} vom Gameserver gesperrt!");
 				return;
 			}
 
