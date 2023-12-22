@@ -95,6 +95,7 @@ namespace Core.Entities
 		public int KillerId { get; set; }
 		public uint KillerWeapon { get; set; }
 		public DateTime KillerDate { get; set; }
+		public IBlip[] TemporaryBlips { get; set; }
 
         // JOBS
         public bool IsInGarbageJob { get; set; } = false;
