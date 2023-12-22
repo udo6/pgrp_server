@@ -32,7 +32,7 @@ namespace Game.Commands.Gamedesign
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
 
-			var model = new DoorEntityModel(doorId, (uint)hash, pos.Id);
+			var model = new DoorEntityModel(doorId, Convert.ToUInt32(hash), pos.Id);
 			DoorService.AddEntity(model);
 			player.Notify("Information", "Entity added", Core.Enums.NotificationType.SUCCESS);
 		}
