@@ -34,5 +34,11 @@ namespace Database.Services.Jobs
             using var ctx = new Context();
             return ctx.MoneyTruckJobRoutePosition.FirstOrDefault(x => x.Id == id);
         }
+
+        public static List<MoneyTruckJobRoutePositionModel> GetPositionsByRouteId(int routeId)
+        {
+            using var ctx = new Context();
+            return ctx.MoneyTruckJobRoutePosition.Where(x => x.RouteId == routeId).ToList();
+        }
     }
 }

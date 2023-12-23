@@ -9,10 +9,12 @@ using Database.Services;
 using Database.Services.Jobs;
 using Game.Controllers;
 using Game.Controllers.Jobs;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +32,7 @@ namespace Game.Modules.Jobs
             Alt.OnClient<RPPlayer, int>("Server:MoneyTruckJob:Start", Start);
             Alt.OnClient<RPPlayer, int>("Server:MoneyTruckJob:Stop", Stop);
             Alt.OnClient<RPPlayer>("Server:MoneyTruckJob:Pickup", Pickup);
+            Alt.OnClient<RPPlayer, int>("Server:MoneyTruckJob:Store", Store);
         }
 
         private static void Open(RPPlayer player)
@@ -72,7 +75,7 @@ namespace Game.Modules.Jobs
             var freeRoute = MoneyTruckJobRouteService.GetAll().FirstOrDefault(x => !x.InWork && DateTime.Now >= x.LastUsed.AddMinutes(10));
             if (freeRoute == null) return;
 
-            var routePositions = MoneyTruckJobRoutePositionService.GetAll().Where(x => x.RouteId == freeRoute.Id).ToList();
+            var routePositions = MoneyTruckJobRoutePositionService.GetPositionsByRouteId(freeRoute.Id);
             if (routePositions.Count == 0) return;
 
             var customization = CustomizationService.Get(player.CustomizationId);
@@ -102,17 +105,24 @@ namespace Game.Modules.Jobs
             moneyTruck.SetFuel(150);
             moneyTruck.SetMaxFuel(150);
             moneyTruck.NumberplateText = "MONEY-0" + player.Id * 2;
+            moneyTruck.SetData("MONEY_COUNT", 0);
 
             player.JobVehicle = moneyTruck;
             freeRoute.LastUsed = DateTime.Now;
 
-            routePositions.ForEach(position =>
+            foreach(var position in routePositions)
             {
                 var pos = PositionService.Get(position.PositionId);
                 if (pos == null) return;
 
-                player.TemporaryBlips.Add(Alt.CreateBlip(false, BlipType.Destination, pos.Position, new[] { player }));
-            });
+                var blip = Alt.CreateBlip(false, BlipType.Destination, pos.Position, new[] { player });
+                blip.ShortRange = false;
+                blip.ScaleXY = new Vector2(0.85f, 0.85f);
+                blip.Sprite = 351;
+                blip.Name = "Geld";
+
+                player.TemporaryBlips.Add(blip);
+            }
         }
 
         private static void Stop(RPPlayer player, int id)
@@ -128,6 +138,10 @@ namespace Game.Modules.Jobs
             var model = MoneyTruckJobService.Get(id);
             if (model == null) return;
 
+            var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
+            if (vehicle == null) return;
+
+            vehicle.GetData("MONEY_COUNT", out int moneyCount);
             player.IsInMoneyTruckJob = false;
             player.Notify("Geldtransporter", "Du hast den Job beendet.", NotificationType.SUCCESS);
             player.Emit("Client:PropSyncModule:Clear");
@@ -140,13 +154,12 @@ namespace Game.Modules.Jobs
                 player.JobVehicle = null!;
             }
 
-            player.TemporaryBlips.ForEach(blip =>
+            foreach (var blip in player.TemporaryBlips)
             {
-                if (blip == null) return;
-
                 blip.Destroy();
-                player.TemporaryBlips.Remove(blip);
-            });
+            }
+
+            player.TemporaryBlips.Clear();
         }
 
         private static void Pickup(RPPlayer player)
@@ -170,7 +183,25 @@ namespace Game.Modules.Jobs
             shape.SetData("MONEY_TRUCK_PICKED_UP", true);
             player.Notify("Geldtransporter", "Du hast das Geld abgeholt.", NotificationType.SUCCESS);
             player.Emit("Client:PropSyncModule:AddProp", "prop_money_bag_01", 57005, 0, 0, 0, 0, 0, 0);
+            player.HasMoneyInHand = true;
             // TODO: Play animation
+        }
+
+        private static void Store(RPPlayer player, int id)
+        {
+            if (!player.LoggedIn || player == null || !player.IsInMoneyTruckJob || !player.HasMoneyInHand) return;
+
+            RPVehicle vehicle = RPVehicle.All.FirstOrDefault(x => x.Id == id)!;
+            if (vehicle == null) return;
+
+            if (vehicle.OwnerId != player.DbId) return;
+
+            vehicle.GetData("MONEY_COUNT", out int moneyCount);
+            vehicle.SetData("MONEY_COUT", moneyCount + 1000);
+            player.Emit("Client:PropSyncModule:Clear");
+            player.HasMoneyInHand = false;
+
+            player.Notify("Geldtransporter", $"Du hast ein Geldsack gesichert.", Core.Enums.NotificationType.INFO);
         }
     }
 }

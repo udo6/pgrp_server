@@ -99,10 +99,11 @@ namespace Core.Entities
 
         // JOBS
         public bool IsInGarbageJob { get; set; } = false;
-		public bool HasGarbageInHand { get; set; } = false;
+        public bool HasGarbageInHand { get; set; } = false;
 
         public bool IsInGardenerJob { get; set; } = false;
         public bool IsInMoneyTruckJob { get; set; } = false;
+        public bool HasMoneyInHand { get; set; } = false;
 
         // JOB VEHICLES
         public RPVehicle? JobVehicle = null;
@@ -138,6 +139,7 @@ namespace Core.Entities
 			Joined = DateTime.Now;
 			Weapons = new();
 			LastLocatedByFIB = DateTime.Now;
+			TemporaryBlips = new();
 		}
 
 		public void Notify(string title, string msg, NotificationType type)
