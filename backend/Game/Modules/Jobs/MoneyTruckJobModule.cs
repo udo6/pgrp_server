@@ -73,7 +73,11 @@ namespace Game.Modules.Jobs
             if (model == null) return;
 
             var freeRoute = MoneyTruckJobRouteService.GetAll().FirstOrDefault(x => !x.InWork && DateTime.Now >= x.LastUsed.AddMinutes(10));
-            if (freeRoute == null) return;
+            if (freeRoute == null)
+            {
+                player.Notify("Geldtransporter", "Es sind keine Routen verfügbar.", NotificationType.ERROR);
+                return;
+            }
 
             var routePositions = MoneyTruckJobRoutePositionService.GetPositionsByRouteId(freeRoute.Id);
             if (routePositions.Count == 0) return;
