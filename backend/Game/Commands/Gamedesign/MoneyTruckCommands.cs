@@ -17,8 +17,6 @@ namespace Game.Commands.Gamedesign
         [Command("createroute")]
         public static void CreateRoute(RPPlayer player, string routeName, int reward)
         {
-            if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
-
             if (routeName.Contains("_")) routeName.Replace('_', ' ');
 
             var route = new MoneyTruckJobRouteModel(routeName, reward);
@@ -29,7 +27,6 @@ namespace Game.Commands.Gamedesign
         [Command("addroutepos")]
         public static void CreateRoute(RPPlayer player, int routeId, int positionId)
         {
-            if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
             if (routeId <= 0 || positionId <= 0) return;
 
             var route = new MoneyTruckJobRoutePositionModel(routeId, positionId);
