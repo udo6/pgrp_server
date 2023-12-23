@@ -12,5 +12,12 @@ namespace Database.Models.MoneyTruckJob
         public int Id { get; set; }
         public int RouteId { get; set; }
         public int PositionId { get; set; }
+
+        public MoneyTruckJobRoutePositionModel() { }
+        public MoneyTruckJobRoutePositionModel(int routeId, int positionId) 
+        {
+            RouteId = routeId;
+            PositionId = positionId;
+        }
     }
 }
