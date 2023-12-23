@@ -58,7 +58,6 @@ namespace Game.Controllers
 			ApplyPlayerLoadout(player);
 			player.ShowComponent("Hud", true);
 			player.EmitBrowser("Hud:ShowInfo", true, JsonConvert.SerializeObject(new HudClientData(account.Money, account.Hunger, account.Thirst)));
-			VoiceModule.OnServerEnablePlayer(player);
 
 			if (!account.Alive)
 				SetPlayerDead(player, account.InjuryType);
@@ -282,7 +281,6 @@ namespace Game.Controllers
 			player.SetStreamSyncedMetaData("ALIVE", true);
 			player.SetStreamSyncedMetaData("STABILIZED", false);
 			player.StopAnimation();
-			VoiceModule.OnServerSetPlayerAlive(player, true);
 		}
 
 		public static void SetPlayerDead(RPPlayer player, InjuryType injury, bool fall = true)
@@ -311,7 +309,6 @@ namespace Game.Controllers
 					player.Spawn(player.Position, 0);
 					player.Emit("Client:AnticheatModule:SetHealth", 200);
 					if (!player.Alive) player.SetInvincible(true);
-					VoiceModule.OnServerSetPlayerAlive(player, false);
 				});
 				return;
 			}
@@ -319,7 +316,6 @@ namespace Game.Controllers
 			player.Spawn(player.Position, 0);
 			player.Emit("Client:AnticheatModule:SetHealth", 200);
 			if (!player.Alive) player.SetInvincible(true);
-			VoiceModule.OnServerSetPlayerAlive(player, false);
 		}
 
 		public static void SetPlayerCuffed(RPPlayer player, bool state)
