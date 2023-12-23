@@ -194,7 +194,7 @@ namespace Game.Modules.Jobs
             if (garbageCount >= 75)
             {
                 player.Notify("Müllabfuhr", "Der Müllwagen ist voll.", Core.Enums.NotificationType.ERROR);
-                player.Emit("Client:PlayerModule:SetGarbageProp", false);
+                player.Emit("Client:PropSyncModule:Clear");
                 player.SetData("HOLDING_GARBAGE", false);
                 player.HasGarbageInHand = false;
                 return;
@@ -205,7 +205,7 @@ namespace Game.Modules.Jobs
              * TODO: 
              * Play animation
              */
-            player.Emit("Client:PlayerModule:SetGarbageProp", false);
+            player.Emit("Client:PropSyncModule:Clear");
             player.SetData("HOLDING_GARBAGE", false);
             player.HasGarbageInHand = false;
 
@@ -228,7 +228,7 @@ namespace Game.Modules.Jobs
             }
 
             shape.SetData("GARBAGE_PICKED_UP", DateTime.Now);
-            player.Emit("Client:PlayerModule:SetGarbageProp", true);
+            player.Emit("Client:PropSyncModule:AddProp", "hei_prop_heist_binbag", 0xdead, 0, 0, 0, 0, 0, 0);
             player.HasGarbageInHand = true;
 
             player.Notify("Müllabfuhr", "Du hast den Müll abgeholt.", Core.Enums.NotificationType.INFO);
