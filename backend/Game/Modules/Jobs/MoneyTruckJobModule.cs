@@ -4,6 +4,7 @@ using AltV.Net.Enums;
 using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
+using Core.Models.MoneyTruck;
 using Core.Models.NativeMenu;
 using Database.Services;
 using Database.Services.Jobs;
@@ -27,6 +28,8 @@ namespace Game.Modules.Jobs
         {
             foreach (var job in MoneyTruckJobService.GetAll()) MoneyTruckJobController.LoadMoneyTruckJobs(job);
             foreach (var points in MoneyTruckJobRoutePositionService.GetAll()) MoneyTruckJobRoutePositionController.LoadMoneyTruckJobRoutePostion(points);
+
+            MoneyTruckJobRouteService.GetAll().ForEach(x => MoneyTruckJobRouteService.ActiveRoutes.Add(new MoneyTruckActiveRouteModel(x.Id, x.Name, x.Reward, false, DateTime.Now.AddMinutes(-10), 0)));
 
             Alt.OnClient<RPPlayer>("Server:MoneyTruckJob:Open", Open);
             Alt.OnClient<RPPlayer, int>("Server:MoneyTruckJob:Start", Start);
@@ -72,7 +75,7 @@ namespace Game.Modules.Jobs
             var model = MoneyTruckJobService.Get(id);
             if (model == null) return;
 
-            var freeRoute = MoneyTruckJobRouteService.GetAll().FirstOrDefault(x => !x.InWork && DateTime.Now >= x.LastUsed.AddMinutes(10));
+            var freeRoute = MoneyTruckJobRouteService.GetFreeRoute();
             if (freeRoute == null)
             {
                 player.Notify("Geldtransporter", "Es sind keine Routen verfügbar.", NotificationType.ERROR);
@@ -113,6 +116,8 @@ namespace Game.Modules.Jobs
 
             player.JobVehicle = moneyTruck;
             freeRoute.LastUsed = DateTime.Now;
+            freeRoute.InWork = true;
+            freeRoute.PlayerId = player.DbId;
 
             foreach(var position in routePositions)
             {
@@ -146,11 +151,18 @@ namespace Game.Modules.Jobs
             if (vehicle == null) return;
 
             vehicle.GetData("MONEY_COUNT", out int moneyCount);
+            PlayerController.AddMoney(player, moneyCount);
             player.IsInMoneyTruckJob = false;
-            player.Notify("Geldtransporter", "Du hast den Job beendet.", NotificationType.SUCCESS);
+            player.Notify("Geldtransporter", "Du hast den Job beendet und dein Geld erhalten.", NotificationType.SUCCESS);
             player.Emit("Client:PropSyncModule:Clear");
             player.TempClothesId = 0;
             PlayerController.ApplyPlayerClothes(player);
+
+            var route = MoneyTruckJobRouteService.GetRouteByPlayerId(player.DbId);
+            if (route == null) return;
+
+            route.InWork = false;
+            route.PlayerId = 0;
 
             if (player.JobVehicle != null)
             {
@@ -186,7 +198,7 @@ namespace Game.Modules.Jobs
 
             shape.SetData("MONEY_TRUCK_PICKED_UP", true);
             player.Notify("Geldtransporter", "Du hast das Geld abgeholt.", NotificationType.SUCCESS);
-            player.Emit("Client:PropSyncModule:AddProp", "prop_money_bag_01", 57005, 0, 0, 0, 0, 0, 0);
+            player.Emit("Client:PropSyncModule:AddProp", "prop_money_bag_01", 0xdead, 0, 0, 0, 0, 0, 0);
             player.HasMoneyInHand = true;
             // TODO: Play animation
         }
@@ -201,7 +213,7 @@ namespace Game.Modules.Jobs
             if (vehicle.OwnerId != player.DbId) return;
 
             vehicle.GetData("MONEY_COUNT", out int moneyCount);
-            vehicle.SetData("MONEY_COUT", moneyCount + 1000);
+            vehicle.SetData("MONEY_COUNT", moneyCount + 1000);
             player.Emit("Client:PropSyncModule:Clear");
             player.HasMoneyInHand = false;
 

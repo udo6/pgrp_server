@@ -12,8 +12,5 @@ namespace Database.Models.MoneyTruckJob
         public int Id { get; set; }
         public string Name { get; set; }
         public int Reward { get; set; }
-
-        [NotMapped] public bool InWork { get; set; }
-        [NotMapped] public DateTime LastUsed { get; set; } = DateTime.Now.AddMinutes(-10);
     }
 }

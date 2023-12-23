@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Core.Enums;
 using Database.Models.MoneyTruckJob;
 using Core.Extensions;
+using Core.Models.MoneyTruck;
+using Database.Services.Jobs;
 
 namespace Game.Controllers.Jobs
 {
@@ -37,6 +39,7 @@ namespace Game.Controllers.Jobs
             blip.Sprite = (ushort)67;
             blip.Color = 46;
             blip.ShortRange = true;
+
         }
     }
 }

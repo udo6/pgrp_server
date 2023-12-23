@@ -1,4 +1,6 @@
-﻿using Database.Models.GarbageJob;
+﻿using AltV.Net.Elements.Entities;
+using Core.Models.MoneyTruck;
+using Database.Models.GarbageJob;
 using Database.Models.MoneyTruckJob;
 using System;
 using System.Collections.Generic;
@@ -8,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace Database.Services.Jobs
 {
-    public class MoneyTruckJobRouteService
+    public static class MoneyTruckJobRouteService
     {
+        public static List<MoneyTruckActiveRouteModel> ActiveRoutes = new List<MoneyTruckActiveRouteModel>();
+
         public static List<MoneyTruckJobRouteModel> GetAll()
         {
             using var ctx = new Context();
@@ -34,6 +38,16 @@ namespace Database.Services.Jobs
         {
             using var ctx = new Context();
             return ctx.MoneyTruckJobRoutes.FirstOrDefault(x => x.Id == id);
+        }
+
+        public static MoneyTruckActiveRouteModel? GetRouteByPlayerId(int playerId)
+        {
+            return ActiveRoutes.FirstOrDefault(x => x.PlayerId == playerId);
+        }
+
+        public static MoneyTruckActiveRouteModel? GetFreeRoute()
+        {
+            return ActiveRoutes.FirstOrDefault(x => !x.InWork && DateTime.Now >= x.LastUsed.AddMinutes(10));
         }
     }
 }

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Core.Enums;
 using Database.Models.MoneyTruckJob;
 using Core.Extensions;
+using Database.Services.Jobs;
 
 namespace Game.Controllers.Jobs
 {
