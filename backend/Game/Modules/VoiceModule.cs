@@ -1,12 +1,12 @@
-﻿using AltV.Net;
-using AltV.Net.Elements.Entities;
-using Core.Attribute;
-using Core.Entities;
+﻿using Core.Attribute;
 
 namespace Game.Modules
 {
 	public static class VoiceModule
 	{
-		
+		[Initialize]
+		public static void Initialize()
+		{
+		}
 	}
 }

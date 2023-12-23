@@ -164,7 +164,20 @@ namespace Game.Modules
 		{
 			var player = (RPPlayer) _player;
 
-			Console.WriteLine($"[ANTICHEAT] {player.Name}: Explosion ({explosionType})");
+			player.ExplosionsCaused++;
+			if(player.ExplosionsCaused > 10)
+			{
+				var account = AccountService.Get(player.DbId);
+				if (account == null) return false;
+
+				account.BannedUntil = DateTime.Now.AddYears(10);
+				account.BanReason = "Cheating";
+				AccountService.Update(account);
+
+				LogService.LogPlayerBan(player.DbId, 0, $"[ANTICHEAT] Too many explosions caused (Explosions: {player.ExplosionsCaused}, Type: {explosionType})");
+				player.Kick("Du wurdest gebannt! Grund: Cheating");
+				return false;
+			}
 
 			if (explosionType == ExplosionType.GrenadeLauncher)
 			{

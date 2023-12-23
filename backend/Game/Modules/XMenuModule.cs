@@ -555,7 +555,7 @@ namespace Game.Modules
 				"Geld übergabe",
 				"Geben einen Betrag zum übergeben an.",
 				InputType.TEXT,
-				"Server:Player.GiveMoney",
+				"Server:Player:GiveMoney",
 				target.DbId)));
 		}
 

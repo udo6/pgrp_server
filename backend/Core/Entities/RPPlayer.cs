@@ -91,6 +91,7 @@ namespace Core.Entities
 		public DateTime LastPositionChange { get; set; }
 
 		public int AllowedHealth { get; set; } = 200;
+		public int ExplosionsCaused { get; set; }
 
 		public int KillerId { get; set; }
 		public uint KillerWeapon { get; set; }

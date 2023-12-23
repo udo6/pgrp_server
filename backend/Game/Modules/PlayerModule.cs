@@ -14,7 +14,7 @@ namespace Game.Modules
 		public static void Initialize()
 		{
 			Alt.OnClient<RPPlayer>("Server:Player:StopInteraction", StopInteraction);
-			Alt.OnClient<RPPlayer, int, string>("Server:Player.GiveMoney", GiveMoney);
+			Alt.OnClient<RPPlayer, int, string>("Server:Player:GiveMoney", GiveMoney);
 		}
 
 		private static void StopInteraction(RPPlayer player)
@@ -26,7 +26,7 @@ namespace Game.Modules
 
 		private static void GiveMoney(RPPlayer player, int targetId, string data)
 		{
-			if (!int.TryParse(data, out var money)) return;
+			if (!int.TryParse(data, out var money) || money < 1) return;
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null || account.Money <  money) return;
