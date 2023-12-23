@@ -150,16 +150,15 @@ namespace Game.Modules.Jobs
             var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
             if (vehicle == null) return;
 
-            vehicle.GetData("MONEY_COUNT", out int moneyCount);
-            PlayerController.AddMoney(player, moneyCount);
+            var route = MoneyTruckJobRouteService.GetRouteByPlayerId(player.DbId);
+            if (route == null) return;
+
+            PlayerController.AddMoney(player, route.Reward);
             player.IsInMoneyTruckJob = false;
             player.Notify("Geldtransporter", "Du hast den Job beendet und dein Geld erhalten.", NotificationType.SUCCESS);
             player.Emit("Client:PropSyncModule:Clear");
             player.TempClothesId = 0;
             PlayerController.ApplyPlayerClothes(player);
-
-            var route = MoneyTruckJobRouteService.GetRouteByPlayerId(player.DbId);
-            if (route == null) return;
 
             route.InWork = false;
             route.PlayerId = 0;
