@@ -124,6 +124,7 @@ namespace Database
         public DbSet<MoneyTruckJobRouteModel> MoneyTruckJobRoutes { get; set; }
         public DbSet<MoneyTruckJobRoutePositionModel> MoneyTruckJobRoutePosition { get; set; }
 		public DbSet<CaseLootModel> CaseLootTable { get; set; }
+		public DbSet<BarberBeardModel> BarberBeardModels { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

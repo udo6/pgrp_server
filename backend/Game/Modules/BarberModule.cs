@@ -33,6 +33,7 @@ namespace Game.Modules
 
 			var styles = BarberService.GetStylesFromBarber(custom.Gender ? 1 : 0);
 			var colors = BarberService.GetAllColors();
+			var beards = BarberService.GetBeardsFromBarber();
 
 			player.Rotation = pos.Rotation;
 
@@ -42,7 +43,8 @@ namespace Game.Modules
 				Color = custom.HairColor,
 				HighlightColor = custom.HairHighlightColor,
 				HairStyles = styles,
-				Colors = colors
+				Colors = colors,
+				Beards = beards
 			}));
 		}
 

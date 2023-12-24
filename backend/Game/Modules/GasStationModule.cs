@@ -41,7 +41,7 @@ namespace Game.Modules
 				return;
 			}
 
-			player.PlayAnimation(Core.Enums.AnimationType.DRILL);
+			player.PlayAnimation(Core.Enums.AnimationType.FUELING);
 			player.StartInteraction(() =>
 			{
 				if (vehicle.OwnerType != Core.Enums.OwnerType.PLAYER)

@@ -53,6 +53,12 @@ namespace Database.Services
 			return ctx.BarberStyles.Where(x => /*x.BarberId == barberId &&*/ x.Gender == gender).ToList();
 		}
 
+		public static List<BarberBeardModel> GetBeardsFromBarber(/*int barberId*/)
+		{
+			using var ctx = new Context();
+			return ctx.BarberBeardModels/*.Where(x => x.BarberId == barberId)*/.ToList();
+		}
+
 		public static void AddStyle(BarberStyleModel model)
 		{
 			using var ctx = new Context();

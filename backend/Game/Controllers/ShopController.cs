@@ -19,6 +19,7 @@ namespace Game.Controllers
 			{ ShopType.MECHANIC, 3446096293 },
 			{ ShopType.ALL_TEAMS_ONLY, 416176080 },
 			{ ShopType.NO_BLIP, 416176080 },
+			{ ShopType.FOOD, 416176080 },
 		};
 
 		public static void LoadShop(ShopModel model)

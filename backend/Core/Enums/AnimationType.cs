@@ -20,6 +20,7 @@
 		LAPTOP,
 		SURRENDER,
 		PHONE,
-		RAMMING
+		RAMMING,
+		FUELING
 	}
 }
