@@ -145,6 +145,7 @@ namespace Game.Modules
 				type == ShopType.AMMUNATION ||
 				type == ShopType.MECHANIC ||
 				type == ShopType.FOOD ||
+				type == ShopType.NO_BLIP ||
 				(type == ShopType.TEAM && player.TeamId == owner) ||
 				(type == ShopType.SWAT && player.SWATDuty) ||
 				(type == ShopType.ALL_TEAMS_ONLY && player.TeamId > 5);

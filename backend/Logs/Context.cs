@@ -23,7 +23,7 @@ namespace Logs
 				Server = "localhost",
 				Port = 3306,
 				UserID = "mason",
-				Password = "Paiyai43234",
+				Password = "sayEvOluk6L42aXeLodI26dEbiXapu",
 				Database = "pgrp_logs",
 			};
 

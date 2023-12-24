@@ -26,6 +26,8 @@ namespace Game.Modules
 
 		private static void Open(RPPlayer player, int id)
 		{
+			if (player.AdminDuty) return;
+
 			var shop = ClothesShopService.Get(id);
 			if (shop == null) return;
 

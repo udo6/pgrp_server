@@ -77,6 +77,8 @@ namespace Game.Modules
 
 		private static void ToggleClothes(RPPlayer player, int id)
 		{
+			if (player.AdminDuty) return;
+
 			var custom = CustomizationService.Get(player.CustomizationId);
 			if (custom == null) return;
 

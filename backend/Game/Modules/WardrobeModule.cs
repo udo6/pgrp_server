@@ -32,6 +32,8 @@ namespace Game.Modules
 
 		private static void Open(RPPlayer player)
 		{
+			if (player.AdminDuty) return;
+
 			var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == ColshapeType.WARDROBE && x.Position.Distance(player.Position) <= x.Size);
 			if (shape == null) return;
 

@@ -74,6 +74,8 @@ namespace Game.Controllers
 			player.Emit("Client:DoorModule:Init", DoorModule.JSONData);
 			player.Emit("Client:PlayerModule:SetSuperSecretFeature", player.DamageCap);
 
+			VoiceModule.ConnectToVoice(player);
+
 			account.LastOnline = DateTime.Now;
 			AccountService.Update(account);
 

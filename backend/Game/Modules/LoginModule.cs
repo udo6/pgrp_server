@@ -118,6 +118,8 @@ namespace Game.Modules
 
 			PositionService.Update(pos);
 
+			VoiceModule.OnPlayerDisconnect(player);
+
 			foreach(var target in RPPlayer.All.ToList())
 			{
 				if (target.Dimension != player.Dimension || target.Position.Distance(player.Position) > 50) continue;

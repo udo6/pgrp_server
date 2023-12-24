@@ -96,6 +96,21 @@ namespace Core.Entities
 		public int KillerId { get; set; }
 		public uint KillerWeapon { get; set; }
 		public DateTime KillerDate { get; set; }
+
+		public float VoiceRange { get; set; }
+		public bool VoiceFirstConnect { get; set; }
+		public int MaxVoiceRange { get; set; }
+		public bool ForceMuted { get; set; }
+		public string TeamspeakName { get; set; }
+
+		public int VoicePluginClientId { get; set; }
+		public bool VoicePluginForceMuted { get; set; }
+		public float VoicePluginRange { get; set; }
+
+		public bool RadioActive { get; set; }
+		public int RadioFrequency { get; set; }
+		public bool RadioMute { get; set; }
+
 		public List<IBlip> TemporaryBlips { get; set; }
 
         // JOBS

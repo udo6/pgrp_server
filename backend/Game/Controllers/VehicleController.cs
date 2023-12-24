@@ -5,7 +5,6 @@ using Database.Services;
 using Core.Enums;
 using Database.Models.Vehicle;
 using Database.Models;
-using AltV.Net.Elements.Entities;
 
 namespace Game.Controllers
 {

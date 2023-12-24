@@ -402,6 +402,8 @@ namespace Game.Modules
 			partner.CallState = CallState.ACTIVE_CALL;
 			partner.CallStarted = DateTime.Now;
 			partner.EmitBrowser("Phone:UpdateCallState", (int)partner.CallState, partner.CallMute);
+
+			VoiceModule.CallPlayer(player, partner, true);
 		}
 
 		private static void EndCall(RPPlayer player)
@@ -422,6 +424,8 @@ namespace Game.Modules
 			partner.CallStarted = DateTime.Now;
 			partner.CallMute = false;
 			partner.EmitBrowser("Phone:ShowCallScreen");
+
+			VoiceModule.CallPlayer(player, partner, false);
 		}
 
 		private static void MuteCall(RPPlayer player)
@@ -430,6 +434,8 @@ namespace Game.Modules
 
 			player.CallMute = !player.CallMute;
 			player.EmitBrowser("Phone:UpdateCallState", (int)player.CallState, player.CallMute);
+
+			VoiceModule.MuteOnPhone(player, player.CallMute);
 		}
 
 		private static void Open(RPPlayer player)

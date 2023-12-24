@@ -77,11 +77,11 @@ namespace Game.Modules
 						var owner = AccountService.Get(house.OwnerId);
 						if (owner == null) return;
 
-						player.Notify("Lagerhalle", $"Besitzer: {owner.Name}", NotificationType.INFO);
+						player.Notify($"Haus {house.Id}", $"Besitzer: {owner.Name}", NotificationType.INFO);
 					}
 					else
 					{
-						player.Notify("Lagerhalle", $"Kaufpreis: {HouseController.HousePrices[house.Type]}", NotificationType.INFO);
+						player.Notify($"Haus {house.Id}", $"Kaufpreis: {HouseController.HousePrices[house.Type]}", NotificationType.INFO);
 					}
 				}
 				else if(jumppoint.Type == JumppointType.WAREHOUSE)
@@ -90,13 +90,13 @@ namespace Game.Modules
 					{
 						var owner = AccountService.Get(jumppoint.OwnerId);
 
-						if (owner != null)
+						if (owner == null)
 						{
-							player.Notify("Lagerhalle", $"Besitzer: {owner.Name}", NotificationType.INFO);
+							player.Notify("Lagerhalle", $"Kaufpreis: {WarehouseController.WarehouseBuyPrice}", NotificationType.INFO);
 						}
 						else
 						{
-							player.Notify("Lagerhalle", $"Kaufpreis: {WarehouseController.WarehouseBuyPrice}", NotificationType.INFO);
+							player.Notify("Lagerhalle", $"Besitzer: {owner.Name}", NotificationType.INFO);
 						}
 					}
 					else
