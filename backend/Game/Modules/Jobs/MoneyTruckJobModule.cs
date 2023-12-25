@@ -153,6 +153,18 @@ namespace Game.Modules.Jobs
             var route = MoneyTruckJobRouteService.GetRouteByPlayerId(player.DbId);
             if (route == null) return;
 
+            var routePositions = MoneyTruckJobRoutePositionService.GetPositionsByRouteId(route.Id);
+            if (routePositions.Count == 0) return;
+
+            if (vehicle.GetData("MONEY_COUNT", out int count))
+            {
+                if (count != routePositions.Count)
+                {
+                    player.Notify("Geldtransporter", "Du hast nicht alle Geldsäcke gesichert.", NotificationType.ERROR);
+                    return;
+                }
+            }
+
             PlayerController.AddMoney(player, route.Reward);
             player.IsInMoneyTruckJob = false;
             player.Notify("Geldtransporter", "Du hast den Job beendet und dein Geld erhalten.", NotificationType.SUCCESS);
@@ -211,8 +223,8 @@ namespace Game.Modules.Jobs
 
             if (vehicle.OwnerId != player.DbId) return;
 
-            vehicle.GetData("MONEY_COUNT", out int moneyCount);
-            vehicle.SetData("MONEY_COUNT", moneyCount + 1000);
+            vehicle.GetData("MONEY_COUNT", out int count);
+            vehicle.SetData("MONEY_COUNT", count + 1);
             player.Emit("Client:PropSyncModule:Clear");
             player.HasMoneyInHand = false;
 

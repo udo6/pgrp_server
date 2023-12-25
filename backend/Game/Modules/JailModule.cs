@@ -115,7 +115,9 @@ namespace Game.Modules
 			PlayerController.ApplyPlayerClothes(target, clothes);
 			target.SetPosition(SpawnPosition);
 			BroadcastImprison(player, target);
-		}
+
+			if (targetAccount.Cuffed) PlayerController.SetPlayerCuffed(target, false);
+        }
 
 		public static void ReleasePlayer(RPPlayer player)
 		{

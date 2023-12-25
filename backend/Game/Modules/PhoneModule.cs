@@ -312,7 +312,14 @@ namespace Game.Modules
 
 			LaptopModule.Dispatches.Remove(dispatch);
 			player.Notify("Information", "Du hast deinen Dispatch abgebrochen!", NotificationType.INFO);
-		}
+
+            foreach (var target in RPPlayer.All.ToList())
+            {
+                if (!LaptopModule.HasAccessToDispatch(dispatch, target.TeamId)) continue;
+
+                target.Notify("Dispatch", $"{player.Name} hat seinen Dispatch abgebrochen!", NotificationType.INFO);
+            }
+        }
 
 		#endregion
 
