@@ -110,6 +110,7 @@ namespace Core.Entities
 		public bool RadioActive { get; set; }
 		public int RadioFrequency { get; set; }
 		public bool RadioMute { get; set; }
+		public bool RadioTalking { get; set; }
 
 		public List<IBlip> TemporaryBlips { get; set; }
 

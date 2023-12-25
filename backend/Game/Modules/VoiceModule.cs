@@ -207,6 +207,14 @@ namespace Game.Modules
 
 			player.RadioFrequency = frequency;
 			player.Emit("client:yaca:setRadioFreq", frequency);
+			player.SetStreamSyncedMetaData("RADIO_CHANNEL", frequency);
+
+			foreach(var target in RPPlayer.All.ToList())
+			{
+				if (target.RadioFrequency != frequency || !target.RadioTalking) continue;
+
+				player.Emit("client:yaca:radioTalking", target.Id, frequency, true);
+			}
 		}
 
 		public static void LeaveRadio(RPPlayer player)
@@ -231,6 +239,8 @@ namespace Game.Modules
 		public static void RadioTalkingState(RPPlayer player, bool state)
 		{
 			if (!player.RadioActive || player.RadioFrequency <= 0 || !RadioFrequencies.ContainsKey(player.RadioFrequency)) return;
+
+			player.RadioTalking = state;
 
 			var players = RadioFrequencies[player.RadioFrequency].ToList();
 			var targets = new List<RPPlayer>();
@@ -260,7 +270,9 @@ namespace Game.Modules
 		public static void CallPlayer(RPPlayer player, RPPlayer target, bool state)
 		{
 			player.Emit("client:yaca:phone", target.Id, state);
+			player.SetStreamSyncedMetaData("CALL_PARTNER", state ? target.Id : -1);
 			target.Emit("client:yaca:phone", player.Id, state);
+			target.SetStreamSyncedMetaData("CALL_PARTNER", state ? player.Id : -1);
 		}
 
 		public static void MuteOnPhone(RPPlayer player, bool state)

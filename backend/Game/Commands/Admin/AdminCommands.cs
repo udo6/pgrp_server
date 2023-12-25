@@ -60,14 +60,5 @@ namespace Game.Commands.Admin
 			player.AdminNotifications = !player.AdminNotifications;
 			player.Notify("Information", $"Du hast deine Admin-Nachrichten {(player.AdminNotifications ? "eingeschaltet" : "ausgeschaltet")}.", NotificationType.INFO);
 		}
-
-		[Command("joinfunk")]
-		public static void JoinFunk(RPPlayer player)
-		{
-			if (player.AdminRank < AdminRank.SUPERADMIN) return;
-
-			VoiceModule.EnableRadio(player, true);
-			VoiceModule.ChangeRadioFrequency(player, 1000);
-		}
 	}
 }

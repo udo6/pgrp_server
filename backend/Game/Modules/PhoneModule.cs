@@ -14,6 +14,10 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
+			// Radio
+			Alt.OnClient<RPPlayer>("Server:Phone:Radio:RequestData", RequestRadioData);
+			Alt.OnClient<RPPlayer, int>("Server:Phone:Radio:Join", JoinRadio);
+
 			// Team
 			Alt.OnClient<RPPlayer>("Server:Phone:Team:RequestData", RequestTeamData);
 			Alt.OnClient<RPPlayer, string>("Server:Phone:Team:Invite", TeamInvitePlayer);
@@ -53,6 +57,51 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Phone:MuteCall", MuteCall);
 			Alt.OnClient<RPPlayer>("Server:Phone:Open", Open);
 		}
+
+		#region Radio
+
+		private static void RequestRadioData(RPPlayer player)
+		{
+			player.EmitBrowser("Phone:Radio:SetData", player.RadioFrequency);
+		}
+
+		private static void JoinRadio(RPPlayer player, int frequency)
+		{
+			if(frequency <= 0)
+			{
+				if (player.RadioTalking) VoiceModule.RadioTalkingState(player, false);
+				VoiceModule.EnableRadio(player, false);
+				player.Emit("Client:VoiceModule:SetRadioState", false);
+				player.EmitBrowser("Phone:Radio:SetData", frequency);
+				player.Notify("Information", $"Du hast den Funk verlassen!", NotificationType.INFO);
+				return;
+			}
+
+			if (player.RadioFrequency == frequency) return;
+
+			// shared federal radio
+			if(frequency == 1000 && ((player.TeamId < 1 || player.TeamId > 2) && player.TeamId != 5))
+			{
+				player.Notify("Information", "Dieser Funkkanal ist verschlüsselt!", NotificationType.ERROR);
+				return;
+			}
+
+			// team radio
+			if((frequency > 1000 && frequency < 2000) && player.TeamId + 1000 != frequency)
+			{
+				player.Notify("Information", "Dieser Funkkanal ist verschlüsselt!", NotificationType.ERROR);
+				return;
+			}
+
+			if (player.RadioTalking) VoiceModule.RadioTalkingState(player, false);
+			VoiceModule.EnableRadio(player, true);
+			VoiceModule.ChangeRadioFrequency(player, frequency);
+			player.EmitBrowser("Phone:Radio:SetData", frequency);
+			player.Emit("Client:VoiceModule:SetRadioState", true);
+			player.Notify("Information", $"Du bist dem Funk {frequency} beigetreten!", NotificationType.SUCCESS);
+		}
+
+		#endregion
 
 		#region Team
 
@@ -378,7 +427,7 @@ namespace Game.Modules
 				PartnerName = playerContact == null ? "" : playerContact.Name,
 				Mute = player.CallMute
 			}));
-			player.EmitBrowser("Phone:PlayRinging", 100);
+			player.EmitBrowser("Phone:PlayRinging", 1);
 
 			target.CallPartner = player.DbId;
 			target.CallState = CallState.GET_CALLED;
@@ -391,7 +440,7 @@ namespace Game.Modules
 				Partner = player.PhoneNumber,
 				PartnerName = targetContact == null ? "" : targetContact.Name
 			}));
-			target.EmitBrowser("Phone:PlayRingtone", 100);
+			target.EmitBrowser("Phone:PlayRingtone", 1);
 			target.Notify("Information", $"Eingehender Anruf", NotificationType.INFO);
 		}
 
@@ -469,7 +518,7 @@ namespace Game.Modules
 
 				CallActive = player.CallPartner > 0,
 				CallState = (int)player.CallState,
-				CallStarted = player.CallStarted.ToString("o"),
+				CallStarted = player.CallStarted.ToString(),
 				CallPartner = callPartner?.PhoneNumber,
 				CallPartnerName = callPartner?.Name
 			}));

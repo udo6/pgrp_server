@@ -107,7 +107,7 @@ namespace Game.Controllers
 			player.HairColor = (byte)custom.HairColor;
 			player.HairHighlightColor = (byte)custom.HairHighlightColor;
 
-			if (custom.Makeup > -1)
+			if (custom.Beard > -1)
 			{
 				player.SetHeadOverlay(1, (byte)custom.Beard, custom.BeardOpacity);
 				player.SetHeadOverlayColor(1, 1, (byte)custom.BeardColor, (byte)custom.BeardColor);
@@ -117,7 +117,7 @@ namespace Game.Controllers
 				player.RemoveHeadOverlay(1);
 			}
 
-			if (custom.Makeup > -1)
+			if (custom.Eyebrow > -1)
 			{
 				player.SetHeadOverlay(2, (byte)custom.Eyebrow, 1);
 				player.SetHeadOverlayColor(2, 1, (byte)custom.EyebrowColor, (byte)custom.EyebrowColor);
@@ -127,7 +127,7 @@ namespace Game.Controllers
 				player.RemoveHeadOverlay(2);
 			}
 
-			if (custom.Makeup > -1)
+			if (custom.Age > -1)
 			{
 				player.SetHeadOverlay(3, (byte)custom.Age, 1);
 			}
@@ -146,7 +146,7 @@ namespace Game.Controllers
 				player.RemoveHeadOverlay(4);
 			}
 
-			if (custom.Makeup > -1)
+			if (custom.Blush > -1)
 			{
 				player.SetHeadOverlay(5, (byte)custom.Blush, custom.BlushOpacity);
 				player.SetHeadOverlayColor(5, 1, (byte)custom.BlushColor, (byte)custom.BlushColor);
@@ -156,7 +156,7 @@ namespace Game.Controllers
 				player.RemoveHeadOverlay(5);
 			}
 
-			if (custom.Makeup > -1)
+			if (custom.Lipstick > -1)
 			{
 				player.SetHeadOverlay(8, (byte)custom.Lipstick, custom.LipstickOpacity);
 				player.SetHeadOverlayColor(8, 1, (byte)custom.LipstickColor, (byte)custom.LipstickColor);
@@ -297,6 +297,8 @@ namespace Game.Controllers
 			player.SetStreamSyncedMetaData("STABILIZED", false);
 			SetPlayerCuffed(player, false);
 			SetPlayerRoped(player, false);
+			if (player.RadioTalking) VoiceModule.RadioTalkingState(player, false);
+			VoiceModule.EnableRadio(player, false);
 
 			if (player.IsFarming)
 			{

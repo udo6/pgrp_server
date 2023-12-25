@@ -39,9 +39,12 @@ namespace Game.Modules
 
 			player.ShowComponent("Barber", true, JsonConvert.SerializeObject(new
 			{
+				Gender = custom.Gender,
 				Style = custom.Hair,
 				Color = custom.HairColor,
 				HighlightColor = custom.HairHighlightColor,
+				Beard = custom.Beard,
+				BeardColor = custom.BeardColor,
 				HairStyles = styles,
 				Colors = colors,
 				Beards = beards
