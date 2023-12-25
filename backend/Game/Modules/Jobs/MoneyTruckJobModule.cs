@@ -156,13 +156,11 @@ namespace Game.Modules.Jobs
             var routePositions = MoneyTruckJobRoutePositionService.GetPositionsByRouteId(route.Id);
             if (routePositions.Count == 0) return;
 
-            if (vehicle.GetData("MONEY_COUNT", out int count))
+            vehicle.GetData("MONEY_COUNT", out int count);
+            if (count < routePositions.Count)
             {
-                if (count != routePositions.Count)
-                {
-                    player.Notify("Geldtransporter", "Du hast nicht alle Geldsäcke gesichert.", NotificationType.ERROR);
-                    return;
-                }
+                player.Notify("Geldtransporter", "Du hast nicht alle Geldsäcke gesichert.", NotificationType.ERROR);
+                return;
             }
 
             PlayerController.AddMoney(player, route.Reward);
