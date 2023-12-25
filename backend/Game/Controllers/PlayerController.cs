@@ -283,6 +283,7 @@ namespace Game.Controllers
 			player.SetStreamSyncedMetaData("ALIVE", true);
 			player.SetStreamSyncedMetaData("STABILIZED", false);
 			player.StopAnimation();
+			VoiceModule.OnPlayerAliveChange(player, true);
 		}
 
 		public static void SetPlayerDead(RPPlayer player, InjuryType injury, bool fall = true)
@@ -318,6 +319,7 @@ namespace Game.Controllers
 			player.Spawn(player.Position, 0);
 			player.Emit("Client:AnticheatModule:SetHealth", 200);
 			if (!player.Alive) player.SetInvincible(true);
+			VoiceModule.OnPlayerAliveChange(player, false);
 		}
 
 		public static void SetPlayerCuffed(RPPlayer player, bool state)

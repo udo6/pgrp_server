@@ -21,6 +21,8 @@ namespace Game.Modules
 
 			VoiceRangeShapes.Add(testShape);*/
 
+			Alt.OnClient<RPPlayer, bool>("server:yaca:enableRadio", EnableRadio);
+			Alt.OnClient<RPPlayer, bool>("server:yaca:radioTalkingState", RadioTalkingState);
 			Alt.OnClient<RPPlayer, float>("server:yaca:changeVoiceRange", ChangeVoiceRange);
 			Alt.OnClient<RPPlayer, bool>("server:yaca:lipsync", Lipsync);
 			Alt.OnClient<RPPlayer, int>("server:yaca:addPlayer", AddNewPlayer);
@@ -55,6 +57,7 @@ namespace Game.Modules
 			}
 
 			player.VoiceRange = 3;
+			player.MaxVoiceRange = 15;
 			player.VoiceFirstConnect = false;
 			player.ForceMuted = false;
 			player.TeamspeakName = name;
@@ -181,13 +184,12 @@ namespace Game.Modules
 		public static void EnableRadio(RPPlayer player, bool state)
 		{
 			player.RadioActive = state;
+			player.Emit("client:yaca:setRadioEnabled", state);
 		}
 
-		public static void ChangeRadioFrequency(RPPlayer player, int channel, int frequency)
+		public static void ChangeRadioFrequency(RPPlayer player, int frequency)
 		{
 			if (!player.RadioActive) return;
-
-			if (channel != 1) return;
 
 			if(frequency <= 0)
 			{
@@ -200,7 +202,7 @@ namespace Game.Modules
 				LeaveRadio(player);
 			}
 
-			if (RadioFrequencies.ContainsKey(frequency)) RadioFrequencies[frequency] = new();
+			if (!RadioFrequencies.ContainsKey(frequency)) RadioFrequencies[frequency] = new();
 			RadioFrequencies[frequency].Add(player);
 
 			player.RadioFrequency = frequency;
@@ -228,7 +230,7 @@ namespace Game.Modules
 
 		public static void RadioTalkingState(RPPlayer player, bool state)
 		{
-			if (!player.RadioActive) return;
+			if (!player.RadioActive || player.RadioFrequency <= 0 || !RadioFrequencies.ContainsKey(player.RadioFrequency)) return;
 
 			var players = RadioFrequencies[player.RadioFrequency].ToList();
 			var targets = new List<RPPlayer>();

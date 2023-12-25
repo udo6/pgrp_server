@@ -371,6 +371,7 @@ namespace Game.Modules
 				PartnerName = playerContact == null ? "" : playerContact.Name,
 				Mute = player.CallMute
 			}));
+			player.EmitBrowser("Phone:PlayRinging", 100);
 
 			target.CallPartner = player.DbId;
 			target.CallState = CallState.GET_CALLED;
@@ -383,9 +384,8 @@ namespace Game.Modules
 				Partner = player.PhoneNumber,
 				PartnerName = targetContact == null ? "" : targetContact.Name
 			}));
-
-			player.Notify("Information", $"CALL {target.Name}", NotificationType.INFO);
-			target.Notify("Information", $"CALLED BY {player.Name}", NotificationType.INFO);
+			target.EmitBrowser("Phone:PlayRingtone", 100);
+			target.Notify("Information", $"Eingehender Anruf", NotificationType.INFO);
 		}
 
 		private static void AcceptCall(RPPlayer player)
@@ -398,10 +398,12 @@ namespace Game.Modules
 			player.CallState = CallState.ACTIVE_CALL;
 			player.CallStarted = DateTime.Now;
 			player.EmitBrowser("Phone:UpdateCallState", (int)player.CallState, player.CallMute);
+			player.EmitBrowser("Phone:StopRingtone");
 
 			partner.CallState = CallState.ACTIVE_CALL;
 			partner.CallStarted = DateTime.Now;
 			partner.EmitBrowser("Phone:UpdateCallState", (int)partner.CallState, partner.CallMute);
+			partner.EmitBrowser("Phone:StopRingtone");
 
 			VoiceModule.CallPlayer(player, partner, true);
 		}
@@ -417,13 +419,15 @@ namespace Game.Modules
 			player.CallState = CallState.NONE;
 			player.CallStarted = DateTime.Now;
 			player.CallMute = false;
-			player.EmitBrowser("Phone:ShowCallScreen");
+			player.EmitBrowser("Phone:ShowCallScreen", false);
+			player.EmitBrowser("Phone:StopRingtone");
 
 			partner.CallPartner = 0;
 			partner.CallState = CallState.NONE;
 			partner.CallStarted = DateTime.Now;
 			partner.CallMute = false;
-			partner.EmitBrowser("Phone:ShowCallScreen");
+			partner.EmitBrowser("Phone:ShowCallScreen", false);
+			partner.EmitBrowser("Phone:StopRingtone");
 
 			VoiceModule.CallPlayer(player, partner, false);
 		}
