@@ -67,6 +67,9 @@ public static class GardenerJobModule
         var customization = CustomizationService.Get(player.CustomizationId);
         if (customization == null) return;
 
+        var spawnPosition = PositionService.Get(model.VehicleSpawnPositionId);
+        if (spawnPosition == null) return;
+
         player.TempClothesId = customization.Gender ? 65 : 66;
         PlayerController.ApplyPlayerClothes(player);
         player.Notify("Gärtner", "Du hast den Job gestartet.", NotificationType.SUCCESS);
@@ -77,7 +80,7 @@ public static class GardenerJobModule
             player.JobVehicle = null!;
         }
 
-        var mower = (RPVehicle) Alt.CreateVehicle(VehicleModel.Mower, player.Position, player.Rotation);
+        var mower = (RPVehicle) Alt.CreateVehicle(VehicleModel.Mower, spawnPosition.Position, spawnPosition.Rotation);
         mower.OwnerId = player.DbId;
         mower.OwnerType = OwnerType.PLAYER;
         mower.Dimension = player.Dimension;
@@ -104,8 +107,17 @@ public static class GardenerJobModule
         var model = GardenerJobService.Get(id);
         if (model == null) return;
 
+        var spawnPosition = PositionService.Get(model.VehicleSpawnPositionId);
+        if (spawnPosition == null) return;
+
         var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
         if (vehicle == null) return;
+
+        if (vehicle.Position.Distance(spawnPosition.Position) > 40f)
+        {
+            player.Notify("Gärtner", "Dein Rasenmäher ist nicht in der nähe.", NotificationType.ERROR);
+            return;
+        }
 
         player.IsInGardenerJob = false;
         player.Notify("Gärtner", "Du hast den Job beendet.", NotificationType.SUCCESS);
@@ -113,18 +125,16 @@ public static class GardenerJobModule
         player.TempClothesId = 0;
         PlayerController.ApplyPlayerClothes(player);
 
-        player.Emit("Client:GardenerJob:StopJob");
+        if (player.JobVehicle != null)
+        {
+            player.JobVehicle.Delete();
+            player.JobVehicle = null!;
+        }
     }
 
     private static void StopJob(RPPlayer player, int count)
     {
         if (!player.LoggedIn || player == null) return;
-
-        if (!player.IsInGardenerJob)
-        {
-            player.Notify("Gärtner", "Du bist nicht in diesem Beruf.", NotificationType.INFO);
-            return;
-        }
 
         if (count <= 0)
         {
