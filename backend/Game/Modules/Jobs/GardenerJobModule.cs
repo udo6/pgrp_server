@@ -111,7 +111,16 @@ public static class GardenerJobModule
         if (spawnPosition == null) return;
 
         var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
-        if (vehicle == null) return;
+        if (vehicle == null && player.JobVehicle != null)
+        {
+            player.IsInGardenerJob = false;
+            player.Notify("Gärtner", "Du hast den Job beendet.", NotificationType.ERROR);
+            player.Emit("Client:GardenerJob:StopJob");
+            player.TempClothesId = 0;
+            PlayerController.ApplyPlayerClothes(player);
+            player.JobVehicle = null;
+            return;
+        }
 
         if (vehicle.Position.Distance(spawnPosition.Position) > 40f)
         {
@@ -134,7 +143,7 @@ public static class GardenerJobModule
 
     private static void StopJob(RPPlayer player, int count)
     {
-        if (!player.LoggedIn || player == null) return;
+        if (!player.LoggedIn || player == null || player.JobVehicle == null) return;
 
         if (count <= 0)
         {

@@ -99,24 +99,22 @@ namespace Game.Modules.Jobs
             if (spawnPosition == null) return;
 
             var vehicle = player.JobVehicle;
-            if (vehicle == null) return;
-
-            if (vehicle.Position.Distance(spawnPosition.Position) > 40f)
+            if (vehicle != null)
             {
-                player.Notify("Müllabfuhr", "Dein Fahrzeug ist nicht in der nähe.", NotificationType.ERROR);
-                return;
+                if (vehicle.Position.Distance(spawnPosition.Position) > 40f)
+                {
+                    player.Notify("Müllabfuhr", "Dein Fahrzeug ist nicht in der nähe.", NotificationType.ERROR);
+                    return;
+                }
+
+                vehicle.Delete();
+                player.JobVehicle = null!;
             }
 
             player.IsInGarbageJob = false;
             player.Notify("Müllabfuhr", "Du hast den Job beendet.", Core.Enums.NotificationType.SUCCESS);
             player.TempClothesId = 0;
             PlayerController.ApplyPlayerClothes(player);
-
-            if (player.JobVehicle != null)
-            {
-                player.JobVehicle.Delete();
-                player.JobVehicle = null!;
-            }
         }
 
         private static void Return(RPPlayer player)

@@ -147,17 +147,40 @@ namespace Game.Modules.Jobs
             var model = MoneyTruckJobService.Get(id);
             if (model == null) return;
 
-            var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
-            if (vehicle == null) return;
-
-            var spawnPosition = PositionService.Get(model.SpawnLocationId);
-            if (spawnPosition == null) return;
-
             var route = MoneyTruckJobRouteService.GetRouteByPlayerId(player.DbId);
             if (route == null) return;
 
             var routePositions = MoneyTruckJobRoutePositionService.GetPositionsByRouteId(route.Id);
             if (routePositions.Count == 0) return;
+
+            var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
+            if (vehicle == null)
+            {
+                player.IsInMoneyTruckJob = false;
+                player.Notify("Geldtransporter", "Du hast den Job beendet.", NotificationType.ERROR);
+                player.Emit("Client:PropSyncModule:Clear");
+                player.TempClothesId = 0;
+                PlayerController.ApplyPlayerClothes(player);
+                route.InWork = false;
+                route.PlayerId = 0;
+
+                if (player.JobVehicle != null)
+                {
+                    player.JobVehicle.Delete();
+                    player.JobVehicle = null!;
+                }
+
+                foreach (var blip in player.TemporaryBlips)
+                {
+                    blip.Destroy();
+                }
+
+                player.TemporaryBlips.Clear();
+                return;
+            }
+
+            var spawnPosition = PositionService.Get(model.SpawnLocationId);
+            if (spawnPosition == null) return;
 
             if (vehicle.Position.Distance(spawnPosition.Position) > 40f)
             {
