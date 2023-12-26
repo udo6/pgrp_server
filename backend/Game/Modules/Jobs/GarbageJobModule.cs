@@ -239,7 +239,7 @@ namespace Game.Modules.Jobs
             }
 
             shape.SetData("GARBAGE_PICKED_UP", DateTime.Now);
-            player.Emit("Client:PropSyncModule:AddProp", "hei_prop_heist_binbag", 0xdead, 0, 0, 0, 0, 0, 0);
+            player.Emit("Client:PropSyncModule:AddProp", "hei_prop_heist_binbag", 0xdead, 0.075, 0, 0, 360, 270);
             player.HasGarbageInHand = true;
 
             player.Notify("Müllabfuhr", "Du hast den Müll abgeholt.", Core.Enums.NotificationType.INFO);
