@@ -150,11 +150,20 @@ namespace Game.Modules.Jobs
             var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
             if (vehicle == null) return;
 
+            var spawnPosition = PositionService.Get(model.SpawnLocationId);
+            if (spawnPosition == null) return;
+
             var route = MoneyTruckJobRouteService.GetRouteByPlayerId(player.DbId);
             if (route == null) return;
 
             var routePositions = MoneyTruckJobRoutePositionService.GetPositionsByRouteId(route.Id);
             if (routePositions.Count == 0) return;
+
+            if (vehicle.Position.Distance(spawnPosition.Position) > 40f)
+            {
+                player.Notify("Geldtransporter", "Dein Fahrzeug ist nicht in der nähe.", NotificationType.ERROR);
+                return;
+            }
 
             vehicle.GetData("MONEY_COUNT", out int count);
             if (count < routePositions.Count)

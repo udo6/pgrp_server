@@ -9,6 +9,7 @@ using Game.Controllers.Jobs;
 using Database.Services.Jobs;
 using Core.Extensions;
 using AltV.Net.Enums;
+using Core.Enums;
 
 namespace Game.Modules.Jobs
 {
@@ -93,6 +94,18 @@ namespace Game.Modules.Jobs
 
             var model = GarbageJobService.Get(jobId);
             if (model == null) return;
+
+            var spawnPosition = PositionService.Get(model.VehicleSpawnPositionId);
+            if (spawnPosition == null) return;
+
+            var vehicle = player.JobVehicle;
+            if (vehicle == null) return;
+
+            if (vehicle.Position.Distance(spawnPosition.Position) > 40f)
+            {
+                player.Notify("Müllabfuhr", "Dein Fahrzeug ist nicht in der nähe.", NotificationType.ERROR);
+                return;
+            }
 
             player.IsInGarbageJob = false;
             player.Notify("Müllabfuhr", "Du hast den Job beendet.", Core.Enums.NotificationType.SUCCESS);
