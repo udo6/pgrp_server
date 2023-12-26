@@ -290,6 +290,25 @@ namespace Core.Entities
 			GiveWeapon(weapon, ammo, equip);
 		}
 
+        public void SetObjectProp(string propName, int boneIndex, double posX, double posY, double posZ, double rotX, double rotY, double rotZ)
+        {
+            Emit("Client:PropSyncModule:AddProp", propName, boneIndex, posX, posY, posZ, rotX, rotY, rotZ);
+
+            var data = new
+            {
+				propName,
+				bone = boneIndex,
+				posX,
+				posY,
+				posZ,
+				rotX,
+				rotY,
+				rotZ
+            };
+
+            SetSyncedMetaData("Player:PropSyncModule:Prop", JsonConvert.SerializeObject(data));
+        }
+
 		public void DeleteWeapon(uint weapon)
 		{
 			RemoveWeapon(weapon);

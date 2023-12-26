@@ -239,7 +239,7 @@ namespace Game.Modules.Jobs
 
             shape.SetData("MONEY_TRUCK_PICKED_UP", true);
             player.Notify("Geldtransporter", "Du hast das Geld abgeholt.", NotificationType.SUCCESS);
-            player.Emit("Client:PropSyncModule:AddProp", "prop_money_bag_01", 0xdead, 0.56, 0, 0, 360, 270);
+            player.SetObjectProp("prop_money_bag_01", 0xdead, 0.56, 0, 0, 0, 360, 270);
             player.HasMoneyInHand = true;
             // TODO: Play animation
         }
