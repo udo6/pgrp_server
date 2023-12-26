@@ -2,6 +2,7 @@
 using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
+using Database.Services;
 using Game.Controllers;
 
 namespace Game.Commands.Admin
@@ -63,6 +64,57 @@ namespace Game.Commands.Admin
 
 			player.Vehicle.DriftMode = !player.Vehicle.DriftMode;
 			player.Notify("Information", $"Du hast den Drift mode auf {player.Vehicle.DriftMode} gesetzt!", NotificationType.INFO);
+		}
+
+		[Command("applyteamtuning")]
+		public static void ApplyTeamTuning(RPPlayer player, int color, int type)
+		{
+			if (!player.LoggedIn || !player.IsInVehicle || player.AdminRank < AdminRank.SUPERADMIN) return;
+
+			var vehicle = (RPVehicle)player.Vehicle;
+
+			// 0 = armored schafter, 1 = schafter, 2 = drafter
+			var tuningBase = type == 2 ? 311 : type == 1 ? 312 : 313;
+
+			var tuning = TuningService.Get(tuningBase);
+			if (tuning == null) return;
+
+			var vehTuning = TuningService.Get(vehicle.TuningId);
+			if (vehTuning == null) return;
+
+			vehTuning.PrimaryColor = (byte)color;
+			vehTuning.SecondaryColor = (byte)color;
+			vehTuning.PearlColor = (byte)color;
+			vehTuning.Spoiler = tuning.Spoiler;
+			vehTuning.FrontBumper = tuning.FrontBumper;
+			vehTuning.RearBumper = tuning.RearBumper;
+			vehTuning.SideSkirt = tuning.SideSkirt;
+			vehTuning.Exhaust = tuning.Exhaust;
+			vehTuning.Frame = tuning.Frame;
+			vehTuning.Grille = tuning.Grille;
+			vehTuning.Hood = tuning.Hood;
+			vehTuning.Fender = tuning.Fender;
+			vehTuning.RightFender = tuning.RightFender;
+			vehTuning.Roof = tuning.Roof;
+			vehTuning.Engine = tuning.Engine;
+			vehTuning.Brakes = tuning.Brakes;
+			vehTuning.Transmission = tuning.Transmission;
+			vehTuning.Horns = tuning.Horns;
+			vehTuning.Suspension = tuning.Suspension;
+			vehTuning.Armor = tuning.Armor;
+			vehTuning.Turbo = tuning.Turbo;
+			vehTuning.Xenon = tuning.Xenon;
+			vehTuning.Wheels = tuning.Wheels;
+			vehTuning.WheelType = tuning.WheelType;
+			vehTuning.WheelColor = tuning.WheelColor;
+			vehTuning.PlateHolders = tuning.PlateHolders;
+			vehTuning.TrimDesign = tuning.TrimDesign;
+			vehTuning.WindowTint = tuning.WindowTint;
+			vehTuning.HeadlightColor = tuning.HeadlightColor;
+			vehTuning.Livery = tuning.Livery;
+			TuningService.Update(vehTuning);
+
+			VehicleController.ApplyVehicleTuning(vehicle);
 		}
 	}
 }

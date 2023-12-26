@@ -164,19 +164,22 @@ namespace Game.Modules
 		{
 			var player = (RPPlayer) _player;
 
-			player.ExplosionsCaused++;
-			if(player.ExplosionsCaused > 10)
+			if(explosionType != ExplosionType.Flare && explosionType != ExplosionType.Snowball)
 			{
-				var account = AccountService.Get(player.DbId);
-				if (account == null) return false;
+				player.ExplosionsCaused++;
+				if (player.ExplosionsCaused > 20)
+				{
+					var account = AccountService.Get(player.DbId);
+					if (account == null) return false;
 
-				account.BannedUntil = DateTime.Now.AddYears(10);
-				account.BanReason = "Cheating";
-				AccountService.Update(account);
+					account.BannedUntil = DateTime.Now.AddYears(10);
+					account.BanReason = "Cheating";
+					AccountService.Update(account);
 
-				LogService.LogPlayerBan(player.DbId, 0, $"[ANTICHEAT] Too many explosions caused (Explosions: {player.ExplosionsCaused}, Type: {explosionType})");
-				player.Kick("Du wurdest gebannt! Grund: Cheating");
-				return false;
+					LogService.LogPlayerBan(player.DbId, 0, $"[ANTICHEAT] Too many explosions caused (Explosions: {player.ExplosionsCaused}, Type: {explosionType})");
+					player.Kick("Du wurdest gebannt! Grund: Cheating");
+					return false;
+				}
 			}
 
 			if (explosionType == ExplosionType.GrenadeLauncher)

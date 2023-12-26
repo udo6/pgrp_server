@@ -82,5 +82,5 @@ namespace Database.Models.Vehicle
             NeonG = neonG;
             NeonB = neonB;
         }
-    }
+	}
 }
