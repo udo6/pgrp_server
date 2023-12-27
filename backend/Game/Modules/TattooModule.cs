@@ -30,6 +30,8 @@ namespace Game.Modules
 
 		private static void Try(RPPlayer player, uint collection, uint overlay)
 		{
+			player.RemoveDecoration(player.TemporaryTattoo.Item1, player.TemporaryTattoo.Item2);
+			player.TemporaryTattoo = (collection, overlay);
 			player.AddDecoration(collection, overlay);
 		}
 
@@ -60,6 +62,7 @@ namespace Game.Modules
 
 			PlayerController.RemoveMoney(player, item.Price);
 			TattooService.Add(new(player.DbId, item.Collection, item.Overlay));
+			player.Notify("Information", "Du hast dir ein Tattoo stechen lassen!", Core.Enums.NotificationType.SUCCESS);
 		}
 	}
 }

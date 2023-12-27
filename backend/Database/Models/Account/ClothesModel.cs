@@ -1,9 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
-
-namespace Database.Models.Account
+﻿namespace Database.Models.Account
 {
     public class ClothesModel
     {

@@ -306,7 +306,7 @@ namespace Game.Modules
 
 			foreach(var item in loadout)
 			{
-				var itemScript = InventoryController.ItemScripts.FirstOrDefault(x => x.Type == ItemType.WEAPON && ((WeaponItemScript)x).Hash == item.Hash && ((WeaponItemScript)x).Federal == target.TeamDuty);
+				var itemScript = InventoryController.GetWeaponItemScripts().FirstOrDefault(x => x.Hash == item.Hash);
 				if (itemScript == null) continue;
 				
 				var itemBase = itemBases.FirstOrDefault(x => x.Id == itemScript.ItemId);
@@ -315,7 +315,7 @@ namespace Game.Modules
 				loadoutData.Add(new
 				{
 					Id = item.Id,
-					Name = itemBase.Name,
+					Name = itemBase.Icon,
 					Ammo = item.Ammo
 				});
 			}

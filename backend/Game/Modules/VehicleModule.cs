@@ -1,4 +1,5 @@
 ﻿using AltV.Net;
+using AltV.Net.Elements.Entities;
 using Core.Attribute;
 using Core.Entities;
 using Core.Enums;

@@ -367,18 +367,27 @@ namespace Game.Modules
 				if (weaponItem != null && ammoItem != null && attatchmentItems.Count == attatchments.Count) break;
 			}
 
-			if(weaponItem == null || ammoItem == null)
+			if(weaponItem == null)
 			{
 				player.Notify("Inventar", "Es ist ein Fehler aufgetreten!", NotificationType.ERROR);
 				return;
 			}
 
 			var weight = InventoryController.CalcInventoryWeight(inventoryItems, items);
-			var ammoCount = (int)Math.Floor((decimal)loadout.Ammo / magSize);
-			var ammoSlots = Math.Floor((decimal)ammoCount / ammoItem.StackSize);
 			var attatchmentWeight = attatchmentItems.Sum(x => x.Weight);
+			var ammoWeight = 0f;
+			var ammoSlots = 0;
+			var ammoCount = 0;
 
-			if(inventoryItems.Count + ammoSlots + 1 + attatchmentItems.Count > inventory.Slots || weight + ammoCount * ammoItem.Weight + weaponItem.Weight + attatchmentWeight > inventory.MaxWeight)
+			if (ammoItem != null)
+			{
+				ammoCount = (int)Math.Floor((decimal)loadout.Ammo / magSize);
+				ammoSlots = (int)Math.Floor((decimal)ammoCount / ammoItem.StackSize);
+				ammoWeight = ammoCount * ammoItem.Weight;
+			}
+
+
+			if(inventoryItems.Count + ammoSlots + 1 + attatchmentItems.Count > inventory.Slots || weight + ammoWeight + weaponItem.Weight + attatchmentWeight > inventory.MaxWeight)
 			{
 				player.Notify("Inventar", "Du hast nicht genug Platz!", NotificationType.ERROR);
 				return;
@@ -389,7 +398,7 @@ namespace Game.Modules
 			player.DeleteWeapon(loadout.Hash);
 			player.SetAmmo(loadout.Hash, 0);
 			InventoryController.AddItem(inventory, weaponItem, 1);
-			InventoryController.AddItem(inventory, ammoItem, ammoCount);
+			if(ammoItem != null) InventoryController.AddItem(inventory, ammoItem, ammoCount);
 			foreach (var item in attatchmentItems)
 				InventoryController.AddItem(inventory, item, 1);
 

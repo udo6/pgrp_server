@@ -15,10 +15,10 @@ namespace Game.Controllers
 			var pos = PositionService.Get(model.PositionId);
 			if (pos == null) return;
 
-			var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 2f, 2f);
+			var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 3f, 2f);
 			shape.Id = model.Id;
 			shape.ShapeType = ColshapeType.TATTOO_SHOP;
-			shape.Size = 2f;
+			shape.Size = 3f;
 
 			var blip = Alt.CreateBlip(true, 4, pos.Position, Array.Empty<IPlayer>());
 			blip.Name = "Tattoo Studio";

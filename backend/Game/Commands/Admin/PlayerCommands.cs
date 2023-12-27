@@ -210,6 +210,7 @@ namespace Game.Commands.Admin
 			var targetPos = target.InInterior ? target.OutsideInteriorPosition : target.Position;
 
 			player.SetPosition(targetPos);
+			player.Dimension = target.Dimension;
 			player.Notify("Administration", $"Du hast dich zu {target.Name} teleportiert!", NotificationType.SUCCESS);
 		}
 
@@ -220,7 +221,20 @@ namespace Game.Commands.Admin
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
 			if (target == null) return;
 
+			if (target.IsGangwar)
+			{
+				player.Notify("Information", "Die Person befindet sich im Gangwar!", NotificationType.ERROR);
+				return;
+			}
+
+			if (target.IsInFFA)
+			{
+				player.Notify("Information", "Die Person befindet sich im FFA!", NotificationType.ERROR);
+				return;
+			}
+
 			target.SetPosition(player.Position);
+			target.Dimension = player.Dimension;
 			player.Notify("Administration", $"Du hast {target.Name} zu dir teleportiert!", NotificationType.SUCCESS);
 		}
 

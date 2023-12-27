@@ -114,6 +114,8 @@ namespace Core.Entities
 
 		public List<IBlip> TemporaryBlips { get; set; }
 
+		public (uint, uint) TemporaryTattoo { get; set; }
+
         // JOBS
         public bool IsInGarbageJob { get; set; } = false;
         public bool HasGarbageInHand { get; set; } = false;

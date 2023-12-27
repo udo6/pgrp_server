@@ -10,6 +10,13 @@ namespace Database.Services
 			return ctx.Jumppoints.ToList();
 		}
 
+		public static void LockAllJumppoints()
+		{
+			using var ctx = new Context();
+			foreach (var jumppoint in ctx.Jumppoints) jumppoint.Locked = true;
+			ctx.SaveChanges();
+		}
+
 		public static void Add(JumppointModel model)
 		{
 			using var ctx = new Context();

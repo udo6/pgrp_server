@@ -12,6 +12,8 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
+			JumppointService.LockAllJumppoints();
+
 			foreach(var model in JumppointService.GetAll())
 				JumppointController.LoadJumppoint(model);
 
