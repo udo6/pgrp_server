@@ -93,6 +93,7 @@ namespace Game.Commands.Alpha
 			inventory.MaxWeight = 60f;
 			InventoryService.Update(inventory);
 
+			InventoryService.ClearInventoryItems(inventory.Id);
 			InventoryController.AddItem(player.InventoryId, 10, 10);
 			InventoryController.AddItem(player.InventoryId, 9, 10);
 			InventoryController.AddItem(player.InventoryId, 8, 5);

@@ -207,7 +207,7 @@ namespace Game.Modules
 
 			player.RadioFrequency = frequency;
 			player.Emit("client:yaca:setRadioFreq", frequency);
-			player.SetStreamSyncedMetaData("RADIO_CHANNEL", frequency);
+			player.SetSyncedMetaData("RADIO_CHANNEL", frequency);
 
 			foreach(var target in RPPlayer.All.ToList())
 			{
@@ -270,9 +270,9 @@ namespace Game.Modules
 		public static void CallPlayer(RPPlayer player, RPPlayer target, bool state)
 		{
 			player.Emit("client:yaca:phone", target.Id, state);
-			player.SetStreamSyncedMetaData("CALL_PARTNER", state ? target.Id : -1);
+			player.SetSyncedMetaData("CALL_PARTNER", state ? target.Id : -1);
 			target.Emit("client:yaca:phone", player.Id, state);
-			target.SetStreamSyncedMetaData("CALL_PARTNER", state ? player.Id : -1);
+			target.SetSyncedMetaData("CALL_PARTNER", state ? player.Id : -1);
 		}
 
 		public static void MuteOnPhone(RPPlayer player, bool state)
