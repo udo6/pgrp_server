@@ -86,6 +86,13 @@ namespace Game.Commands.Alpha
 			player.RemoveAllWeapons(true);
 			player.Weapons.Clear();
 
+			var inventory = InventoryService.Get(player.InventoryId);
+			if (inventory == null) return;
+
+			inventory.Slots = 16;
+			inventory.MaxWeight = 60f;
+			InventoryService.Update(inventory);
+
 			InventoryController.AddItem(player.InventoryId, 10, 10);
 			InventoryController.AddItem(player.InventoryId, 9, 10);
 			InventoryController.AddItem(player.InventoryId, 8, 5);
