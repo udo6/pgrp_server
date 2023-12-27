@@ -592,6 +592,7 @@ namespace Game.Modules
 				BusinessRank = 0,
 				Phone = account.PhoneNumber,
 				Description = account.AdminRecordDescription,
+				SupportCallMessage = account.SupportCallMessage,
 				Rank = account.AdminRank.ToString(),
 				LastOnline = account.LastOnline.ToString("HH:mm dd.MM.yyyy"),
 				Warns = WarnService.GetPlayerWarnsCount(account.Id),
