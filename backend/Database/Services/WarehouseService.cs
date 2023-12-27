@@ -38,6 +38,14 @@ namespace Database.Services
 			return ctx.Warehouses.FirstOrDefault(x => x.Id == id);
 		}
 
+		public static WarehouseModel? GetByInventoryId(int id)
+		{
+			using var ctx = new Context();
+			var warehouseInv = ctx.WarehouseInventories.FirstOrDefault(x => x.InventoryId == id);
+			if (warehouseInv == null) return null;
+			return ctx.Warehouses.FirstOrDefault(e => e.Id == warehouseInv.WarehouseId);
+		}
+
 		public static WarehouseModel? GetByOwner(int accountid, OwnerType type)
 		{
 			using var ctx = new Context();

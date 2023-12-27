@@ -137,7 +137,7 @@ namespace Database
 				Server = "localhost",
 				Port = 3306,
 				UserID = "mason",
-				Password = "sayEvOluk6L42aXeLodI26dEbiXapu",
+				Password = "Paiyai43234!",
 				Database = "pgrp",
 			};
 

@@ -121,6 +121,22 @@ namespace Game.Modules
 
 		private static void MoveAll(RPPlayer player, int rootInventoryId, int targetInventoryId, int oldSlot, int newSlot)
 		{
+			var inventories = InventoryService.Get(rootInventoryId, targetInventoryId);
+			var inventory = inventories.FirstOrDefault(x => x.Type == InventoryType.WAREHOUSE);
+			if (inventory != null)
+			{
+				var warehouse = WarehouseService.GetByInventoryId(inventory.Id);
+				if(warehouse != null && warehouse.OwnerType == OwnerType.TEAM)
+				{
+					var account = AccountService.Get(player.DbId);
+					if (account == null || !account.TeamStorage || warehouse.OwnerId != account.TeamId)
+					{
+						player.Notify("Information", "Du bist nicht berechtigt an das Fraktionslager zu gehen!", NotificationType.ERROR);
+						return;
+					}
+				}
+			}
+
 			var item = InventoryService.GetInventoryItemBySlot(rootInventoryId, oldSlot);
 
 			if (rootInventoryId == targetInventoryId)
@@ -138,6 +154,22 @@ namespace Game.Modules
 		private static void MoveAmount(RPPlayer player, int rootInventoryId, int targetInventoryId, int oldSlot, int newSlot, int amount)
 		{
 			if (amount < 1) return;
+
+			var inventories = InventoryService.Get(rootInventoryId, targetInventoryId);
+			var inventory = inventories.FirstOrDefault(x => x.Type == InventoryType.WAREHOUSE);
+			if (inventory != null)
+			{
+				var warehouse = WarehouseService.GetByInventoryId(inventory.Id);
+				if (warehouse != null && warehouse.OwnerType == OwnerType.TEAM)
+				{
+					var account = AccountService.Get(player.DbId);
+					if (account == null || !account.TeamStorage || warehouse.OwnerId != account.TeamId)
+					{
+						player.Notify("Information", "Du bist nicht berechtigt an das Fraktionslager zu gehen!", NotificationType.ERROR);
+						return;
+					}
+				}
+			}
 
 			var item = InventoryService.GetInventoryItemBySlot(rootInventoryId, oldSlot);
 
