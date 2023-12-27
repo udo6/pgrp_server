@@ -49,6 +49,19 @@ namespace Game.Commands.Admin
 			}
 		}
 
+		[Command("dvteam")]
+		public static void DeleteTeamVehicle(RPPlayer player, int team)
+		{
+			if (!player.LoggedIn || player.AdminRank < AdminRank.ADMINISTRATOR) return;
+
+			foreach (var vehicle in RPVehicle.All.ToList())
+			{
+				if (vehicle.OwnerType != OwnerType.TEAM || vehicle.OwnerId != team) continue;
+
+				VehicleController.StoreVehicle(vehicle, -1, true);
+			}
+		}
+
 		[Command("fixveh")]
 		public static void FixVehicle(RPPlayer player)
 		{

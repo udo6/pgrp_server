@@ -11,9 +11,9 @@ namespace Game.Modules
 	{
 		private static List<float> TeamDealerTake = new()
 		{
-			0.28f, // R0
-			0.26f, // R1
-			0.24f, // R2
+			0.26f, // R0
+			0.24f, // R1
+			0.22f, // R2
 			0.20f, // R3
 			0.18f, // R4
 			0.16f, // R5

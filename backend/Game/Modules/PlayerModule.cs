@@ -63,7 +63,9 @@ namespace Game.Modules
 
 					if(player.TeamId > 0 && player.TeamId <= 5)
 					{
-						var paycheck = 2000 + 100 * account.TeamRank;
+						var basePaycheck = player.TeamId == 1 ? 2200 : player.TeamId == 2 ? 2200 : player.TeamId == 3 ? 2200 : player.TeamId == 4 ? 2200 : 2200;
+						var rankIncrease = player.TeamId == 1 ? 200  : player.TeamId == 2 ? 200  : player.TeamId == 3 ? 200  : player.TeamId == 4 ? 200  : 200;
+						var paycheck = basePaycheck + rankIncrease * account.TeamRank;
 						if (now.Hour >= 22 || now.Hour <= 6) paycheck += (int)Math.Round(paycheck * 0.1);
 
 						account.BankMoney += paycheck;
