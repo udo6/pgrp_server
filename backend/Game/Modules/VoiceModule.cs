@@ -16,17 +16,12 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
-			/*var testShape = (RPShape)Alt.CreateColShapeCylinder(new(0, 0, 70), 10, 5);
-			testShape.IsPlayersOnly = true;
-
-			VoiceRangeShapes.Add(testShape);*/
-
 			Alt.OnClient<RPPlayer, bool>("server:yaca:enableRadio", EnableRadio);
 			Alt.OnClient<RPPlayer, bool>("server:yaca:radioTalkingState", RadioTalkingState);
 			Alt.OnClient<RPPlayer, float>("server:yaca:changeVoiceRange", ChangeVoiceRange);
 			Alt.OnClient<RPPlayer, bool>("server:yaca:lipsync", Lipsync);
 			Alt.OnClient<RPPlayer, int>("server:yaca:addPlayer", AddNewPlayer);
-			//Alt.OnClient<RPPlayer>("server:yaca:noVoicePlugin", OnPlayerNoVoice);
+			Alt.OnClient<RPPlayer>("server:yaca:noVoicePlugin", OnPlayerNoVoice);
 			Alt.OnClient<RPPlayer, bool>("server:yaca:wsReady", OnPlayerReconnect);
 		}
 

@@ -19,6 +19,7 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
+			Alt.OnClient<RPPlayer, uint, string, float>("Server:Anticheat:WeaponModification", DetectedModifiedWeapon);
 			Alt.OnClient<RPPlayer, RPPlayer, int>("Server:Anticheat:GodmodeTarget", DetectedGodmodeTarget);
 			Alt.OnClient<RPPlayer, uint, int, int>("Server:Anticheat:DamageModifier", DetectedDamageModifier);
 			Alt.OnClient<RPPlayer, Position>("Server:Anticheat:Teleport", DetectedTeleport);
@@ -30,6 +31,19 @@ namespace Game.Modules
 
 			Alt.OnWeaponDamage += OnWeaponDamage;
 			Alt.OnExplosion += OnExplosion;
+		}
+
+		private static void DetectedModifiedWeapon(RPPlayer player, uint weapon, string label, float value)
+		{
+			var account = AccountService.Get(player.DbId);
+			if (account == null) return;
+
+			account.BannedUntil = DateTime.Now.AddYears(10);
+			account.BanReason = "Cheating";
+			AccountService.Update(account);
+
+			LogService.LogPlayerBan(player.DbId, 0, $"[ANTICHEAT] Weapon modification (Weapon: {weapon} Label: {label} Value: {value})");
+			player.Kick("Du wurdest gebannt! Grund: Cheating");
 		}
 
 		private static void DetectedGodmodeTarget(RPPlayer player, RPPlayer target, int allowedHealth)
