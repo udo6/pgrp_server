@@ -9,6 +9,7 @@ using Game.Controllers.Jobs;
 using Database.Services.Jobs;
 using Core.Extensions;
 using AltV.Net.Enums;
+using Core.Enums;
 
 namespace Game.Modules.Jobs
 {
@@ -94,16 +95,26 @@ namespace Game.Modules.Jobs
             var model = GarbageJobService.Get(jobId);
             if (model == null) return;
 
+            var spawnPosition = PositionService.Get(model.VehicleSpawnPositionId);
+            if (spawnPosition == null) return;
+
+            var vehicle = player.JobVehicle;
+            if (vehicle != null)
+            {
+                if (vehicle.Position.Distance(spawnPosition.Position) > 40f)
+                {
+                    player.Notify("Müllabfuhr", "Dein Fahrzeug ist nicht in der nähe.", NotificationType.ERROR);
+                    return;
+                }
+
+                vehicle.Delete();
+                player.JobVehicle = null!;
+            }
+
             player.IsInGarbageJob = false;
             player.Notify("Müllabfuhr", "Du hast den Job beendet.", Core.Enums.NotificationType.SUCCESS);
             player.TempClothesId = 0;
             PlayerController.ApplyPlayerClothes(player);
-
-            if (player.JobVehicle != null)
-            {
-                player.JobVehicle.Delete();
-                player.JobVehicle = null!;
-            }
         }
 
         private static void Return(RPPlayer player)
@@ -228,7 +239,7 @@ namespace Game.Modules.Jobs
             }
 
             shape.SetData("GARBAGE_PICKED_UP", DateTime.Now);
-            player.Emit("Client:PropSyncModule:AddProp", "hei_prop_heist_binbag", 0xdead, 0, 0, 0, 0, 0, 0);
+            player.Emit("Client:PropSyncModule:AddProp", "hei_prop_heist_binbag", 0xdead, 0.075, 0, 0, 360, 270);
             player.HasGarbageInHand = true;
 
             player.Notify("Müllabfuhr", "Du hast den Müll abgeholt.", Core.Enums.NotificationType.INFO);

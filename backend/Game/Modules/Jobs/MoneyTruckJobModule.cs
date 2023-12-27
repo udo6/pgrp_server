@@ -56,7 +56,7 @@ namespace Game.Modules.Jobs
 
             var jobMenu = new NativeMenu("Geldtransporter", new List<NativeMenuItem>()
             {
-                new NativeMenuItem(player.IsInMoneyTruckJob ? "Job beenden" : "Job starten", true, player.IsInMoneyTruckJob ? "Server:MoneyTruckJob:Stop" : "Server:MoneyTruckJob:Start", model.Id),
+                new (player.IsInMoneyTruckJob ? "Job beenden" : "Job starten", true, player.IsInMoneyTruckJob ? "Server:MoneyTruckJob:Stop" : "Server:MoneyTruckJob:Start", model.Id),
             });
 
             player.ShowNativeMenu(true, jobMenu);
@@ -147,14 +147,46 @@ namespace Game.Modules.Jobs
             var model = MoneyTruckJobService.Get(id);
             if (model == null) return;
 
-            var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
-            if (vehicle == null) return;
-
             var route = MoneyTruckJobRouteService.GetRouteByPlayerId(player.DbId);
             if (route == null) return;
 
             var routePositions = MoneyTruckJobRoutePositionService.GetPositionsByRouteId(route.Id);
             if (routePositions.Count == 0) return;
+
+            var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
+            if (vehicle == null)
+            {
+                player.IsInMoneyTruckJob = false;
+                player.Notify("Geldtransporter", "Du hast den Job beendet.", NotificationType.ERROR);
+                player.Emit("Client:PropSyncModule:Clear");
+                player.TempClothesId = 0;
+                PlayerController.ApplyPlayerClothes(player);
+                route.InWork = false;
+                route.PlayerId = 0;
+
+                if (player.JobVehicle != null)
+                {
+                    player.JobVehicle.Delete();
+                    player.JobVehicle = null!;
+                }
+
+                foreach (var blip in player.TemporaryBlips)
+                {
+                    blip.Destroy();
+                }
+
+                player.TemporaryBlips.Clear();
+                return;
+            }
+
+            var spawnPosition = PositionService.Get(model.SpawnLocationId);
+            if (spawnPosition == null) return;
+
+            if (vehicle.Position.Distance(spawnPosition.Position) > 40f)
+            {
+                player.Notify("Geldtransporter", "Dein Fahrzeug ist nicht in der nähe.", NotificationType.ERROR);
+                return;
+            }
 
             vehicle.GetData("MONEY_COUNT", out int count);
             if (count < routePositions.Count)
@@ -207,7 +239,7 @@ namespace Game.Modules.Jobs
 
             shape.SetData("MONEY_TRUCK_PICKED_UP", true);
             player.Notify("Geldtransporter", "Du hast das Geld abgeholt.", NotificationType.SUCCESS);
-            player.Emit("Client:PropSyncModule:AddProp", "prop_money_bag_01", 0xdead, 0, 0, 0, 0, 0, 0);
+            player.SetObjectProp("prop_money_bag_01", 0xdead, 0.56, 0, 0, 0, 360, 270);
             player.HasMoneyInHand = true;
             // TODO: Play animation
         }

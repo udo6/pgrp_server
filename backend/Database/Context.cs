@@ -34,6 +34,7 @@ using Database.Models.Tuner;
 using Database.Models.GarbageJob;
 using Database.Models.MoneyTruckJob;
 using Database.Models.Case;
+using Database.Models.GardenerJob;
 
 namespace Database
 {
@@ -125,6 +126,7 @@ namespace Database
         public DbSet<MoneyTruckJobRoutePositionModel> MoneyTruckJobRoutePosition { get; set; }
 		public DbSet<CaseLootModel> CaseLootTable { get; set; }
 		public DbSet<BarberBeardModel> BarberBeardModels { get; set; }
+		public DbSet<GardenerJobModel> GardenerJobs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
