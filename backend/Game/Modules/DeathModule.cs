@@ -5,6 +5,7 @@ using Core.Entities;
 using Core.Enums;
 using Database.Services;
 using Game.Controllers;
+using Logs;
 
 namespace Game.Modules
 {
@@ -93,6 +94,8 @@ namespace Game.Modules
 				player.KillerId = killerPlayer.DbId;
 				player.KillerWeapon = weapon;
 				player.KillerDate = DateTime.Now;
+
+				LogService.LogKill(player.DbId, killerPlayer.DbId, weapon);
 			}
 
 			if (killer != null && killer.Type == BaseObjectType.Vehicle)
@@ -103,6 +106,8 @@ namespace Game.Modules
 				player.KillerId = killerPlayer.DbId;
 				player.KillerWeapon = 187;
 				player.KillerDate = DateTime.Now;
+
+				LogService.LogKill(player.DbId, killerPlayer.DbId, weapon);
 			}
 
 			if (player.IsGangwar)

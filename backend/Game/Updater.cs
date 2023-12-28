@@ -2,6 +2,7 @@
 using Core.Attribute;
 using Core.Entities;
 using Database.Services;
+using Logs;
 
 namespace Game
 {
@@ -29,6 +30,12 @@ namespace Game
 			foreach(var player in RPPlayer.All.ToList())
 			{
 				if(player.DbId < 1) continue;
+
+				if (player.DamageLogs.Count > 0)
+				{
+					LogService.LogDamage(player.DamageLogs);
+					player.DamageLogs.Clear();
+				}
 
 				var account = AccountService.Get(player.DbId);
 				if (account == null) continue;

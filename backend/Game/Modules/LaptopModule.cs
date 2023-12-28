@@ -370,7 +370,7 @@ namespace Game.Modules
 			targetAccount.AdminRank = (AdminRank)rank;
 			AccountService.Update(targetAccount);
 
-			player.Notify("Administration", $"Du hast {targetAccount.Name} auf ${rank} gesetzt!", NotificationType.SUCCESS);
+			player.Notify("Administration", $"Du hast {targetAccount.Name} auf {rank} gesetzt!", NotificationType.SUCCESS);
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;

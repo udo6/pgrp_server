@@ -59,5 +59,21 @@ namespace Logs
 			ctx.ACPActions.Add(model);
 			ctx.SaveChanges();
 		}
+
+		public static void LogKill(int accountId, int killerId, uint weapon)
+		{
+			var model = new KillModel(accountId, killerId, weapon, DateTime.Now);
+
+			using var ctx = new Context();
+			ctx.KillLogs.Add(model);
+			ctx.SaveChanges();
+		}
+
+		public static void LogDamage(List<DamageModel> dmg)
+		{
+			using var ctx = new Context();
+			ctx.DamageLogs.AddRange(dmg);
+			ctx.SaveChanges();
+		}
 	}
 }

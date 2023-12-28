@@ -3,6 +3,7 @@ using AltV.Net.Data;
 using AltV.Net.Elements.Entities;
 using Core.Enums;
 using Core.Models.NativeMenu;
+using Logs.Models;
 using Newtonsoft.Json;
 
 namespace Core.Entities
@@ -86,6 +87,8 @@ namespace Core.Entities
 		private string ClientCachedInteraction { get; set; } = string.Empty;
 
 		// ANTICHEAT
+		public List<DamageModel> DamageLogs { get; set; } = new();
+
 		public DateTime LastHealthChange { get; set; }
 		public DateTime LastGodmodeChange { get; set; }
 		public DateTime LastPositionChange { get; set; }

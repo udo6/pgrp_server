@@ -13,6 +13,8 @@ namespace Logs
 		public DbSet<BanModel> BanLogs { get; set; }
 		public DbSet<ExplosionModel> Explosions { get; set; }
 		public DbSet<ACPActionModel> ACPActions { get; set; }
+		public DbSet<KillModel> KillLogs { get; set; }
+		public DbSet<DamageModel> DamageLogs { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

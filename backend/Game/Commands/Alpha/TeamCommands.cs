@@ -1,4 +1,5 @@
-﻿using Core.Attribute;
+﻿using AltV.Net.Enums;
+using Core.Attribute;
 using Core.Entities;
 using Database.Services;
 using Game.Controllers;
@@ -29,6 +30,8 @@ namespace Game.Commands.Alpha
 			if (index >= TeamIds.Count || index < 0) return;
 
 			var clothesId = TeamClothesIds[index];
+
+			PlayerController.ApplyPlayerCustomization(player);
 
 			var teamClothes = ClothesService.Get(clothesId);
 			if (teamClothes == null) return;
