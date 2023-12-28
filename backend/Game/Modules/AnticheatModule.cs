@@ -80,15 +80,16 @@ namespace Game.Modules
 		{
 			if (player.LastPositionChange.AddSeconds(5) >= DateTime.Now || player.Position.Distance(position) <= 15) return;
 
-			var account = AccountService.Get(player.DbId);
-			if (account == null) return;
+			//var account = AccountService.Get(player.DbId);
+			//if (account == null) return;
 
-			account.BannedUntil = DateTime.Now.AddYears(10);
-			account.BanReason = "Cheating";
-			AccountService.Update(account);
+			//account.BannedUntil = DateTime.Now.AddYears(10);
+			//account.BanReason = "Cheating";
+			//AccountService.Update(account);
 
+			Console.WriteLine($"[ANTICHEAT] {player.Name} has been banned for Teleport");
 			LogService.LogPlayerBan(player.DbId, 0, $"[ANTICHEAT] Teleport");
-			player.Kick("Du wurdest gebannt! Grund: Cheating");
+			//player.Kick("Du wurdest gebannt! Grund: Cheating");
 		}
 
 		private static void DetectedGodmode(RPPlayer player, bool state)

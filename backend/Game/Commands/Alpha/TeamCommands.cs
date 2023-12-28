@@ -111,5 +111,37 @@ namespace Game.Commands.Alpha
 
 			player.SetPosition(teamPos.Position);
 		}
+
+		[Command("bringteam")]
+		public static void BringTeam(RPPlayer player, int team)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
+
+			foreach(var target in RPPlayer.All.ToList())
+			{
+				if (target.TeamId != team) continue;
+
+				target.SetPosition(player.Position);
+				target.Notify("Information", $"Du wurdest von {player.Name} teleportiert!", Core.Enums.NotificationType.INFO);
+			}
+
+			player.Notify("Information", $"Du hast die Fraktion {team} zu dir teleportiert!", Core.Enums.NotificationType.INFO);
+		}
+
+		[Command("reviveteam")]
+		public static void ReviveTeam(RPPlayer player, int team)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
+
+			foreach (var target in RPPlayer.All.ToList())
+			{
+				if (target.TeamId != team) continue;
+
+				PlayerController.SetPlayerAlive(target, false);
+				target.Notify("Information", $"Du wurdest von {player.Name} wiederbelebt!", Core.Enums.NotificationType.INFO);
+			}
+
+			player.Notify("Information", $"Du hast die Fraktion {team} wiederbelebt!", Core.Enums.NotificationType.INFO);
+		}
 	}
 }
