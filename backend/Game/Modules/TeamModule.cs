@@ -186,7 +186,7 @@ namespace Game.Modules
 			var weapons = new List<LoadoutModel>()
 			{
 				new(player.DbId, 3219281620, 500, 0, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT),
-				new(player.DbId, team.MeeleWeaponHash, 0, 0, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT)
+				// new(player.DbId, team.MeeleWeaponHash, 0, 0, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT)
 			};
 
 			if(team.Type == TeamType.FEDERAL)
