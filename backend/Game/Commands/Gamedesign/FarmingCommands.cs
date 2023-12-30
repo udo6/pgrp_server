@@ -1,5 +1,4 @@
-﻿using Core;
-using Core.Attribute;
+﻿using Core.Attribute;
 using Core.Entities;
 using Database.Models;
 using Database.Models.Farming;

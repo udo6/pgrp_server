@@ -543,7 +543,7 @@ namespace Game.Controllers
 			AccountService.Update(account);
 		}
 
-		public static void BanPlayer(RPPlayer player, DateTime until, string reason)
+		public static void AnticheatBanPlayer(RPPlayer player, DateTime until, string reason)
 		{
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
@@ -554,16 +554,8 @@ namespace Game.Controllers
 
 			LogService.LogPlayerBan(player.DbId, 0, reason);
 			player.Kick("Du wurdest gebannt! Grund: Cheating");
-		}
 
-		public static void BanPlayer(RPPlayer player, AccountModel account, DateTime until, string reason)
-		{
-			account.BannedUntil = until;
-			account.BanReason = "Cheating";
-			AccountService.Update(account);
-
-			LogService.LogPlayerBan(player.DbId, 0, reason);
-			player.Kick("Du wurdest gebannt! Grund: Cheating");
+			AccountService.AddAdminHistory(new(account.Id, reason, 0, "Anticheat", DateTime.Now, AdminHistoryType.BAN));
 		}
 	}
 }

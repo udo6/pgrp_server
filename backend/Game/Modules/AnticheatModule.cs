@@ -30,6 +30,8 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
+			Alt.OnClient<RPPlayer>("Server:Anticheat:VehicleEngineToggle", DetectedVehicleEngine);
+			Alt.OnClient<RPPlayer, uint>("Server:Anticheat:NoReload", DetectedNoreload);
 			Alt.OnClient<RPPlayer, uint, float>("Server:Anticheat:Rapidfire", DetectedRapidfire);
 			Alt.OnClient<RPPlayer, uint, string, float>("Server:Anticheat:WeaponModification", DetectedModifiedWeapon);
 			Alt.OnClient<RPPlayer, Position>("Server:Anticheat:Teleport", DetectedTeleport);
@@ -45,29 +47,39 @@ namespace Game.Modules
 		// server ac
 		public static void DetectedUnallowedAmmo(RPPlayer player, uint weapon, int ammo, int allowedAmmo)
 		{
-			PlayerController.BanPlayer(player, DateTime.Now.AddYears(10), $"[ANTICHEAT] Unallowed ammo (Weapon: {weapon}, Ammo: {ammo}, Allowed Ammo: {allowedAmmo})");
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Unallowed ammo (Weapon: {weapon}, Ammo: {ammo}, Allowed Ammo: {allowedAmmo})");
 		}
 
 		public static void DetectedWeapon(RPPlayer player, uint weapon)
 		{
-			PlayerController.BanPlayer(player, DateTime.Now.AddYears(10), $"[ANTICHEAT] Unallowed weapon (Weapon: {weapon})");
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Unallowed weapon (Weapon: {weapon})");
 		}
 
 		public static void DetectedAttatchment(RPPlayer player, uint weapon, uint attatchment)
 		{
-			PlayerController.BanPlayer(player, DateTime.Now.AddYears(10), $"[ANTICHEAT] Unallowed attatchment (Weapon: {weapon}, Attatchment: {attatchment})");
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Unallowed attatchment (Weapon: {weapon}, Attatchment: {attatchment})");
 		}
 
 		// client ac
 
+		private static void DetectedVehicleEngine(RPPlayer player)
+		{
+			AdminController.BroadcastTeam("Anticheat", $"{player.Name} hat den Motor von einem Fahrzeug eingeschaltet!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.ADMINISTRATOR);
+		}
+
+		private static void DetectedNoreload(RPPlayer player, uint weapon)
+		{
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Weapon no reload (Weapon: {weapon})");
+		}
+
 		private static void DetectedRapidfire(RPPlayer player, uint weapon, float time)
 		{
-			PlayerController.BanPlayer(player, DateTime.Now.AddYears(10), $"[ANTICHEAT] Weapon rapidfire (Weapon: {weapon} Time: {time})");
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Weapon rapidfire (Weapon: {weapon} Time: {time})");
 		}
 
 		private static void DetectedModifiedWeapon(RPPlayer player, uint weapon, string label, float value)
 		{
-			PlayerController.BanPlayer(player, DateTime.Now.AddYears(10), $"[ANTICHEAT] Weapon modification (Weapon: {weapon} Label: {label} Value: {value})");
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Weapon modification (Weapon: {weapon} Label: {label} Value: {value})");
 		}
 
 		private static void DetectedTeleport(RPPlayer player, Position position)
@@ -75,31 +87,31 @@ namespace Game.Modules
 			var dist = player.Position.Distance(position);
 			if (player.LastPositionChange.AddSeconds(5) >= DateTime.Now || dist <= 15) return;
 
-			PlayerController.BanPlayer(player, DateTime.Now.AddYears(10), $"[ANTICHEAT] Teleport (Distance: {dist})");
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Teleport (Distance: {dist})");
 		}
 
 		private static void DetectedGodmode(RPPlayer player, bool state)
 		{
 			if (player.Invincible == state) return;
 
-			PlayerController.BanPlayer(player, DateTime.Now.AddYears(10), $"[ANTICHEAT] Godmode (Invincible: {player.Invincible} Allowed: {state})");
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Godmode (Invincible: {player.Invincible} Allowed: {state})");
 		}
 
 		private static void DetectedHealkey(RPPlayer player, int health)
 		{
 			if (player.LastHealthChange.AddSeconds(5) >= DateTime.Now || player.Health + player.Armor <= player.AllowedHealth) return;
 
-			PlayerController.BanPlayer(player, DateTime.Now.AddYears(10), $"[ANTICHEAT] Healkey (Health: {player.Health + player.Armor} Allowed Health: {health})");
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Healkey (Health: {player.Health + player.Armor} Allowed Health: {health})");
 		}
 
 		private static void DetectedRocketBoost(RPPlayer player)
 		{
-			PlayerController.BanPlayer(player, DateTime.Now.AddYears(10), $"[ANTICHEAT] Vehicle rocketboost (Vehicle: {player.Vehicle.Model})");
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Vehicle rocketboost (Vehicle: {player.Vehicle.Model})");
 		}
 
 		private static void DetectedVehicleParachute(RPPlayer player)
 		{
-			PlayerController.BanPlayer(player, DateTime.Now.AddYears(10), $"[ANTICHEAT] Vehicle parachute (Vehicle: {player.Vehicle.Model})");
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Vehicle parachute (Vehicle: {player.Vehicle.Model})");
 		}
 
 		private static WeaponDamageResponse OnWeaponDamage(IPlayer _player, IEntity target, uint weapon, ushort damage, Position shotOffset, BodyPart bodyPart)
@@ -127,7 +139,7 @@ namespace Game.Modules
 					account.BanReason = "Cheating";
 					AccountService.Update(account);
 
-					LogService.LogPlayerBan(player.DbId, 0, $"[ANTICHEAT] Damage modifier (Weapon: {weapon} Damage: {damage} Allowed Damage: {allowedDamage})");
+					LogService.LogPlayerBan(player.DbId, 0, $"Damage modifier (Weapon: {weapon} Damage: {damage} Allowed Damage: {allowedDamage})");
 					player.Kick("Du wurdest gebannt! Grund: Cheating");
 					return false;
 				}
@@ -140,12 +152,12 @@ namespace Game.Modules
 		{
 			var player = (RPPlayer) _player;
 
-			if(explosionType == ExplosionType.Car) return false;
+			if(explosionType == ExplosionType.Unknown || explosionType == ExplosionType.Car) return false;
 
 			if(explosionType != ExplosionType.Flare && explosionType != ExplosionType.Snowball)
 			{
 				player.ExplosionsCaused++;
-				if (player.ExplosionsCaused > 20)
+				if (player.ExplosionsCaused > 10)
 				{
 					AdminController.BroadcastTeam("Anticheat", $"{player.Name} hat {player.ExplosionsCaused} Explosionen verursacht!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.MODERATOR);
 				}
@@ -160,7 +172,7 @@ namespace Game.Modules
 				account.BanReason = "Cheating";
 				AccountService.Update(account);
 
-				LogService.LogPlayerBan(player.DbId, 0, $"[ANTICHEAT] SKRIPT Explosive Ammo (Grenadelauncher)");
+				LogService.LogPlayerBan(player.DbId, 0, $"SKRIPT Explosive Ammo (Grenadelauncher)");
 				player.Kick("Du wurdest gebannt! Grund: Cheating");
 				return false;
 			}
