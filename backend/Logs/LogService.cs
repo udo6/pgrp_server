@@ -6,6 +6,8 @@ namespace Logs
 {
 	public static class LogService
 	{
+		private static List<DamageModel> DamageLogsCache = new();
+
 		public static void LogInventoryMove(int inventoryId, int containerId, int itemId, int amount, InventoryMoveType type)
 		{
 			var model = new InventoryMoveModel(inventoryId, containerId, itemId, amount, type);
@@ -69,11 +71,18 @@ namespace Logs
 			ctx.SaveChanges();
 		}
 
-		public static void LogDamage(List<DamageModel> dmg)
+		public static void LogDamage(int accountId, int targetId, uint weapon, int damage, int bodyPart)
+		{
+			DamageLogsCache.Add(new(accountId, targetId, weapon, damage, bodyPart, DateTime.Now));
+		}
+
+		public static void SendDamageLogsToDatabase()
 		{
 			using var ctx = new Context();
-			ctx.DamageLogs.AddRange(dmg);
+			ctx.DamageLogs.AddRange(DamageLogsCache);
 			ctx.SaveChanges();
+
+			DamageLogsCache.Clear();
 		}
 	}
 }
