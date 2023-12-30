@@ -1,12 +1,11 @@
-﻿using AltV.Net;
-using Core.Entities;
+﻿using Core.Entities;
 using Core.Enums;
 using Core.Models.Hud;
 using Database.Models.Account;
 using Database.Models.ClothesShop;
-using Database.Models.Door;
 using Database.Services;
 using Game.Modules;
+using Logs;
 using Newtonsoft.Json;
 
 namespace Game.Controllers
@@ -73,6 +72,7 @@ namespace Game.Controllers
 
 			player.Emit("Client:DoorModule:Init", DoorModule.JSONData);
 			player.Emit("Client:PlayerModule:SetSuperSecretFeature", player.DamageCap);
+			player.SetStreamSyncedMetaData("PLAYER_NAME", player.Name);
 
 			VoiceModule.ConnectToVoice(player);
 
@@ -248,12 +248,12 @@ namespace Game.Controllers
 			{
 				var attatchments = LoadoutService.GetLoadoutAttatchments(weapon.Id);
 
-				player.AddWeapon(weapon.Hash, weapon.Ammo, false);
+				player.AddWeapon(weapon.Hash, weapon.Ammo, false, (byte)weapon.TintIndex, attatchments.Select(x => x.Hash).ToList());
 				player.SetWeaponTintIndex(weapon.Hash, (byte)weapon.TintIndex);
 
 				foreach(var attatchment in attatchments)
 				{
-					player.AddWeaponComponent(weapon.Hash, attatchment.Hash);
+					player.AddAttatchment(weapon.Hash, attatchment.Hash);
 				}
 			}
 		}
@@ -541,6 +541,29 @@ namespace Game.Controllers
 			account.TeamStorage = storage;
 			account.TeamBank = bank;
 			AccountService.Update(account);
+		}
+
+		public static void BanPlayer(RPPlayer player, DateTime until, string reason)
+		{
+			var account = AccountService.Get(player.DbId);
+			if (account == null) return;
+
+			account.BannedUntil = until;
+			account.BanReason = "Cheating";
+			AccountService.Update(account);
+
+			LogService.LogPlayerBan(player.DbId, 0, reason);
+			player.Kick("Du wurdest gebannt! Grund: Cheating");
+		}
+
+		public static void BanPlayer(RPPlayer player, AccountModel account, DateTime until, string reason)
+		{
+			account.BannedUntil = until;
+			account.BanReason = "Cheating";
+			AccountService.Update(account);
+
+			LogService.LogPlayerBan(player.DbId, 0, reason);
+			player.Kick("Du wurdest gebannt! Grund: Cheating");
 		}
 	}
 }

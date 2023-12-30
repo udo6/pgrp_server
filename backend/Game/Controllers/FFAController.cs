@@ -49,7 +49,7 @@ namespace Game.Controllers
 			player.Weapons.Clear();
 
 			foreach (var weapon in weapons)
-				player.AddWeapon(weapon.WeaponHash, 9999, true);
+				player.AddWeapon(weapon.WeaponHash, 9999, true, 0, new());
 		}
 
 		private static PositionModel? GetSpawn(int ffaId)

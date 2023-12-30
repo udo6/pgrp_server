@@ -74,11 +74,6 @@ namespace Game.Modules
 			}
 		}
 
-		public static void OnPlayerColshape(RPPlayer player, RPShape shape, bool entered)
-		{
-			// idk what this does
-		}
-
 		public static void OnPlayerAliveChange(RPPlayer player, bool state)
 		{
 			if (player.Alive != state) return;
@@ -233,7 +228,7 @@ namespace Game.Modules
 
 		public static void RadioTalkingState(RPPlayer player, bool state)
 		{
-			if (!player.RadioActive || player.RadioFrequency <= 0 || !RadioFrequencies.ContainsKey(player.RadioFrequency)) return;
+			if (player.RadioFrequency <= 0 || !RadioFrequencies.ContainsKey(player.RadioFrequency)) return;
 
 			player.RadioTalking = state;
 

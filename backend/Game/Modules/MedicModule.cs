@@ -41,12 +41,14 @@ namespace Game.Modules
 			CreatorModule.SendToCreator(player, custom, player.Position);
 		}
 
-		[Core.Attribute.ServerEvent(Core.Enums.ServerEventType.ENTITY_COLSHAPE)]
+		[Core.Attribute.ServerEvent(ServerEventType.ENTITY_COLSHAPE)]
 		public static void OnColshape(RPShape shape, IWorldObject entity, bool entered)
 		{
-			if (!entered || shape.ShapeType != Core.Enums.ColshapeType.HOSPITAL || entity.Type != BaseObjectType.Vehicle) return;
+			if (!entered || shape.ShapeType != ColshapeType.HOSPITAL || entity.Type != BaseObjectType.Vehicle) return;
 
 			var vehicle = (RPVehicle)entity;
+			if (vehicle.OwnerType != OwnerType.TEAM || vehicle.OwnerId != 3) return;
+
 			var driver = (RPPlayer)vehicle.Driver;
 			if (driver.TeamId != 3) return;
 
@@ -59,13 +61,13 @@ namespace Game.Modules
 				var bed = beds.FirstOrDefault(IsBedAvailable);
 				if (bed == null)
 				{
-					driver?.Notify("Information", "Es ist kein Bett mehr frei!", Core.Enums.NotificationType.ERROR);
+					driver?.Notify("Information", "Es ist kein Bett mehr frei!", NotificationType.ERROR);
 					break;
 				}
 
 				HospitalController.TakeInPlayer(player, bed);
-				player.Notify("Information", "Du wurdest ins Krankenhaus eingeliefert!", Core.Enums.NotificationType.INFO);
-				driver?.Notify("Information", "Du hast jemanden ins Krankenhaus eingeliefert!", Core.Enums.NotificationType.SUCCESS);
+				player.Notify("Information", "Du wurdest ins Krankenhaus eingeliefert!", NotificationType.INFO);
+				driver?.Notify("Information", "Du hast jemanden ins Krankenhaus eingeliefert!", NotificationType.SUCCESS);
 			}
 		}
 

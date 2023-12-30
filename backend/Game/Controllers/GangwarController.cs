@@ -236,9 +236,9 @@ namespace Game.Controllers
 
 			player.RemoveAllWeapons(true);
 			player.Weapons.Clear();
-			player.AddWeapon(Weapons[player.GangwarWeapon], 9999, true);
-			player.AddWeapon(3219281620, 9999, false);
-			player.AddWeapon(team.MeeleWeaponHash, 9999, false);
+			player.AddWeapon(Weapons[player.GangwarWeapon], 9999, true, 0, new());
+			player.AddWeapon(3219281620, 9999, false, 0, new());
+			player.AddWeapon(team.MeeleWeaponHash, 9999, false, 0, new());
 			InventoryController.AddItem(player.InventoryId, 6, 10);
 			InventoryController.AddItem(player.InventoryId, 7, 10);
 			InventoryController.AddItem(player.InventoryId, 26, 5);

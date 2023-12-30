@@ -11,6 +11,12 @@ namespace Database.Services
 			ctx.SaveChanges();
 		}
 
+		public static bool HasWeapon(int accountId, uint weapon)
+		{
+			using var ctx = new Context();
+			return ctx.Loadouts.Any(x => x.AccountId == accountId && x.Hash == weapon);
+		}
+
 		public static void AddRange(params LoadoutModel[] models)
 		{
 			using var ctx = new Context();

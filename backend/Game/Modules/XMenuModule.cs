@@ -606,7 +606,7 @@ namespace Game.Modules
 					return;
 				}
 
-				if(player.InjuryType == InjuryType.PUNCH || player.InjuryType == InjuryType.FALL_DAMAGE)
+				if(target.InjuryType == InjuryType.PUNCH || target.InjuryType == InjuryType.FALL_DAMAGE)
 				{
 					PlayerController.SetPlayerAlive(target, false);
 					player.Notify("Information", "Da die Person nicht schwer verletzt war konntest du ihr direkt wieder aufhelfen!", NotificationType.INFO);
@@ -622,9 +622,9 @@ namespace Game.Modules
 
 				InventoryController.RemoveItem(inventory, item, 1);
 				target.Stabilized = true;
-				player.SetStreamSyncedMetaData("STABILIZED", true);
+				target.SetStreamSyncedMetaData("STABILIZED", true);
 				player.Notify("Information", "Du hast jemanden Stabilisiert!", NotificationType.INFO);
-				player.Notify("Information", "Du wurdest Stabilisiert!", NotificationType.INFO);
+				target.Notify("Information", "Du wurdest Stabilisiert!", NotificationType.INFO);
 			}, 20000);
 		}
 

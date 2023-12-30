@@ -96,6 +96,12 @@ namespace Game.Modules
 		{
 			if (player.AdminRank < AdminRank.SUPPORTER) return;
 
+			if(plate.Length > 8)
+			{
+				player.Notify("Administration", "Das Kennzeichen darf nicht länger als 8 Zeichen lang sein!", NotificationType.ERROR);
+				return;
+			}
+
 			var vehicle = VehicleService.Get(vehId);
 			if (vehicle == null) return;
 
@@ -362,7 +368,7 @@ namespace Game.Modules
 
 		private static void ACPSetAdmin(RPPlayer player, int id, int rank)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN || rank > Enum.GetValues<AdminRank>().Length) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN || rank >= (int)player.AdminRank) return;
 
 			var targetAccount = AccountService.Get(id);
 			if (targetAccount == null) return;
@@ -376,7 +382,7 @@ namespace Game.Modules
 			if (target == null) return;
 
 			target.AdminRank = (AdminRank)rank;
-			target.Notify("Administration", $"Du wurdest von {player.Name} auf Rang {rank} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+			target.Notify("Administration", $"Du wurdest von {player.Name} auf Rang {rank} gesetzt!", NotificationType.SUCCESS);
 			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SETADMIN);
 		}
 

@@ -42,14 +42,14 @@ namespace Game
 		{
 			if (Federal && !player.TeamDuty/* || player.Level < 3*/) return;
 
-			if(player.Weapons.Any(x => x == Hash))
+			if(player.Weapons.Any(x => x.Hash == Hash))
 			{
 				player.ShowComponent("Inventory", false);
 				player.Notify("Information", "Du hast diese Waffe bereits ausgerüstet!", NotificationType.ERROR);
 				return;
 			}
 
-			var equipped = InventoryController.GetWeaponItemScripts().Where(x => player.Weapons.Contains(x.Hash));
+			var equipped = InventoryController.GetWeaponItemScripts().Where(x => player.Weapons.Any(e => e.Hash == x.Hash));
 			if(equipped.Any(x => x.WeaponType == WeaponType && x.WeaponType != WeaponType.NONE))
 			{
 				player.ShowComponent("Inventory", false);
@@ -60,7 +60,7 @@ namespace Game
 			if(InventoryController.RemoveItem(inventory, item.Slot, 1))
 			{
 				LoadoutService.Add(new(player.DbId, Hash, 0, 0, Federal ? LoadoutType.FEDERAL : LoadoutType.DEFAULT));
-				player.AddWeapon(Hash, 0, true);
+				player.AddWeapon(Hash, 0, true, 0, new());
 			}
 		}
 	}

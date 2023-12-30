@@ -3,8 +3,10 @@ using AltV.Net.Data;
 using AltV.Net.Elements.Entities;
 using Core.Enums;
 using Core.Models.NativeMenu;
+using Core.Models.Player;
 using Logs.Models;
 using Newtonsoft.Json;
+using System.Numerics;
 
 namespace Core.Entities
 {
@@ -58,7 +60,7 @@ namespace Core.Entities
 		public DateTime CallStarted { get; set; }
 		public bool CallMute { get; set; }
 
-		public List<uint> Weapons { get; set; }
+		public List<WeaponModel> Weapons { get; set; }
 
 		public bool Phone { get; set; }
 		public bool Laptop { get; set; }
@@ -286,14 +288,32 @@ namespace Core.Entities
 			Emit("Client:PlayerModule:SetAdmin", (int)AdminRank);
 		}
 
-		public void AddWeapon(uint weapon, int ammo, bool equip)
+		public void AddWeapon(uint weapon, int ammo, bool equip, byte tintIndex, List<uint> components)
 		{
 			Emit("Client:PlayerModule:AddWeapon", weapon);
-			Weapons.Add(weapon);
+			Weapons.Add(new(weapon, tintIndex, components));
 			GiveWeapon(weapon, ammo, equip);
 		}
 
-        public void SetObjectProp(string propName, int boneIndex, double posX, double posY, double posZ, double rotX, double rotY, double rotZ)
+		public void AddAttatchment(uint hash, uint attatchment)
+		{
+			var weapon = Weapons.FirstOrDefault(x => x.Hash == hash);
+			if (weapon == null) return;
+
+			weapon.Components.Add(attatchment);
+			AddWeaponComponent(weapon.Hash, attatchment);
+		}
+
+		public void RemoveAttatchment(uint hash, uint attatchment)
+		{
+			var weapon = Weapons.FirstOrDefault(x => x.Hash == hash);
+			if (weapon == null) return;
+
+			weapon.Components.Remove(attatchment);
+			RemoveWeaponComponent(weapon.Hash, attatchment);
+		}
+
+		public void SetObjectProp(string propName, int boneIndex, double posX, double posY, double posZ, double rotX, double rotY, double rotZ)
         {
             Emit("Client:PropSyncModule:AddProp", propName, boneIndex, posX, posY, posZ, rotX, rotY, rotZ);
 
@@ -312,10 +332,13 @@ namespace Core.Entities
             SetSyncedMetaData("Player:PropSyncModule:Prop", JsonConvert.SerializeObject(data));
         }
 
-		public void DeleteWeapon(uint weapon)
+		public void DeleteWeapon(uint hash)
 		{
-			RemoveWeapon(weapon);
-			Emit("Client:PlayerModule:RemoveWeapon", weapon);
+			var weapon = Weapons.FirstOrDefault(x => x.Hash == hash);
+			if (weapon == null) return;
+
+			RemoveWeapon(weapon.Hash);
+			Emit("Client:PlayerModule:RemoveWeapon", weapon.Hash);
 			Weapons.Remove(weapon);
 		}
 
