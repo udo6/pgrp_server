@@ -203,7 +203,7 @@ namespace Game.Modules
 				player.HardwareIdExHash,
 				player.DiscordId,
 				5000,
-				45000,
+				40000,
 				AccountService.GenerateUniquePhoneNumber(),
 				pos.Id,
 				custom.Id,
