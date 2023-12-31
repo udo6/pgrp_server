@@ -120,13 +120,13 @@ namespace Game.Controllers
 			if (model.OwnerId < 1)
 			{
 				var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 2f, 2f);
-				shape.Id = model.Id;
+				shape.ShapeId = model.Id;
 				shape.ShapeType = ColshapeType.WAREHOUSE;
 				shape.Size = 2f;
 			}
 
 			var upgrader = (RPShape)Alt.CreateColShapeCylinder(UpgraderPositions[model.Type].Down(), 1.5f, 2f);
-			upgrader.Id = model.Id;
+			upgrader.ShapeId = model.Id;
 			upgrader.ShapeType = ColshapeType.WAREHOUSE_UPGRADE;
 			upgrader.Size = 1.5f;
 			upgrader.Dimension = model.Id;
@@ -140,7 +140,7 @@ namespace Game.Controllers
 		public static void LoadWarehouseInventory(WarehouseModel model, WarehouseInventoryModel inventory, PositionModel pos)
 		{
 			var inv = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 1.5f, 2f);
-			inv.Id = model.Id;
+			inv.ShapeId = model.Id;
 			inv.ShapeType = ColshapeType.WAREHOUSE_BOX;
 			inv.Size = 1.5f;
 			inv.Dimension = model.Id;

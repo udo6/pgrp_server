@@ -16,7 +16,7 @@ namespace Game.Controllers
 			if (pos == null) return;
 
 			var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(5f), 4f, 10f);
-			shape.Id = model.Id;
+			shape.ShapeId = model.Id;
 			shape.ShapeType = ColshapeType.HOSPITAL;
 			shape.Size = 4f;
 

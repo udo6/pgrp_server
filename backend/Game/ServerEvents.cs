@@ -59,7 +59,7 @@ namespace Game
 			}
 		}
 
-		private static void Invoke(MethodInfo method, params object[] args)
+		private static void Invoke(MethodInfo method, params object?[] args)
 		{
 			method.Invoke(null, args);
 		}

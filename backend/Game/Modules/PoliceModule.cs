@@ -32,14 +32,14 @@ namespace Game.Modules
 		public static void Initialize()
 		{
 			var shape = (RPShape)Alt.CreateColShapeCylinder(ShopPosition.Down(), 2f, 2f);
-			shape.Id = 1;
+			shape.ShapeId = 1;
 			shape.ShapeType = ColshapeType.SWAT_SHOP;
 			shape.Size = 2f;
 
 			foreach(var tp in TeleporterPositions)
 			{
 				var tpShape = (RPShape)Alt.CreateColShapeCylinder(tp.Down(), 2f, 2f);
-				tpShape.Id = 1;
+				tpShape.ShapeId = 1;
 				tpShape.ShapeType = ColshapeType.LSPD_TELEPORTER;
 				tpShape.Size = 2f;
 			}

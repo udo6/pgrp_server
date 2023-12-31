@@ -103,8 +103,8 @@ namespace Game.Modules
 
 			player.ShowNativeMenu(true, new("Gangwar", new()
 			{
-				new("Informationen abrufen", true, "Server:Gangwar:GetInformation", shape.Id),
-				new("Gebiet angreifen", true, "Server:Gangwar:Attack", shape.Id)
+				new("Informationen abrufen", true, "Server:Gangwar:GetInformation", shape.ShapeId),
+				new("Gebiet angreifen", true, "Server:Gangwar:Attack", shape.ShapeId)
 			}));
 		}
 
@@ -158,7 +158,7 @@ namespace Game.Modules
 		{
 			foreach(var gangwar in GangwarController.RunningGangwars.ToList())
 			{
-				var flags = RPShape.All.Where(x => x.ShapeType == ColshapeType.GANGWAR_FLAG && x.Id == gangwar.DbId).ToList();
+				var flags = RPShape.All.Where(x => x.ShapeType == ColshapeType.GANGWAR_FLAG && x.ShapeId == gangwar.DbId).ToList();
 				foreach(var flag in flags)
 				{
 					var holder = RPPlayer.All.FirstOrDefault(x => x.Position.Distance(flag.Position) <= flag.Size);

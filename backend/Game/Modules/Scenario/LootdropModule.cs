@@ -94,7 +94,7 @@ namespace Game.Modules.Scenario
 			if (pos1 == null) return;
 
 			var box1 = (RPShape)Alt.CreateColShapeCylinder(pos1.Position.Down(), 2f, 2f);
-			box1.Id = drop.Id;
+			box1.ShapeId = drop.Id;
 			box1.ShapeType = ColshapeType.DROP_BOX;
 			box1.Size = 2f;
 			box1.Object = Alt.CreateObject(1776043012, pos1.Position.Down(), pos1.Rotation);
@@ -104,7 +104,7 @@ namespace Game.Modules.Scenario
 			if (pos2 == null) return;
 
 			var box2 = (RPShape)Alt.CreateColShapeCylinder(pos2.Position.Down(), 2f, 2f);
-			box2.Id = drop.Id;
+			box2.ShapeId = drop.Id;
 			box2.ShapeType = ColshapeType.DROP_BOX;
 			box2.Size = 2f;
 			box2.Object = Alt.CreateObject(1776043012, pos2.Position.Down(), pos2.Rotation);
@@ -114,7 +114,7 @@ namespace Game.Modules.Scenario
 			if (pos3 == null) return;
 
 			var box3 = (RPShape)Alt.CreateColShapeCylinder(pos3.Position.Down(), 2f, 2f);
-			box3.Id = drop.Id;
+			box3.ShapeId = drop.Id;
 			box3.ShapeType = ColshapeType.DROP_BOX;
 			box3.Size = 2f;
 			box3.Object = Alt.CreateObject(1776043012, pos3.Position.Down(), pos3.Rotation);

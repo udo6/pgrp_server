@@ -24,7 +24,7 @@ namespace Game.Modules.Scenario
 		public static void Initialize()
 		{
 			var loot = (RPShape)Alt.CreateColShapeCylinder(LootInventoryPosition.Down(), 2f, 2f);
-			loot.Id = 1;
+			loot.ShapeId = 1;
 			loot.ShapeType = ColshapeType.JEWELERY_LOOT;
 			loot.Size = 2f;
 			loot.InventoryId = LootInventoryId;

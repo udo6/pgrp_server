@@ -2,6 +2,6 @@
 {
 	public static class Config
 	{
-		public static bool DevMode = true;
+		public static bool DevMode = false;
 	}
 }

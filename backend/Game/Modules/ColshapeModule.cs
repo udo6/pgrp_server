@@ -55,7 +55,7 @@ namespace Game.Modules
 
 			var player = (RPPlayer)entity;
 
-			player.Emit(entered ? "Client:PlayerModule:EnterColshape" : "Client:PlayerModule:ExitColshape", shape.Id, (int)shape.ShapeType);
+			player.Emit(entered ? "Client:PlayerModule:EnterColshape" : "Client:PlayerModule:ExitColshape", shape.ShapeId, (int)shape.ShapeType);
 
 			foreach(var item in Interactions.Where(x => x.Item1 == shape.ShapeType))
 			{
@@ -65,7 +65,7 @@ namespace Game.Modules
 
 			if(entered && shape.ShapeType == ColshapeType.JUMP_POINT)
 			{
-				var jumppoint = JumppointService.Get(shape.Id);
+				var jumppoint = JumppointService.Get(shape.ShapeId);
 				if (jumppoint == null) return;
 
 				if(jumppoint.Type == JumppointType.HOUSE)

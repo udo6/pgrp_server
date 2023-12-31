@@ -41,7 +41,7 @@ namespace Game.Modules.Jobs
             var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == Core.Enums.ColshapeType.GARBAGE_JOB_START && x.Position.Distance(player.Position) <= x.Size);
             if (shape == null) return;
 
-            var model = GarbageJobService.Get(shape.Id);
+            var model = GarbageJobService.Get(shape.ShapeId);
             if (model == null) return;
 
             var jobItems = new List<NativeMenuItem>()
@@ -124,7 +124,7 @@ namespace Game.Modules.Jobs
             var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == Core.Enums.ColshapeType.GARBAGE_JOB_RETURN && x.Position.Distance(player.Position) <= x.Size);
             if (shape == null) return;
 
-            var model = GarbageJobService.Get(shape.Id);
+            var model = GarbageJobService.Get(shape.ShapeId);
             if (model == null) return;
 
             if (!player.IsInGarbageJob)

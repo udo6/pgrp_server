@@ -18,7 +18,7 @@ namespace Game.ItemScripts.FIB
 			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.JUMP_POINT);
 			if (shape == null) return;
 
-			var jumppoint = JumppointService.Get(shape.Id);
+			var jumppoint = JumppointService.Get(shape.ShapeId);
 			if (jumppoint == null || jumppoint.Type != JumppointType.HOUSE) return;
 
 			player.PlayAnimation(AnimationType.RAMMING);

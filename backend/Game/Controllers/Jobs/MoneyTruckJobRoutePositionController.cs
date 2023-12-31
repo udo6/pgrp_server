@@ -24,7 +24,7 @@ namespace Game.Controllers.Jobs
             if (position == null) return;
 
             var pickupPoint = (RPShape)Alt.CreateColShapeCylinder(position.Position.Down(), 1.5f, 1.5f);
-            pickupPoint.Id = model.Id;
+            pickupPoint.ShapeId = model.Id;
             pickupPoint.Dimension = 0;
             pickupPoint.ShapeType = ColshapeType.MONEY_TRUCK_JOB_PICKUP;
             pickupPoint.Size = 1.5f;

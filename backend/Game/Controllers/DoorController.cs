@@ -15,7 +15,7 @@ namespace Game.Controllers
 			if (pos == null) return;
 
 			var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), model.Radius, 2f);
-			shape.Id = model.Id;
+			shape.ShapeId = model.Id;
 			shape.ShapeType = ColshapeType.DOOR;
 			shape.Size = model.Radius;
 		}

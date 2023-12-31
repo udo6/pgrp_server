@@ -56,7 +56,7 @@ namespace Game.Modules
 				var itemBase = itemBases.FirstOrDefault(x => x.Id == item.ItemId);
 				if (itemBase == null) continue;
 
-				nativeItems.Add(new($"{itemBase.Name} - ${item.Price}", false, "Server:Dealer:Sell", shape.Id, item.Id));
+				nativeItems.Add(new($"{itemBase.Name} - ${item.Price}", false, "Server:Dealer:Sell", shape.ShapeId, item.Id));
 			}
 
 			player.ShowNativeMenu(true, new("Dealer", nativeItems));
@@ -64,7 +64,7 @@ namespace Game.Modules
 
 		private static void Sell(RPPlayer player, int dealerId, int itemId)
 		{
-			var shape = RPShape.All.FirstOrDefault(x => x.Id == dealerId && x.ShapeType == Core.Enums.ColshapeType.DEALER);
+			var shape = RPShape.All.FirstOrDefault(x => x.ShapeId == dealerId && x.ShapeType == Core.Enums.ColshapeType.DEALER);
 			if(shape == null || shape.Position.Distance(player.Position) > shape.Size)
 			{
 				player.ShowNativeMenu(false, new());

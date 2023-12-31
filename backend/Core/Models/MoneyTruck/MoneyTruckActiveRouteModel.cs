@@ -19,6 +19,7 @@ namespace Core.Models.MoneyTruck
 
         public MoneyTruckActiveRouteModel()
         {
+            Name = string.Empty;
             InWork = false;
             LastUsed = DateTime.Now.AddMinutes(-10);
             PlayerId = 0;

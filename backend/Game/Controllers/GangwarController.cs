@@ -30,7 +30,7 @@ namespace Game.Controllers
 			if (pos == null) return;
 
 			var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 1.5f, 2f);
-			shape.Id = model.Id;
+			shape.ShapeId = model.Id;
 			shape.ShapeType = ColshapeType.GANGWAR_START;
 			shape.Size = 1.5f;
 
@@ -66,13 +66,13 @@ namespace Game.Controllers
 			if (attackerSpawn == null || defenderSpawn == null) return;
 
 			var attackerShape = (RPShape)Alt.CreateColShapeCylinder(attackerSpawn.Position.Down(), 2f, 2f);
-			attackerShape.Id = gangwar.Id;
+			attackerShape.ShapeId = gangwar.Id;
 			attackerShape.ShapeType = ColshapeType.GANGWAR_SPAWN;
 			attackerShape.Dimension = gangwar.Id;
 			attackerShape.Size = 2f;
 
 			var defenderShape = (RPShape)Alt.CreateColShapeCylinder(defenderSpawn.Position.Down(), 2f, 2f);
-			defenderShape.Id = gangwar.Id;
+			defenderShape.ShapeId = gangwar.Id;
 			defenderShape.ShapeType = ColshapeType.GANGWAR_SPAWN;
 			defenderShape.Dimension = gangwar.Id;
 			defenderShape.Size = 2f;
@@ -119,7 +119,7 @@ namespace Game.Controllers
 				if (pos == null) continue;
 
 				var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 2f, 2f);
-				shape.Id = gangwar.Id;
+				shape.ShapeId = gangwar.Id;
 				shape.ShapeType = ColshapeType.GANGWAR_FLAG;
 				shape.Dimension = gangwar.Id;
 				shape.Size = 2f;
@@ -175,7 +175,7 @@ namespace Game.Controllers
 
 			foreach (var shape in RPShape.All.ToList())
 			{
-				if (shape == null || !shape.Exists || shape.Id != gw.DbId || (shape.ShapeType != ColshapeType.GANGWAR_FLAG && shape.ShapeType != ColshapeType.GANGWAR_SPAWN)) continue;
+				if (shape == null || !shape.Exists || shape.ShapeId != gw.DbId || (shape.ShapeType != ColshapeType.GANGWAR_FLAG && shape.ShapeType != ColshapeType.GANGWAR_SPAWN)) continue;
 
 				RPShape.All.Remove(shape);
 				shape.Destroy();

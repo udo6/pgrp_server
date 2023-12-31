@@ -38,7 +38,7 @@ public static class GardenerJobModule
         var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == ColshapeType.GARDENER_JOB_START && x.Position.Distance(player.Position) <= x.Size);
         if (shape == null) return;
 
-        var model = GardenerJobService.Get(shape.Id);
+        var model = GardenerJobService.Get(shape.ShapeId);
         if (model == null) return;
 
         var jobMenu = new NativeMenu("Gärtner", new List<NativeMenuItem>()
@@ -111,14 +111,18 @@ public static class GardenerJobModule
         if (spawnPosition == null) return;
 
         var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
-        if (vehicle == null && player.JobVehicle != null)
+        if (vehicle == null)
         {
-            player.IsInGardenerJob = false;
-            player.Notify("Gärtner", "Du hast den Job beendet.", NotificationType.ERROR);
-            player.Emit("Client:GardenerJob:StopJob");
-            player.TempClothesId = 0;
-            PlayerController.ApplyPlayerClothes(player);
-            player.JobVehicle = null;
+            if(player.JobVehicle != null)
+            {
+				player.IsInGardenerJob = false;
+				player.Notify("Gärtner", "Du hast den Job beendet.", NotificationType.ERROR);
+				player.Emit("Client:GardenerJob:StopJob");
+				player.TempClothesId = 0;
+				PlayerController.ApplyPlayerClothes(player);
+				player.JobVehicle = null;
+			}
+
             return;
         }
 

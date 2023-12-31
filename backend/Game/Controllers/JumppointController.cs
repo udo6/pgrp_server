@@ -15,7 +15,7 @@ namespace Game.Controllers
 			if (outsidePos == null) return;
 
 			var outside = (RPShape)Alt.CreateColShapeCylinder(outsidePos.Position.Down(), 1f, 2f);
-			outside.Id = model.Id;
+			outside.ShapeId = model.Id;
 			outside.ShapeType = ColshapeType.JUMP_POINT;
 			outside.Size = 1.5f;
 			outside.Dimension = model.OutsideDimension;
@@ -25,7 +25,7 @@ namespace Game.Controllers
 			if (insidePos == null) return;
 
 			var inside = (RPShape)Alt.CreateColShapeCylinder(insidePos.Position.Down(), 1f, 2f);
-			inside.Id = model.Id;
+			inside.ShapeId = model.Id;
 			inside.ShapeType = ColshapeType.JUMP_POINT;
 			inside.Size = 1.5f;
 			inside.Dimension = model.InsideDimension;

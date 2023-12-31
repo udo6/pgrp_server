@@ -26,12 +26,12 @@ namespace Game.Controllers.Jobs
             if (returnPosition == null) return;
 
             var startJobShape = (RPShape)Alt.CreateColShapeCylinder(startPosition.Position.Down(), 3f, 3f);
-            startJobShape.Id = model.Id;
+            startJobShape.ShapeId = model.Id;
             startJobShape.ShapeType = ColshapeType.GARBAGE_JOB_START;
             startJobShape.Size = 3f;
 
             var returnJobShape = (RPShape)Alt.CreateColShapeCylinder(returnPosition.Position.Down(), 6f, 6f);
-            returnJobShape.Id = model.Id;
+            returnJobShape.ShapeId = model.Id;
             returnJobShape.ShapeType = ColshapeType.GARBAGE_JOB_RETURN;
             returnJobShape.Size = 6f;
 

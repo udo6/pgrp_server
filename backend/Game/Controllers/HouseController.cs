@@ -54,14 +54,14 @@ namespace Game.Controllers
 			if (model.OwnerId < 1)
 			{
 				var shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 2f, 2f);
-				shape.Id = model.Id;
+				shape.ShapeId = model.Id;
 				shape.ShapeType = ColshapeType.HOUSE;
 				shape.Size = 2f;
 				shape.SetData("GARBAGE_PICKED_UP", DateTime.Now.AddMinutes(-10));
 			}
 
 			var inv = (RPShape)Alt.CreateColShapeCylinder(HouseInventoryPositions[model.Type].Down(), 2f, 2f);
-			inv.Id = model.Id;
+			inv.ShapeId = model.Id;
 			inv.ShapeType = ColshapeType.HOUSE_INVENTORY;
 			inv.Size = 2f;
 			inv.Dimension = model.Id;

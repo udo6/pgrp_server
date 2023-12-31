@@ -21,7 +21,7 @@ namespace Game.Modules
 		public static void Initialize()
 		{
 			var shape = (RPShape)Alt.CreateColShapeCylinder(Position.Position.Down(), 2f, 2f);
-			shape.Id = 0;
+			shape.ShapeId = 0;
 			shape.ShapeType = ColshapeType.FFA;
 			shape.Size = 2f;
 

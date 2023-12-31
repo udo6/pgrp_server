@@ -159,6 +159,7 @@ namespace Core.Entities
 			Weapons = new();
 			LastLocatedByFIB = DateTime.Now;
 			TemporaryBlips = new();
+			TeamspeakName = string.Empty;
 		}
 
 		public void Notify(string title, string msg, NotificationType type)

@@ -37,7 +37,7 @@ namespace Game.Modules
 			var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == ColshapeType.WARDROBE && x.Position.Distance(player.Position) <= x.Size);
 			if (shape == null) return;
 
-			var model = WardrobeService.Get(shape.Id);
+			var model = WardrobeService.Get(shape.ShapeId);
 			if (model == null) return;
 
 			if (model.OwnerId > 0 && (model.OwnerType == OwnerType.PLAYER && player.DbId != model.OwnerId || model.OwnerType == OwnerType.TEAM && player.TeamId != model.OwnerId || model.OwnerType == OwnerType.SWAT && !player.SWATDuty)) return;

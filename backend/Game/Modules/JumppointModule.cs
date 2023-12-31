@@ -26,7 +26,7 @@ namespace Game.Modules
 			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.JUMP_POINT);
 			if (shape == null) return;
 
-			var jumppoint = JumppointService.Get(shape.Id);
+			var jumppoint = JumppointService.Get(shape.ShapeId);
 			if (jumppoint == null) return;
 
 			if((jumppoint.OwnerType == OwnerType.PLAYER && jumppoint.OwnerId != player.DbId && jumppoint.KeyHolderId != player.DbId) || (jumppoint.OwnerType == OwnerType.TEAM && jumppoint.OwnerId != player.TeamId))
@@ -50,7 +50,7 @@ namespace Game.Modules
 			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.JUMP_POINT);
 			if (shape == null) return;
 
-			var jumppoint = JumppointService.Get(shape.Id);
+			var jumppoint = JumppointService.Get(shape.ShapeId);
 			if (jumppoint == null || jumppoint.Locked) return;
 
 			var outside = PositionService.Get(jumppoint.OutsidePositionId);

@@ -29,7 +29,7 @@ namespace Game.Modules
 			var vehicles = RPVehicle.All.Where(x => x.DbId > 0 && x.Dimension == player.Dimension && VehicleController.IsVehicleOwner(x, player) && x.Position.Distance(player.Position) <= 30f);
 			var nativeItems = new List<NativeMenuItem>()
 			{
-				new("Inventar", true, "Server:Processor:ProcessInventory", shape.Id)
+				new("Inventar", true, "Server:Processor:ProcessInventory", shape.ShapeId)
 			};
 
 			foreach(var item in vehicles)
@@ -37,7 +37,7 @@ namespace Game.Modules
 				var baseModel = VehicleService.GetBase(item.BaseId);
 				if (baseModel == null) continue;
 
-				nativeItems.Add(new($"{baseModel.Name}({item.DbId})", true, "Server:Processor:ProcessVehicle", shape.Id, item.DbId));
+				nativeItems.Add(new($"{baseModel.Name}({item.DbId})", true, "Server:Processor:ProcessVehicle", shape.ShapeId, item.DbId));
 			}
 
 			player.ShowNativeMenu(true, new("Verarbeiter", nativeItems));

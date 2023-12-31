@@ -76,7 +76,7 @@ namespace Game.Modules
 			var shape = RPShape.All.FirstOrDefault(x => x.ShapeType == Core.Enums.ColshapeType.IMPOUND && x.Position.Distance(player.Position) <= x.Size);
 			if (shape == null) return;
 
-			var spawn = ImpoundController.GetFreeSpawn(shape.Id);
+			var spawn = ImpoundController.GetFreeSpawn(shape.ShapeId);
 			if (spawn == null)
 			{
 				player.Notify("Information", "Es ist kein Ausparkpunkt frei!", Core.Enums.NotificationType.ERROR);

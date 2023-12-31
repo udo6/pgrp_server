@@ -13,7 +13,7 @@ namespace Core.Entities
 			return All.FirstOrDefault(x => x.ShapeType == type && x.Dimension == dimension && new Position(x.Position.X, x.Position.Y, x.Position.Z+1).Distance(pos) <= x.Size);
 		}
 
-		public int Id { get; set; }
+		public int ShapeId { get; set; }
 		public ColshapeType ShapeType { get; set; }
 		public float Size { get; set; }
 

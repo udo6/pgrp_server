@@ -17,7 +17,7 @@ public class GardenerJobController
         if (position == null) return;
 
         var startJobShape = (RPShape)Alt.CreateColShapeCylinder(position.Position.Down(), 2f, 2f);
-        startJobShape.Id = model.Id;
+        startJobShape.ShapeId = model.Id;
         startJobShape.ShapeType = ColshapeType.GARDENER_JOB_START;
         startJobShape.Size = 2f;
 

@@ -162,7 +162,7 @@ namespace Game.Modules
 			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.GAS_STATION);
 			if (shape == null) return;
 
-			var station = GasStationService.Get(shape.Id);
+			var station = GasStationService.Get(shape.ShapeId);
 			if (station == null) return;
 
 			var baseModel = VehicleService.GetBase(veh.BaseId);

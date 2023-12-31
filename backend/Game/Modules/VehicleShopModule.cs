@@ -30,7 +30,7 @@ namespace Game.Modules
 			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.VEHICLE_SHOP);
 			if (shape == null) return;
 
-			var items = VehicleShopService.GetItemsFromShop(shape.Id);
+			var items = VehicleShopService.GetItemsFromShop(shape.ShapeId);
 			var bases = VehicleService.GetAllBases();
 
 			var nativeItems = new List<NativeMenuItem>();

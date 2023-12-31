@@ -51,7 +51,7 @@ namespace Game.Modules.Jobs
             var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == ColshapeType.MONEY_TRUCK_JOB_START && x.Position.Distance(player.Position) <= x.Size);
             if (shape == null) return;
 
-            var model = MoneyTruckJobService.Get(shape.Id);
+            var model = MoneyTruckJobService.Get(shape.ShapeId);
             if (model == null) return;
 
             var jobMenu = new NativeMenu("Geldtransporter", new List<NativeMenuItem>()
@@ -226,7 +226,7 @@ namespace Game.Modules.Jobs
             var shape = RPShape.All.FirstOrDefault(x => player.Position.Distance(x.Position) <= x.Size && x.ShapeType == ColshapeType.MONEY_TRUCK_JOB_PICKUP && player.Dimension == x.Dimension);
             if (shape == null) return;
 
-            var model = MoneyTruckJobRoutePositionService.Get(shape.Id);
+            var model = MoneyTruckJobRoutePositionService.Get(shape.ShapeId);
             if (model == null) return;
 
             shape.GetData("MONEY_TRUCK_PICKED_UP", out bool pickedUp);

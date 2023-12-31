@@ -37,7 +37,7 @@ namespace Game.Modules
 			var shape = RPShape.Get(player.Position, player.Dimension, Core.Enums.ColshapeType.DOOR);
 			if (shape == null) return;
 
-			var door = DoorService.Get(shape.Id);
+			var door = DoorService.Get(shape.ShapeId);
 			if (door == null || !DoorController.HasDoorAccess(door.Id, player.DbId, player.TeamId)) return;
 
 			var state = !door.Locked;

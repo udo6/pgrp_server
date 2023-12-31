@@ -26,7 +26,7 @@ namespace Game.Modules
 			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.FARMING_SPOT);
 			if (shape == null) return;
 
-			var spot = FarmingController.CachedFarmingSpots.FirstOrDefault(x => x.Id == shape.Id);
+			var spot = FarmingController.CachedFarmingSpots.FirstOrDefault(x => x.Id == shape.ShapeId);
 			if (spot == null) return;
 
 			var model = FarmingService.Get(spot.FarmingId);

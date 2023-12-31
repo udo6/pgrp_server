@@ -23,7 +23,7 @@ namespace Game.Modules
 		public static void Initialize()
 		{
 			var shape = (RPShape)Alt.CreateColShapeCylinder(Position.Down(), 2f, 2f);
-			shape.Id = 1;
+			shape.ShapeId = 1;
 			shape.ShapeType = ColshapeType.LIFEINVADER;
 			shape.Size = 2f;
 

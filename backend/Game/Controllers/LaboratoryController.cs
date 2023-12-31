@@ -41,7 +41,7 @@ namespace Game.Controllers
 		{
 			var fuelPos = Positions[model.Type].Fuel.Down();
 			var fuel = (RPShape)Alt.CreateColShapeCylinder(fuelPos, 2f, 2f);
-			fuel.Id = model.Id;
+			fuel.ShapeId = model.Id;
 			fuel.ShapeType = ColshapeType.LABORATORY_FUEL;
 			fuel.Size = 2f;
 			fuel.Dimension = model.Id;
@@ -52,7 +52,7 @@ namespace Game.Controllers
 
 			var interactionPos = Positions[model.Type].Interaction.Down();
 			var interaction = (RPShape)Alt.CreateColShapeCylinder(interactionPos, 2f, 2f);
-			interaction.Id = model.Id;
+			interaction.ShapeId = model.Id;
 			interaction.ShapeType = ColshapeType.LABORATORY_INTERACTION;
 			interaction.Size = 2f;
 			interaction.Dimension = model.Id;
@@ -61,7 +61,7 @@ namespace Game.Controllers
 
 			var inputPos = Positions[model.Type].Input.Down();
 			var input = (RPShape)Alt.CreateColShapeCylinder(inputPos, 2f, 2f);
-			input.Id = model.Id;
+			input.ShapeId = model.Id;
 			input.ShapeType = ColshapeType.LABORATORY_INPUT;
 			input.Size = 2f;
 			input.Dimension = model.Id;
@@ -70,7 +70,7 @@ namespace Game.Controllers
 
 			var outputPos = Positions[model.Type].Output.Down();
 			var output = (RPShape)Alt.CreateColShapeCylinder(outputPos, 2f, 2f);
-			output.Id = model.Id;
+			output.ShapeId = model.Id;
 			output.ShapeType = ColshapeType.LABORATORY_OUTPUT;
 			output.Size = 2f;
 			output.Dimension = model.Id;
@@ -79,7 +79,7 @@ namespace Game.Controllers
 
 			var robPos = Positions[model.Type].Rob.Down();
 			var rob = (RPShape)Alt.CreateColShapeCylinder(robPos, 2f, 2f);
-			rob.Id = model.Id;
+			rob.ShapeId = model.Id;
 			rob.ShapeType = ColshapeType.LABORATORY_ROB;
 			rob.Size = 2f;
 			rob.Dimension = model.Id;

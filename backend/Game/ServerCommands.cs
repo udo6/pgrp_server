@@ -37,7 +37,7 @@ namespace Game
 			}
 			catch(Exception ex)
 			{
-				Console.WriteLine($"An Command Exception has been thrown by {player.Name}: /{command}");
+				Console.WriteLine($"An Command Exception has been thrown by {player.Name}: /{command} | {ex.Message}");
 			}
 		}
 

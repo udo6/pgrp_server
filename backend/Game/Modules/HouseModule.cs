@@ -29,7 +29,7 @@ namespace Game.Modules
 			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.HOUSE);
 			if (shape == null) return;
 
-			var house = HouseService.Get(shape.Id);
+			var house = HouseService.Get(shape.ShapeId);
 			if (house == null) return;
 
 			if (player.IsInGarbageJob && !player.HasGarbageInHand)
@@ -67,7 +67,7 @@ namespace Game.Modules
 			house.KeyHolderId = target.DbId;
 			HouseService.Update(house);
 
-			var houseInv = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == ColshapeType.HOUSE_INVENTORY && x.Id == house.Id);
+			var houseInv = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == ColshapeType.HOUSE_INVENTORY && x.ShapeId == house.Id);
 			if(houseInv != null)
 			{
 				houseInv.InventoryAccess = new()
@@ -103,7 +103,7 @@ namespace Game.Modules
 				return;
 			}
 
-			var shape = RPShape.All.FirstOrDefault(x => x.Id == houseId && x.ShapeType == ColshapeType.HOUSE);
+			var shape = RPShape.All.FirstOrDefault(x => x.ShapeId == houseId && x.ShapeType == ColshapeType.HOUSE);
 			if (shape == null) return;
 
 			RPShape.All.Remove(shape);

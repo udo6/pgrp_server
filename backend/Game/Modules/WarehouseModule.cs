@@ -33,7 +33,7 @@ namespace Game.Modules
 			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.WAREHOUSE);
 			if (shape == null) return;
 
-			var warehouse = WarehouseService.Get(shape.Id);
+			var warehouse = WarehouseService.Get(shape.ShapeId);
 			if (warehouse == null) return;
 
 			player.ShowNativeMenu(true, new($"Lagerhalle {warehouse.Id}", new()
@@ -65,7 +65,7 @@ namespace Game.Modules
 			warehouse.KeyHolderId = target.DbId;
 			WarehouseService.Update(warehouse);
 
-			var inventories = RPShape.All.Where(x => x.ShapeType == ColshapeType.WAREHOUSE_BOX && x.Id == warehouse.Id).ToList();
+			var inventories = RPShape.All.Where(x => x.ShapeType == ColshapeType.WAREHOUSE_BOX && x.ShapeId == warehouse.Id).ToList();
 			foreach (var inventory in inventories)
 				inventory.InventoryAccess = new()
 				{
@@ -101,7 +101,7 @@ namespace Game.Modules
 			AccountService.Update(account);
 			BankService.AddHistory(new(account.Id, account.Name, $"Lagerhalle {warehouse.Id}", TransactionType.PLAYER, true, WarehouseController.WarehouseBuyPrice, DateTime.Now));
 
-			var shape = RPShape.All.FirstOrDefault(x => x.Id == warehouseId && x.ShapeType == ColshapeType.WAREHOUSE);
+			var shape = RPShape.All.FirstOrDefault(x => x.ShapeId == warehouseId && x.ShapeType == ColshapeType.WAREHOUSE);
 			if (shape == null) return;
 
 			RPShape.All.Remove(shape);
@@ -212,14 +212,14 @@ namespace Game.Modules
 
 			foreach(var shape in RPShape.All.ToList())
 			{
-				if(shape.ShapeType == ColshapeType.WAREHOUSE_UPGRADE && shape.Id == model.Id)
+				if(shape.ShapeType == ColshapeType.WAREHOUSE_UPGRADE && shape.ShapeId == model.Id)
 				{
 					RPShape.All.Remove(shape);
 					shape.Destroy();
 					continue;
 				}
 
-				if(shape.ShapeType == ColshapeType.WAREHOUSE_BOX && shape.Id == model.Id)
+				if(shape.ShapeType == ColshapeType.WAREHOUSE_BOX && shape.ShapeId == model.Id)
 				{
 					shape.Object?.Destroy();
 					RPShape.All.Remove(shape);
@@ -234,7 +234,7 @@ namespace Game.Modules
 			var exitPos = PositionService.Get(WarehouseController.GetExitPosition(model.Type + 1));
 			if (exitPos == null) return;
 
-			var exitShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.JUMP_POINT && x.Id == jumppoint.Id && !x.JumppointEnterType);
+			var exitShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.JUMP_POINT && x.ShapeId == jumppoint.Id && !x.JumppointEnterType);
 			if (exitShape == null) return;
 
 			exitShape.Position = exitPos.Position;

@@ -21,7 +21,7 @@ namespace Game.Modules
 				HospitalController.LoadHospital(model);
 
 			var shape = (RPShape)Alt.CreateColShapeCylinder(CreatorPosition, 1.5f, 2f);
-			shape.Id = 1;
+			shape.ShapeId = 1;
 			shape.ShapeType = ColshapeType.CREATOR;
 			shape.Size = 1.5f;
 
@@ -55,7 +55,7 @@ namespace Game.Modules
 			var players = RPPlayer.All.Where(x => x.LoggedIn && x.Vehicle == vehicle && !x.Alive).ToList();
 			if (players.Count < 1) return;
 
-			var beds = HospitalService.GetBeds(shape.Id);
+			var beds = HospitalService.GetBeds(shape.ShapeId);
 			foreach(var player in players)
 			{
 				var bed = beds.FirstOrDefault(IsBedAvailable);

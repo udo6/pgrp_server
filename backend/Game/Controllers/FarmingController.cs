@@ -23,7 +23,7 @@ namespace Game.Controllers
 			if (pos == null) return;
 
 			spot.Shape = (RPShape)Alt.CreateColShapeCylinder(pos.Position.Down(), 2f, 2f);
-			spot.Shape.Id = spot.Id;
+			spot.Shape.ShapeId = spot.Id;
 			spot.Shape.ShapeType = ColshapeType.FARMING_SPOT;
 			spot.Shape.Size = 2f;
 
@@ -35,7 +35,7 @@ namespace Game.Controllers
 
 		public static void EnableSpot(FarmingSpotModel spot)
 		{
-			if (spot.Shape == null) return;
+			if (spot.Shape == null || spot.Object == null) return;
 
 			var model = FarmingService.Get(spot.FarmingId);
 			if (model == null) return;
@@ -46,6 +46,8 @@ namespace Game.Controllers
 
 		public static void DisableSpot(FarmingSpotModel spot)
 		{
+			if (spot.Object == null) return;
+
 			spot.Object.Streamed = false;
 			spot.Despawned = DateTime.Now;
 			spot.Health = 0;
