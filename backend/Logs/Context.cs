@@ -15,6 +15,7 @@ namespace Logs
 		public DbSet<ACPActionModel> ACPActions { get; set; }
 		public DbSet<KillModel> KillLogs { get; set; }
 		public DbSet<DamageModel> DamageLogs { get; set; }
+		public DbSet<MagicBulletModel> MagicBulletLogs { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

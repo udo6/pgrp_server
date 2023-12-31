@@ -7,6 +7,7 @@ namespace Logs
 	public static class LogService
 	{
 		private static List<DamageModel> DamageLogsCache = new();
+		private static List<MagicBulletModel> MagicBulletLogsCache = new();
 
 		public static void LogInventoryMove(int inventoryId, int containerId, int itemId, int amount, InventoryMoveType type)
 		{
@@ -76,6 +77,11 @@ namespace Logs
 			DamageLogsCache.Add(new(accountId, targetId, weapon, damage, bodyPart, DateTime.Now));
 		}
 
+		public static void LogMagicBullet(int accountId, uint weapon, int damage, float distance)
+		{
+			MagicBulletLogsCache.Add(new(accountId, weapon, damage, distance, DateTime.Now));
+		}
+
 		public static void SendDamageLogsToDatabase()
 		{
 			using var ctx = new Context();
@@ -83,6 +89,15 @@ namespace Logs
 			ctx.SaveChanges();
 
 			DamageLogsCache.Clear();
+		}
+
+		public static void SendMagicBulletLogsToDatabase()
+		{
+			using var ctx = new Context();
+			ctx.MagicBulletLogs.AddRange(MagicBulletLogsCache);
+			ctx.SaveChanges();
+
+			MagicBulletLogsCache.Clear();
 		}
 	}
 }

@@ -130,8 +130,8 @@ namespace Game.Modules
 
 			if (WeaponDamage.ContainsKey(weapon))
 			{
-				var allowedDamage = WeaponDamage[weapon];
-				if (damage > allowedDamage)
+				var maxDamage = WeaponDamage[weapon];
+				if (damage > maxDamage)
 				{
 					var account = AccountService.Get(player.DbId);
 					if (account == null) return false;
@@ -140,8 +140,15 @@ namespace Game.Modules
 					account.BanReason = "Cheating";
 					AccountService.Update(account);
 
-					LogService.LogPlayerBan(player.DbId, 0, $"Damage modifier (Weapon: {weapon} Damage: {damage} Allowed Damage: {allowedDamage})");
+					LogService.LogPlayerBan(player.DbId, 0, $"Damage modifier (Weapon: {weapon} Damage: {damage} Allowed Damage: {maxDamage})");
 					player.Kick("Du wurdest gebannt! Grund: Cheating");
+					return false;
+				}
+
+				var dist = player.Position.Distance(target.Position);
+				if (dist > 50 && damage == maxDamage)
+				{
+					LogService.LogMagicBullet(player.DbId, weapon, damage, dist);
 					return false;
 				}
 			}
