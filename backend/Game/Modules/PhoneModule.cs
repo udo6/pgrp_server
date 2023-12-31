@@ -46,6 +46,7 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Phone:Dispatch:Close", CloseDispatch);
 
 			// Settings
+			Alt.OnClient<RPPlayer, float>("Server:Phone:Settings:UpdateVolume", UpdateVolume);
 			Alt.OnClient<RPPlayer>("Server:Phone:Settings:RequestData", RequestSettings);
 
 			// Profile
@@ -374,9 +375,16 @@ namespace Game.Modules
 
 		#region Settings
 
+		private static void UpdateVolume(RPPlayer player, float volume)
+		{
+			if (volume < 0 || volume > 1) return;
+
+			player.PhoneVolume = volume;
+		}
+
 		private static void RequestSettings(RPPlayer player)
 		{
-			player.Emit("Client:Hud:Phone:SetData");
+			player.Emit("Client:Hud:Phone:SetData", player.PhoneVolume);
 		}
 
 		#endregion
@@ -427,7 +435,7 @@ namespace Game.Modules
 				PartnerName = playerContact == null ? "" : playerContact.Name,
 				Mute = player.CallMute
 			}));
-			player.EmitBrowser("Phone:PlayRinging", 1);
+			player.EmitBrowser("Phone:PlayRinging", player.PhoneVolume);
 
 			target.CallPartner = player.DbId;
 			target.CallState = CallState.GET_CALLED;
@@ -440,7 +448,7 @@ namespace Game.Modules
 				Partner = player.PhoneNumber,
 				PartnerName = targetContact == null ? "" : targetContact.Name
 			}));
-			target.EmitBrowser("Phone:PlayRingtone", 1);
+			target.EmitBrowser("Phone:PlayRingtone", target.PhoneVolume);
 			target.Notify("Information", $"Eingehender Anruf", NotificationType.INFO);
 		}
 

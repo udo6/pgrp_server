@@ -76,6 +76,8 @@ namespace Database.Models.Account
 
         public bool IsInHospital { get; set; }
 
+        public float PhoneVolume { get; set; }
+
         public AccountModel()
         {
             Name = string.Empty;
@@ -151,6 +153,7 @@ namespace Database.Models.Account
             AdminRecordDescription = string.Empty;
             Jailtime = 0;
             IsInHospital = false;
+            PhoneVolume = 0.1f;
 		}
 	}
 
@@ -233,6 +236,8 @@ namespace Database.Models.Account
 			builder.Property(x => x.Jailtime).HasColumnName("jailtime").HasColumnType("int(11)");
 
 			builder.Property(x => x.IsInHospital).HasColumnName("hospital").HasColumnType("tinyint(1)");
+
+			builder.Property(x => x.PhoneVolume).HasColumnName("phone_volume").HasColumnType("int(11)");
 		}
 	}
 }

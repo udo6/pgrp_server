@@ -40,6 +40,7 @@ namespace Game.Controllers
 			player.VestItemId = account.ArmorItemId;
 			player.SWATDuty = account.SWATDuty;
 			player.DamageCap = account.DamageCap;
+			player.PhoneVolume = account.PhoneVolume;
 
 			player.ApplyTeam();
 			player.ApplyAdmin();

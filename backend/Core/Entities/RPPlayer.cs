@@ -88,6 +88,8 @@ namespace Core.Entities
 		private string ClientInteraction { get; set; } = string.Empty;
 		private string ClientCachedInteraction { get; set; } = string.Empty;
 
+		public float PhoneVolume { get; set; }
+
 		// ANTICHEAT
 		public DateTime LastHealthChange { get; set; }
 		public DateTime LastGodmodeChange { get; set; }

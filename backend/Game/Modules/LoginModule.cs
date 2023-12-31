@@ -102,6 +102,7 @@ namespace Game.Modules
 			account.Xp = player.Xp;
 			account.XpTicks = player.XpTicks;
 			account.IsInHospital = player.IsInHospital;
+			account.PhoneVolume = player.PhoneVolume;
 			AccountService.Update(account);
 
 			var pos = PositionService.Get(player.PositionId);
