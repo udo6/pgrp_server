@@ -166,6 +166,7 @@ namespace Database.Models.Account
 			builder.Property(x => x.SocialclubId).HasColumnName("social").HasColumnType("bigint(20)");
 			builder.Property(x => x.HardwareId).HasColumnName("hwid").HasColumnType("bigint(20)");
 			builder.Property(x => x.HardwareIdEx).HasColumnName("hwid_ex").HasColumnType("bigint(20)");
+			builder.Property(x => x.ForumId).HasColumnName("forum_id").HasColumnType("int(11)");
 			builder.Property(x => x.DiscordId).HasColumnName("discord").HasColumnType("bigint(20)");
 			builder.Property(x => x.Whitelisted).HasColumnName("whitelisted").HasColumnType("tinyint(1)");
 

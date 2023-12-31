@@ -35,7 +35,7 @@ namespace Database.Models.Case
 			builder.Property(x => x.CaseId).HasColumnName("case_id").HasColumnType("int(11)");
 			builder.Property(x => x.ItemId).HasColumnName("item_id").HasColumnType("int(11)");
 			builder.Property(x => x.ItemAmount).HasColumnName("item_amount").HasColumnType("int(11)");
-			builder.Property(x => x.Probability).HasColumnName("probability").HasColumnType("int(11)");
+			builder.Property(x => x.Probability).HasColumnName("probability").HasColumnType("float");
 		}
 	}
 }

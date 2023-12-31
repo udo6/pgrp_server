@@ -10,7 +10,7 @@ namespace Game
 			var types = Assembly.GetExecutingAssembly().GetTypes();
 
 			// Load item scripts
-			var itemScriptsTypes = types.Where(t => (t.BaseType == typeof(ItemScript) || t.BaseType == typeof(WeaponItemScript) || t.BaseType == typeof(AttatchmentItemScript) || t.BaseType == typeof(AmmoItemScript) || t.BaseType == typeof(TempClothesItemScript)) && !t.IsAbstract).ToList();
+			var itemScriptsTypes = types.Where(t => (t.BaseType == typeof(ItemScript) || t.BaseType == typeof(WeaponItemScript) || t.BaseType == typeof(AttatchmentItemScript) || t.BaseType == typeof(AmmoItemScript) || t.BaseType == typeof(TempClothesItemScript) || t.BaseType == typeof(FoodItemScript)) && !t.IsAbstract).ToList();
 			foreach(var itemScriptsType in itemScriptsTypes)
 			{
 				var instance = (ItemScript)Activator.CreateInstance(itemScriptsType)!;

@@ -60,5 +60,13 @@ namespace Game.Commands.Admin
 			player.AdminNotifications = !player.AdminNotifications;
 			player.Notify("Information", $"Du hast deine Admin-Nachrichten {(player.AdminNotifications ? "eingeschaltet" : "ausgeschaltet")}.", NotificationType.INFO);
 		}
+
+		[Command("names")]
+		public static void ToggleNames(RPPlayer player)
+		{
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
+
+			player.Emit("Client:AdminModule:ToggleNames");
+		}
 	}
 }
