@@ -28,5 +28,12 @@ namespace Game.Commands.Player
 			player.Notify("Ticket System", $"Dein Ticket wurde an die Administration weitergeleitet!", Core.Enums.NotificationType.INFO);
 			AdminController.BroadcastTeam("Ticket System", $"Es ist ein Ticket von {player.Name} eingegangen! Nachricht: {message}", Core.Enums.NotificationType.INFO);
 		}
+
+		[Command("r")]
+		public static void Report(RPPlayer player)
+		{
+			
+			player.Notify("Ticket System", $"Dein Ticket wurde an die Administration weitergeleitet!", Core.Enums.NotificationType.INFO);
+		}
 	}
 }

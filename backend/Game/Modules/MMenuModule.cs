@@ -15,6 +15,7 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:MMenu:ViewIdCard", ViewIdCard);
 			Alt.OnClient<RPPlayer>("Server:MMenu:ViewLicenses", ViewLicense);
 			Alt.OnClient<RPPlayer, int>("Server:MMenu:ToggleClothes", ToggleClothes);
+			Alt.OnClient<RPPlayer>("Server:MMenu:QuickMask", QuickMask);
 		}
 
 		private static void Open(RPPlayer player)
@@ -136,6 +137,24 @@ namespace Game.Modules
 					player.DecalsState = !player.DecalsState;
 					player.SetClothing(10, player.DecalsState ? clothes.Decals : 0, player.DecalsState ? clothes.DecalsColor : 0, player.DecalsState ? clothes.DecalsDlc : 0);
 					break;
+			}
+		}
+
+		private static void QuickMask(RPPlayer player)
+		{
+			if (player.AdminDuty) return;
+
+			player.MaskState = !player.MaskState;
+			if (player.MaskState)
+			{
+				var clothes = ClothesService.Get(player.ClothesId);
+				if (clothes == null) return;
+
+				player.SetClothing(1, clothes.Mask, clothes.MaskColor, clothes.MaskDlc);
+			}
+			else
+			{
+				player.SetClothing(1, 0, 0, 0);
 			}
 		}
 	}
