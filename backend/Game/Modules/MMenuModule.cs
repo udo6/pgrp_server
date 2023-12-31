@@ -145,6 +145,7 @@ namespace Game.Modules
 			if (player.AdminDuty) return;
 
 			player.MaskState = !player.MaskState;
+			player.PlayAnimation(Core.Enums.AnimationType.TAKEOFF_MASK);
 			if (player.MaskState)
 			{
 				var clothes = ClothesService.Get(player.ClothesId);
