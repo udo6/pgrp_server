@@ -16,6 +16,7 @@ namespace Game.Modules
 				BarberController.LoadBarber(model);
 
 			Alt.OnClient<RPPlayer, int>("Server:Barber:Open", Open);
+			Alt.OnClient<RPPlayer, int, int, int, uint, int, int>("Server:Barber:Try", Try);
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Barber:Buy", Buy);
 			Alt.OnClient<RPPlayer>("Server:Barber:Reset", Reset);
 		}
@@ -49,6 +50,22 @@ namespace Game.Modules
 				Colors = colors,
 				Beards = beards
 			}));
+		}
+
+		private static void Try(RPPlayer player, int style, int color, int highlightColor, uint dlc, int beard, int beardColor)
+		{
+			player.SetClothing(2, style, 0, dlc);
+			player.HairColor = (byte)color;
+			player.HairHighlightColor = (byte)highlightColor;
+			if(beard == -1)
+			{
+				player.RemoveHeadOverlay(1);
+			}
+			else
+			{
+				player.SetHeadOverlay(1, (byte)beard, 1);
+				player.SetHeadOverlayColor(1, 1, (byte)beardColor, (byte)beardColor);
+			}
 		}
 
 		private static void Buy(RPPlayer player, int styleId, int colorId, int highlightColorId)

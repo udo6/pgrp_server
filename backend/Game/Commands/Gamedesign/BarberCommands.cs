@@ -24,11 +24,11 @@ namespace Game.Commands.Gamedesign
 		}
 
 		[Command("addbarberstyle")]
-		public static void AddBarberStyle(RPPlayer player, int barberId, int style, string label, int gender)
+		public static void AddBarberStyle(RPPlayer player, int barberId, int style, int dlc, string label, int gender)
 		{
 			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
-			var model = new BarberStyleModel(barberId, label, style, 450, gender);
+			var model = new BarberStyleModel(barberId, label, style, (uint)dlc, 450, gender);
 			BarberService.AddStyle(model);
 		}
 	}

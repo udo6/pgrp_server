@@ -30,6 +30,7 @@ namespace Database.Models.Account
         public int Hair { get; set; }
         public int HairColor { get; set; }
         public int HairHighlightColor { get; set; }
+        public uint HairDlc { get; set; }
         public int Beard { get; set; }
         public int BeardColor { get; set; }
         public float BeardOpacity { get; set; }
@@ -130,6 +131,7 @@ namespace Database.Models.Account
 			builder.Property(x => x.Hair).HasColumnName("hair").HasColumnType("int(11)");
 			builder.Property(x => x.HairColor).HasColumnName("hair_color").HasColumnType("int(11)");
 			builder.Property(x => x.HairHighlightColor).HasColumnName("hair_highlight_color").HasColumnType("int(11)");
+			builder.Property(x => x.HairDlc).HasColumnName("hair_dlc").HasColumnType("uint(11)");
 
 			builder.Property(x => x.Beard).HasColumnName("beard").HasColumnType("int(11)");
 			builder.Property(x => x.BeardColor).HasColumnName("beard_color").HasColumnType("int(11)");

@@ -103,7 +103,7 @@ namespace Game.Controllers
 				custom.SkinSimilarity,
 				0);
 
-			player.SetClothing(2, custom.Hair, 0, 0);
+			player.SetClothing(2, custom.Hair, 0, custom.HairDlc);
 			player.HairColor = (byte)custom.HairColor;
 			player.HairHighlightColor = (byte)custom.HairHighlightColor;
 
