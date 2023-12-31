@@ -59,6 +59,7 @@ namespace Game.Modules
 
 			player.RadioActive = false;
 			player.RadioFrequency = 0;
+			player.SetSyncedMetaData("RADIO_CHANNEL", 0);
 
 			Connect(player);
 		}
@@ -210,6 +211,7 @@ namespace Game.Modules
 		public static void LeaveRadio(RPPlayer player)
 		{
 			player.RadioFrequency = 0;
+			player.SetSyncedMetaData("RADIO_CHANNEL", 0);
 
 			var players = new List<RPPlayer>();
 			foreach(var freq in RadioFrequencies)
@@ -218,12 +220,6 @@ namespace Game.Modules
 			}
 
 			Alt.EmitClients(players.ToArray(), "client:yaca:leaveRadioChannel", player.VoicePluginClientId);
-		}
-
-		public static void RadioMute(RPPlayer player)
-		{
-			player.RadioMute = !player.RadioMute;
-			player.Emit("client:yaca:setRadioMuteState", player.RadioMute);
 		}
 
 		public static void RadioTalkingState(RPPlayer player, bool state)
@@ -237,23 +233,13 @@ namespace Game.Modules
 			var targetsToSender = new List<RPPlayer>();
 			foreach(var target in players)
 			{
-				if (target.RadioMute)
-				{
-					if(target.Id == player.Id)
-					{
-						targets = new();
-						break;
-					}
-
-					continue;
-				}
-
 				if (target.Id == player.Id || !target.RadioActive) continue;
 
 				targets.Add(target);
 				targetsToSender.Add(target);
 			}
 
+			player.SetSyncedMetaData("RADIO_TALKING", state);
 			Alt.EmitClients(targets.ToArray(), "client:yaca:radioTalking", player.Id, player.RadioFrequency, state);
 		}
 
