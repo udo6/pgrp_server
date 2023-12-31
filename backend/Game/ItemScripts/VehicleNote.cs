@@ -8,7 +8,7 @@ namespace Game.ItemScripts
 {
 	public class VehicleNote : ItemScript
 	{
-		public VehicleNote() : base(321, true)
+		public VehicleNote() : base(321, false)
 		{
 		}
 
@@ -19,6 +19,7 @@ namespace Game.ItemScripts
 			var veh = (RPVehicle)player.Vehicle;
 			if (!VehicleController.IsVehicleOwner(veh, player)) return;
 
+			player.ShowComponent("Inventory", false);
             player.ShowComponent("Input", true, JsonConvert.SerializeObject(new
 			{
 				Title = "Fahrzeug Notiz",

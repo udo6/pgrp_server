@@ -194,7 +194,11 @@ namespace Game.Modules
 			if (item == null || item.Amount < amount) return;
 
 			var script = InventoryController.GetItemScript(item.ItemId);
-			if (script == null) return;
+			if (script == null)
+			{
+				player.ShowComponent("Inventory", false);
+				return;
+			}
 
 			if(script.CloseUI)
 				player.ShowComponent("Inventory", false);

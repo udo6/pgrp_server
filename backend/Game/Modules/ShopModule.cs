@@ -55,7 +55,7 @@ namespace Game.Modules
 			var shopItems = ShopService.GetShopItems(shopId);
 			var itemBases = InventoryService.GetItems();
 
-			var data = JsonConvert.DeserializeObject<List<IShopData>>(json);
+			var data = JsonConvert.DeserializeObject<List<ShopData>>(json);
 			if (data == null) return;
 
 			var price = 0;
@@ -152,11 +152,24 @@ namespace Game.Modules
 		}
 	}
 
-	public interface IShopData
+	public class ShopData
 	{
-		int Id { get; set; }
-		int ItemId { get; set; }
-		string Name { get; set; }
-		int Amount { get; set; }
+		public int Id { get; set; }
+		public int ItemId { get; set; }
+		public string Name { get; set; }
+		public int Amount { get; set; }
+
+		public ShopData()
+		{
+			Name = string.Empty;
+		}
+
+		public ShopData(int id, int itemId, string name, int amount)
+		{
+			Id = id;
+			ItemId = itemId;
+			Name = name;
+			Amount = amount;
+		}
 	}
 }

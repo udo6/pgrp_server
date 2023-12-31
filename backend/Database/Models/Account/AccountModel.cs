@@ -12,6 +12,7 @@ namespace Database.Models.Account
         public ulong HardwareId { get; set; }
         public ulong HardwareIdEx { get; set; }
         public long DiscordId { get; set; }
+        public int ForumId { get; set; }
         public bool Whitelisted { get; set; }
         public int Money { get; set; }
         public int BankMoney { get; set; }
@@ -63,6 +64,7 @@ namespace Database.Models.Account
         public bool TeamStorage { get; set; }
         public DateTime TeamJoinDate { get; set; }
         public bool TeamDuty { get; set; }
+        public DateTime TeamLeaveDate { get; set; }
 
         public string FederalRecordTeam { get; set; }
         public string FederalRecordDescription { get; set; }
@@ -87,13 +89,14 @@ namespace Database.Models.Account
 
 		}
 
-        public AccountModel(string name, ulong social, ulong hwid, ulong hwidEx, long discord, int money, int bankMoney, int phoneNumber, int positionId, int customId, int clothesId, int inventoryId, int labInputInventoryId, int labOutputInventoryId, int lockerInventoryId, int businessId, int licenseId)
+        public AccountModel(string name, ulong social, ulong hwid, ulong hwidEx, int forumId, long discord, int money, int bankMoney, int phoneNumber, int positionId, int customId, int clothesId, int inventoryId, int labInputInventoryId, int labOutputInventoryId, int lockerInventoryId, int businessId, int licenseId)
         {
             Name = name;
             SocialclubId = social;
             HardwareId = hwid;
             HardwareIdEx = hwidEx;
             DiscordId = discord;
+            ForumId = forumId;
             Whitelisted = false;
             Money = money;
             BankMoney = bankMoney;
@@ -141,6 +144,7 @@ namespace Database.Models.Account
             TeamStorage = false;
             TeamJoinDate = DateTime.Now;
             TeamDuty = false;
+            TeamLeaveDate = DateTime.Now.AddYears(-1);
             FederalRecordTeam = string.Empty;
             FederalRecordPhone = string.Empty;
             FederalRecordDescription = string.Empty;
@@ -183,6 +187,7 @@ namespace Database.Models.Account
 			builder.Property(x => x.TeamStorage).HasColumnName("team_storage").HasColumnType("tinyint(1)");
 			builder.Property(x => x.TeamJoinDate).HasColumnName("team_join").HasColumnType("datetime");
 			builder.Property(x => x.TeamDuty).HasColumnName("team_duty").HasColumnType("tinyint(1)");
+			builder.Property(x => x.TeamLeaveDate).HasColumnName("team_leave").HasColumnType("datetime");
 
 			builder.Property(x => x.Phone).HasColumnName("phone").HasColumnType("tinyint(1)");
 			builder.Property(x => x.Laptop).HasColumnName("laptop").HasColumnType("tinyint(1)");

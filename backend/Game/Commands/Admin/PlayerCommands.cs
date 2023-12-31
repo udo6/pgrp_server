@@ -3,6 +3,7 @@ using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
 using Core.Models.NativeMenu;
+using Database.Services;
 using Game.Controllers;
 
 namespace Game.Commands.Admin
@@ -187,6 +188,30 @@ namespace Game.Commands.Admin
 
 			player.Emit("Client:PlayerModule:SetWaypoint", target.Position.X, target.Position.Y);
 			player.Notify("Administration", "Du hast einen Spieler lokalisiert!", NotificationType.SUCCESS);
+		}
+
+		[Command("damagecap")]
+		public static void DamageCap(RPPlayer player, string targetName)
+		{
+			if (player.AdminRank < AdminRank.MANAGER) return;
+
+			var account = AccountService.Get(targetName);
+			if(account == null)
+			{
+				player.Notify("Administration", "Der Spieler konnte nicht gefunden werden!", NotificationType.ERROR);
+				return;
+			}
+
+			account.DamageCap = !account.DamageCap;
+			AccountService.Update(account);
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
+			if (target != null)
+			{
+				target.Emit("Client:PlayerModule:SetSuperSecretFeature", account.DamageCap);
+			}
+
+			player.Notify("Administration", $"Das Super Secret Anticheat ist nun für {account.Name} {(account.DamageCap ? "aktiviert" : "deaktiviert")}!", NotificationType.SUCCESS);
 		}
 
 

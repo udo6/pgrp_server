@@ -163,4 +163,25 @@ namespace Game
 			}, 5000);
 		}
 	}
+
+	public abstract class FoodItemScript : ItemScript
+	{
+		private int HungerGain { get; set; }
+		private int ThirstGain { get; set; }
+
+		protected FoodItemScript(int itemId, int hungerGain, int thirstGain) : base(itemId, true, ItemType.FOOD)
+		{
+			HungerGain = hungerGain;
+			ThirstGain = thirstGain;
+		}
+
+		public override void OnUse(RPPlayer player, InventoryModel inventory, InventoryItemModel item, int slot, int amount)
+		{
+			if (player.Interaction) return;
+
+			player.Hunger = Math.Clamp(player.Hunger + HungerGain, 0, 100);
+			player.Thirst = Math.Clamp(player.Thirst + ThirstGain, 0, 100);
+			player.EmitBrowser("Hud:SetFood", player.Hunger, player.Thirst, 110);
+		}
+	}
 }

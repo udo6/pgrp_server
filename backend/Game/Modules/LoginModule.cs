@@ -42,11 +42,12 @@ namespace Game.Modules
 			var account = AccountService.Get(player.Name);
 			if (account == null)
 			{
-				RegisterPlayer(player, false);
-				player.Kick("Du bist nicht whitelisted!");
+				//RegisterPlayer(player, false);
+				player.Kick($"Es konnte kein Account mit dem Name {player.Name} gefunden werden! Du kannst einen Account im Forum unter https://pegasusrp.de/ erstellen.");
 				return;
 			}
 
+			// Todo: remove
 			if (!account.Whitelisted)
 			{
 				player.Kick("Du bist nicht whitelisted!");
@@ -55,7 +56,7 @@ namespace Game.Modules
 
 			if (CheckUserCredentials(player, account))
 			{
-				player.Kick("Authentication failed!");
+				player.Kick("Bitte melde dich im Support! (Identifier mismatch)");
 				return;
 			}
 
@@ -201,6 +202,7 @@ namespace Game.Modules
 				player.SocialClubId,
 				player.HardwareIdHash,
 				player.HardwareIdExHash,
+				0,
 				player.DiscordId,
 				5000,
 				40000,
@@ -223,17 +225,17 @@ namespace Game.Modules
 		{
 			bool mismatch = false;
 
-			if (account.SocialclubId != 0 && player.SocialClubId != account.SocialclubId)
+			if (account.SocialclubId > 0 && player.SocialClubId != account.SocialclubId)
 			{
 				mismatch = true;
 			}
 
-			if (account.HardwareId != 0 && player.HardwareIdHash != account.HardwareId)
+			if (account.HardwareId > 0 && player.HardwareIdHash != account.HardwareId)
 			{
 				mismatch = true;
 			}
 
-			if (account.HardwareIdEx != 0 && player.HardwareIdExHash != account.HardwareIdEx)
+			if (account.HardwareIdEx > 0 && player.HardwareIdExHash != account.HardwareIdEx)
 			{
 				mismatch = true;
 			}
