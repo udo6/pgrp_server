@@ -55,6 +55,7 @@ namespace Game.Controllers
 			veh.PearlColor = 0;
 			veh.NumberplateText = "";
 			veh.Frozen = true;
+			veh.BaseId = model.VehicleBaseId;
 			veh.SetLockState(true);
 			veh.SetEngineState(false);
 			veh.SetFuel(0);

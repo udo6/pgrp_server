@@ -49,7 +49,9 @@ namespace Game.Modules
 			var veh = RPVehicle.All.FirstOrDefault(x => x.Id == vehicleId);
 			if (veh == null) return;
 
-			player.Notify("Information", $"Fahrzeug ID: {veh.DbId}", NotificationType.INFO);
+			var baseModel = VehicleService.GetBase(veh.BaseId);
+
+			player.Notify("Information", $"Fahrzeug ID: {veh.DbId} Fahrzeug Name: {baseModel?.Name}", NotificationType.INFO);
 		}
 
 		private static void ToggleEngine(RPPlayer player)
