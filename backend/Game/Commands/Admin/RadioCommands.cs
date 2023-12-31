@@ -10,11 +10,11 @@ namespace Game.Commands.Admin
 		[Command("joinradio")]
 		public static void JoinRadio(RPPlayer player, int radio)
 		{
-			if (player.AdminRank < AdminRank.SUPERADMIN) return;
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
 
 			VoiceModule.EnableRadio(player, true);
 			VoiceModule.ChangeRadioFrequency(player, radio);
-			// set ptt
+			player.Emit("Client:VoiceModule:SetRadioState", true);
 		}
 	}
 }

@@ -12,7 +12,7 @@ namespace Game.Commands.Admin
 		[Command("setadmin")]
 		public static void SetPlayerAdmin(RPPlayer player, string targetName, int rank)
 		{
-			if (player.AdminRank < AdminRank.SUPERADMIN) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN || rank >= (int)player.AdminRank) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
 			if (target == null) return;
@@ -30,7 +30,7 @@ namespace Game.Commands.Admin
 		[Command("v")]
 		public static void Vanish(RPPlayer player)
 		{
-			if (player.AdminRank < AdminRank.GUIDE || (player.AdminRank < AdminRank.SUPERADMIN && !player.AdminDuty)) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			player.Streamed = !player.Streamed;
 			player.Visible = player.Streamed;
@@ -39,7 +39,7 @@ namespace Game.Commands.Admin
 		[Command("a", true)]
 		public static void AdminChat(RPPlayer player, string message)
 		{
-			if (player.AdminRank < AdminRank.GUIDE) return;
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
 
 			AdminController.BroadcastTeam("Admin-Chat", $"{player.Name}: {message}", NotificationType.INFO, AdminRank.ADMINISTRATOR);
 		}
@@ -49,7 +49,7 @@ namespace Game.Commands.Admin
 		{
 			if (player.AdminRank < AdminRank.GUIDE) return;
 
-			AdminController.BroadcastTeam("Team-Chat", $"{player.Name}: {message}", NotificationType.INFO, AdminRank.SUPPORTER);
+			AdminController.BroadcastTeam("Team-Chat", $"{player.Name}: {message}", NotificationType.INFO, AdminRank.GUIDE);
 		}
 
 		[Command("toggleadmininfo")]

@@ -138,7 +138,7 @@ namespace Game.Modules
 
 		private static void ACPSetVehicleKeyHolder(RPPlayer player, int vehId, int keyHolderId)
 		{
-			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			var vehicle = VehicleService.Get(vehId);
 			if (vehicle == null) return;
@@ -156,7 +156,7 @@ namespace Game.Modules
 
 		private static void ACPSetVehicleOwner(RPPlayer player, int vehId, int ownerId, int ownerType)
 		{
-			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			var vehicle = VehicleService.Get(vehId);
 			if (vehicle == null) return;
@@ -176,7 +176,7 @@ namespace Game.Modules
 
 		private static void ACPDeleteVehicle(RPPlayer player, int vehId)
 		{
-			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			var vehicle = VehicleService.Get(vehId);
 			if (vehicle == null) return;
@@ -281,7 +281,7 @@ namespace Game.Modules
 
 		private static void ACPUnwarnPlayer(RPPlayer player, int id, string reason)
 		{
-			if (player.AdminRank < AdminRank.MODERATOR) return;
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
 
 			var warns = WarnService.GetPlayerWarns(id);
 			if (warns.Count < 1) return;
@@ -297,7 +297,7 @@ namespace Game.Modules
 
 		private static void ACPSetPlayerDimension(RPPlayer player, int id, int dimension)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
@@ -311,7 +311,7 @@ namespace Game.Modules
 
 		private static void ACPUncuffPlayer(RPPlayer player, int id)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
@@ -326,7 +326,7 @@ namespace Game.Modules
 
 		private static void ACPTogglePlayerFreeze(RPPlayer player, int id)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
@@ -339,7 +339,7 @@ namespace Game.Modules
 
 		private static void ACPResetHardware(RPPlayer player, int id)
 		{
-			if (player.AdminRank < AdminRank.MODERATOR) return;
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
 
 			var targetAccount = AccountService.Get(id);
 			if (targetAccount == null) return;
@@ -354,7 +354,7 @@ namespace Game.Modules
 
 		private static void ACPResetSocial(RPPlayer player, int id)
 		{
-			if (player.AdminRank < AdminRank.MODERATOR) return;
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
 
 			var targetAccount = AccountService.Get(id);
 			if (targetAccount == null) return;
@@ -388,7 +388,7 @@ namespace Game.Modules
 
 		private static void ACPSetMoney(RPPlayer player, int id, int money, int bank)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			var targetAccount = AccountService.Get(id);
 			if (targetAccount == null) return;
@@ -397,19 +397,19 @@ namespace Game.Modules
 			targetAccount.BankMoney = bank;
 			AccountService.Update(targetAccount);
 
-			player.Notify("Administration", $"Du hast das Geld von {targetAccount.Name} auf ${money} und ${bank} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Administration", $"Du hast das Geld von {targetAccount.Name} auf ${money} und ${bank} gesetzt!", NotificationType.SUCCESS);
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
 
 			target.EmitBrowser("Hud:SetMoney", money);
-			target.Notify("Administration", $"Dein Geld wurde von {player.Name} auf ${money} und ${bank} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+			target.Notify("Administration", $"Dein Geld wurde von {player.Name} auf ${money} und ${bank} gesetzt!", NotificationType.SUCCESS);
 			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SETMONEY);
 		}
 
 		private static void ACPSetTeam(RPPlayer player, int id, int teamId, int rank)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			var team = TeamService.Get(teamId);
 			if (team == null) return;
@@ -430,7 +430,7 @@ namespace Game.Modules
 			if (target == null) return;
 
 			target.TeamId = teamId;
-			target.Notify("Administration", $"Du wurdest von {player.Name} in die Fraktion {team.ShortName} gesetzt!", Core.Enums.NotificationType.SUCCESS);
+			target.Notify("Administration", $"Du wurdest von {player.Name} in die Fraktion {team.ShortName} gesetzt!", NotificationType.SUCCESS);
 			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SETTEAM);
 		}
 
@@ -492,16 +492,16 @@ namespace Game.Modules
 
 		private static void ACPKickPlayer(RPPlayer player, int id, string reason, bool anonym)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if(target == null)
 			{
-				player.Notify("Administration", "Der Spieler ist nicht Online!", Core.Enums.NotificationType.ERROR);
+				player.Notify("Administration", "Der Spieler ist nicht Online!", NotificationType.ERROR);
 				return;
 			}
 
-			player.Notify("Administration", $"Du hast {target.Name} vom Server gekickt!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Administration", $"Du hast {target.Name} vom Server gekickt!", NotificationType.SUCCESS);
 
 			if(!anonym)
 			{
@@ -527,7 +527,7 @@ namespace Game.Modules
 
 		private static void ACPWarnPlayer(RPPlayer player, int id, string reason)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			var account = AccountService.Get(id);
 			if (account == null) return;
@@ -543,7 +543,7 @@ namespace Game.Modules
 
 		private static void SaveACPRecord(RPPlayer player, int id, string description, string supportCallMessage)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.MODERATOR) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			var account = AccountService.Get(id);
 			if (account == null) return;
@@ -552,19 +552,19 @@ namespace Game.Modules
 			account.SupportCallMessage = supportCallMessage;
 			AccountService.Update(account);
 
-			player.Notify("Administration", $"Du hast die Beschreibung von {account.Name} bearbeitet!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Administration", $"Du hast die Beschreibung von {account.Name} bearbeitet!", NotificationType.SUCCESS);
 			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SAVEDATA);
 		}
 
 		private static void RequestACPPlayerData(RPPlayer player, int id)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
 
 			var account = AccountService.Get(id);
 			if (account == null) return;
 
 			var house = HouseService.GetByOwner(id);
-			var warehouse = WarehouseService.GetByOwner(id, Core.Enums.OwnerType.PLAYER);
+			var warehouse = WarehouseService.GetByOwner(id, OwnerType.PLAYER);
 
 			var team = TeamService.Get(account.TeamId);
 
@@ -642,11 +642,15 @@ namespace Game.Modules
 
 		private static void RequestSupportData(RPPlayer player)
 		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
 			player.EmitBrowser("Laptop:Support:SetData", JsonConvert.SerializeObject(SupportModule.Tickets));
 		}
 
 		private static void AcceptSupportTicket(RPPlayer player, int ticketId)
 		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
 			var ticket = SupportModule.Tickets.FirstOrDefault(x => x.Id == ticketId);
 			if (ticket == null || ticket.AdminId > 0)
 			{
@@ -659,18 +663,20 @@ namespace Game.Modules
 			{
 				SupportModule.Tickets.Remove(ticket);
 				player.ShowComponent("Laptop", false);
-				player.Notify("Ticket System", "Der Spieler ist nicht mehr online! Das Ticket wurde gelöscht.", Core.Enums.NotificationType.ERROR);
+				player.Notify("Ticket System", "Der Spieler ist nicht mehr online! Das Ticket wurde gelöscht.", NotificationType.ERROR);
 				return;
 			}
 
 			ticket.AdminId = player.DbId;
 			ticket.Admin = player.Name;
-			player.Notify("Information", $"Du hast das Ticket von {creator.Name} angenommen!", Core.Enums.NotificationType.INFO);
-			creator.Notify("Information", $"Dein Ticket wurde von {player.Name} angenommen!", Core.Enums.NotificationType.INFO);
+			player.Notify("Information", $"Du hast das Ticket von {creator.Name} angenommen!", NotificationType.INFO);
+			creator.Notify("Information", $"Dein Ticket wurde von {player.Name} angenommen!", NotificationType.INFO);
 		}
 
 		private static void CloseSupportTicket(RPPlayer player, int ticketId)
 		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
 			var ticket = SupportModule.Tickets.FirstOrDefault(x => x.Id == ticketId);
 			if (ticket == null)
 			{
@@ -683,13 +689,13 @@ namespace Game.Modules
 			{
 				SupportModule.Tickets.Remove(ticket);
 				player.ShowComponent("Laptop", false);
-				player.Notify("Ticket System", "Der Spieler ist nicht mehr online! Das Ticket wurde gelöscht.", Core.Enums.NotificationType.ERROR);
+				player.Notify("Ticket System", "Der Spieler ist nicht mehr online! Das Ticket wurde gelöscht.", NotificationType.ERROR);
 				return;
 			}
 
 			SupportModule.Tickets.Remove(ticket);
-			player.Notify("Information", $"Du hast das Ticket von {creator.Name} geschlossen!", Core.Enums.NotificationType.INFO);
-			creator.Notify("Information", $"Dein Ticket wurde von {player.Name} geschlossen!", Core.Enums.NotificationType.INFO);
+			player.Notify("Information", $"Du hast das Ticket von {creator.Name} geschlossen!", NotificationType.INFO);
+			creator.Notify("Information", $"Dein Ticket wurde von {player.Name} geschlossen!", NotificationType.INFO);
 		}
 
 		#endregion
@@ -743,7 +749,7 @@ namespace Game.Modules
 					Plate = vehicle.Plate,
 					Note = vehicle.Note,
 					Garage = garage.Name,
-					Type = (vehicle.Type == Core.Enums.OwnerType.TEAM ? 2 : vehicle.OwnerId == player.DbId ? 0 : 1)
+					Type = (vehicle.Type == OwnerType.TEAM ? 2 : vehicle.OwnerId == player.DbId ? 0 : 1)
 				});
 			}
 
@@ -756,7 +762,7 @@ namespace Game.Modules
 			if(veh != null)
 			{
 				player.Emit("Client:PlayerModule:SetWaypoint", veh.Position.X, veh.Position.Y);
-				player.Notify("Information", "Du hast ein Fahrzeug geortet!", Core.Enums.NotificationType.SUCCESS);
+				player.Notify("Information", "Du hast ein Fahrzeug geortet!", NotificationType.SUCCESS);
 				return;
 			}
 
@@ -770,7 +776,7 @@ namespace Game.Modules
 			if (pos == null) return;
 
 			player.Emit("Client:PlayerModule:SetWaypoint", pos.Position.X, pos.Position.Y);
-			player.Notify("Information", "Du hast ein Fahrzeug geortet!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Information", "Du hast ein Fahrzeug geortet!", NotificationType.SUCCESS);
 		}
 
 		#endregion
@@ -819,7 +825,7 @@ namespace Game.Modules
 
 			var crimes = CrimeService.GetPlayerCrimes(target.Id);
 			var house = HouseService.GetByOwner(target.Id);
-			var warehouse = WarehouseService.GetByOwner(target.Id, Core.Enums.OwnerType.PLAYER);
+			var warehouse = WarehouseService.GetByOwner(target.Id, OwnerType.PLAYER);
 
 			player.EmitBrowser("Laptop:Crimes:SetUserData", JsonConvert.SerializeObject(new
 			{
@@ -842,7 +848,7 @@ namespace Game.Modules
 			if (!CheckString(description))
 			{
 				player.ShowComponent("Laptop", false);
-				player.Notify("Information", "Die Beschreibung darf keine Sonderzeichen enthalten (Ä/Ö/Ü)", Core.Enums.NotificationType.ERROR);
+				player.Notify("Information", "Die Beschreibung darf keine Sonderzeichen enthalten (Ä/Ö/Ü)", NotificationType.ERROR);
 				return;
 			}
 
@@ -851,7 +857,7 @@ namespace Game.Modules
 
 			if(account.TeamRank < 7)
 			{
-				player.Notify("Information", "Du musst mind. Rang 7 dafür sein!", Core.Enums.NotificationType.ERROR);
+				player.Notify("Information", "Du musst mind. Rang 7 dafür sein!", NotificationType.ERROR);
 				return;
 			}
 
@@ -862,7 +868,7 @@ namespace Game.Modules
 			target.FederalRecordDescription = description;
 			target.FederalRecordPhone = phone;
 			AccountService.Update(target);
-			TeamController.Broadcast(new List<int>() { 1, 2, 5 }, $"{player.Name} hat die Akte von {target.Name} bearbeitet!", Core.Enums.NotificationType.INFO);
+			TeamController.Broadcast(new List<int>() { 1, 2, 5 }, $"{player.Name} hat die Akte von {target.Name} bearbeitet!", NotificationType.INFO);
 		}
 
 		private static void AddCrimes(RPPlayer player, int targetId, string json)
@@ -885,7 +891,7 @@ namespace Game.Modules
 			}
 
 			CrimeService.Add(crimesToAdd);
-			TeamController.Broadcast(new List<int>() { 1, 2, 5 }, $"{player.Name} hat die Akte von {target.Name} bearbeitet!", Core.Enums.NotificationType.INFO);
+			TeamController.Broadcast(new List<int>() { 1, 2, 5 }, $"{player.Name} hat die Akte von {target.Name} bearbeitet!", NotificationType.INFO);
 
 			var data = CrimeService.GetPlayerCrimes(target.Id);
 			player.EmitBrowser("Laptop:Crimes:SetCrimesData", JsonConvert.SerializeObject(data));
@@ -902,7 +908,7 @@ namespace Game.Modules
 			if (crime == null) return;
 
 			CrimeService.Remove(crime);
-			TeamController.Broadcast(new List<int>() { 1, 2, 5 }, $"{player.Name} hat {target.Name} eine Akte erlassen!", Core.Enums.NotificationType.INFO);
+			TeamController.Broadcast(new List<int>() { 1, 2, 5 }, $"{player.Name} hat {target.Name} eine Akte erlassen!", NotificationType.INFO);
 		}
 
 		private static void RemoveAllCrimes(RPPlayer player, int targetId)
@@ -913,7 +919,7 @@ namespace Game.Modules
 			if (target == null) return;
 
 			CrimeService.RemovePlayerCrimes(target.Id);
-			TeamController.Broadcast(new List<int>() { 1, 2, 5 }, $"{player.Name} hat {target.Name} alle Akten erlassen!", Core.Enums.NotificationType.INFO);
+			TeamController.Broadcast(new List<int>() { 1, 2, 5 }, $"{player.Name} hat {target.Name} alle Akten erlassen!", NotificationType.INFO);
 		}
 		#endregion
 
@@ -940,7 +946,7 @@ namespace Game.Modules
 				target.EmitBrowser("Laptop:Units:UpdateUnit", data);
 			}
 
-			player.Notify("Information", "Du hast eine Einheit erstellt!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Information", "Du hast eine Einheit erstellt!", NotificationType.SUCCESS);
 		}
 
 		private static void RemoveUnit(RPPlayer player, int unitId)
@@ -958,7 +964,7 @@ namespace Game.Modules
 				target.EmitBrowser("Laptop:Units:RemoveUnit", data);
 			}
 
-			player.Notify("Information", "Du hast eine Einheit entfernt!", Core.Enums.NotificationType.INFO);
+			player.Notify("Information", "Du hast eine Einheit entfernt!", NotificationType.INFO);
 		}
 
 		private static void AddUnitPlayer(RPPlayer player, int unitId, string targetInput)
@@ -982,7 +988,7 @@ namespace Game.Modules
 				teamMember.EmitBrowser("Laptop:Units:UpdateUnit", data);
 			}
 
-			player.Notify("Information", $"Du hast {target.Name} zu {unit.Name} hinzugefügt!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Information", $"Du hast {target.Name} zu {unit.Name} hinzugefügt!", NotificationType.SUCCESS);
 		}
 
 		private static void RemoveUnitPlayer(RPPlayer player, int unitId, int targetId)
@@ -1003,7 +1009,7 @@ namespace Game.Modules
 				teamMember.EmitBrowser("Laptop:Units:UpdateUnit", data);
 			}
 
-			player.Notify("Information", $"Du hast {target.Name} aus {unit.Name} entfernt!", Core.Enums.NotificationType.INFO);
+			player.Notify("Information", $"Du hast {target.Name} aus {unit.Name} entfernt!", NotificationType.INFO);
 		}
 
 		private static void UpdateUnitVehicle(RPPlayer player, int unitId, int vehicleId)
@@ -1021,7 +1027,7 @@ namespace Game.Modules
 				teamMember.EmitBrowser("Laptop:Units:UpdateUnit", data);
 			}
 
-			player.Notify("Information", $"Du hast das Fahrzeug von {unit.Name} bearbeitet!", Core.Enums.NotificationType.INFO);
+			player.Notify("Information", $"Du hast das Fahrzeug von {unit.Name} bearbeitet!", NotificationType.INFO);
 		}
 
 		private static void LocateUnit(RPPlayer player, int unitId)
@@ -1032,10 +1038,10 @@ namespace Game.Modules
 			if (unit == null || player.TeamId != unit.Team) return;
 
 			var vehicle = RPVehicle.All.FirstOrDefault(x => x.DbId == unit.Vehicle);
-			if (vehicle == null || vehicle.OwnerType != Core.Enums.OwnerType.TEAM || vehicle.OwnerId != player.TeamId) return;
+			if (vehicle == null || vehicle.OwnerType != OwnerType.TEAM || vehicle.OwnerId != player.TeamId) return;
 
 			player.Emit("Client:PlayerModule:SetWaypoint", vehicle.Position.X, vehicle.Position.Y);
-			player.Notify("Information", $"Du hast {unit.Name} lokalisiert!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Information", $"Du hast {unit.Name} lokalisiert!", NotificationType.SUCCESS);
 		}
 
 		private static void CallUnit(RPPlayer player, int unitId)
@@ -1051,10 +1057,10 @@ namespace Game.Modules
 				if (target == null) continue;
 
 				target.Emit("Client:PlayerModule:SetWaypoint", player.Position.X, player.Position.Y);
-				target.Notify("Information", $"Deine Einheit wurde von {player.Name} angefordert!", Core.Enums.NotificationType.WARN);
+				target.Notify("Information", $"Deine Einheit wurde von {player.Name} angefordert!", NotificationType.WARN);
 			}
 
-			player.Notify("Information", $"Du hast {unit.Name} angefordert!", Core.Enums.NotificationType.SUCCESS);
+			player.Notify("Information", $"Du hast {unit.Name} angefordert!", NotificationType.SUCCESS);
 		}
 
 		#endregion
@@ -1076,12 +1082,12 @@ namespace Game.Modules
 			var creator = RPPlayer.All.FirstOrDefault(x => x.DbId == dispatch.Id);
 			if (creator != null)
 			{
-				creator.Notify("Information", "Dein Dispatch wurde angenommen!", Core.Enums.NotificationType.INFO);
+				creator.Notify("Information", "Dein Dispatch wurde angenommen!", NotificationType.INFO);
 			}
 
 			dispatch.Officer = player.Name;
 
-			TeamController.Broadcast(player.TeamId, $"{player.Name} hat den Dispatch von {dispatch.Creator} angenommen!", Core.Enums.NotificationType.INFO);
+			TeamController.Broadcast(player.TeamId, $"{player.Name} hat den Dispatch von {dispatch.Creator} angenommen!", NotificationType.INFO);
 		}
 
 		private static void CloseDispatch(RPPlayer player, int dispatchId)
@@ -1092,12 +1098,12 @@ namespace Game.Modules
 			var creator = RPPlayer.All.FirstOrDefault(x => x.DbId == dispatch.Id);
 			if (creator != null)
 			{
-				creator.Notify("Information", "Dein Dispatch wurde geschlossen!", Core.Enums.NotificationType.INFO);
+				creator.Notify("Information", "Dein Dispatch wurde geschlossen!", NotificationType.INFO);
 			}
 
 			Dispatches.Remove(dispatch);
 
-			TeamController.Broadcast(player.TeamId, $"{player.Name} hat den Dispatch von {dispatch.Creator} geschlossen!", Core.Enums.NotificationType.INFO);
+			TeamController.Broadcast(player.TeamId, $"{player.Name} hat den Dispatch von {dispatch.Creator} geschlossen!", NotificationType.INFO);
 		}
 
 		#endregion
@@ -1109,7 +1115,7 @@ namespace Game.Modules
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
 
-			player.PlayAnimation(Core.Enums.AnimationType.LAPTOP);
+			player.PlayAnimation(AnimationType.LAPTOP);
 			player.ShowComponent("Laptop", true, JsonConvert.SerializeObject(new
 			{
 				Name = player.Name,

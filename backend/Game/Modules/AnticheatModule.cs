@@ -122,6 +122,7 @@ namespace Game.Modules
 			{
 				var targetPlayer = ((RPPlayer)target);
 
+				targetPlayer.LastAttackerId = player.DbId;
 				targetPlayer.Emit("Client:AnticheatModule:SetHealth", targetPlayer.Health + targetPlayer.Armor);
 
 				LogService.LogDamage(player.DbId, targetPlayer.DbId, weapon, damage, (int)bodyPart);

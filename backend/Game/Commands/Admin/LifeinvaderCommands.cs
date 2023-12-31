@@ -21,5 +21,14 @@ namespace Game.Commands.Admin
 			LifeinvaderModule.Posts.Remove(post);
 			player.Notify("Administration", "Du hast einen Lifeinvader Post gelöscht!", Core.Enums.NotificationType.SUCCESS);
 		}
+
+		[Command("clearlifeinvader")]
+		public static void ClearLifeinvader(RPPlayer player)
+		{
+			if (player.AdminRank < Core.Enums.AdminRank.ADMINISTRATOR) return;
+
+			LifeinvaderModule.Posts.Clear();
+			player.Notify("Administration", "Du hast alle Lifeinvader Posts gelöscht!", Core.Enums.NotificationType.SUCCESS);
+		}
 	}
 }

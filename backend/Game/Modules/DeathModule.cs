@@ -91,9 +91,7 @@ namespace Game.Modules
 			{
 				var killerPlayer = (RPPlayer)killer;
 
-				player.KillerId = killerPlayer.DbId;
-				player.KillerWeapon = weapon;
-				player.KillerDate = DateTime.Now;
+				player.LastAttackerId = killerPlayer.DbId;
 
 				LogService.LogKill(player.DbId, killerPlayer.DbId, weapon);
 			}
@@ -103,9 +101,7 @@ namespace Game.Modules
 				var killerVehicle = (RPVehicle)killer;
 				var killerPlayer = (RPPlayer)killerVehicle.NetworkOwner;
 
-				player.KillerId = killerPlayer.DbId;
-				player.KillerWeapon = 187;
-				player.KillerDate = DateTime.Now;
+				player.LastAttackerId = killerPlayer.DbId;
 
 				LogService.LogKill(player.DbId, killerPlayer.DbId, weapon);
 			}

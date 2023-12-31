@@ -1,6 +1,7 @@
 ﻿using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
+using Database.Services;
 using Newtonsoft.Json;
 
 namespace Game.Commands.Player
@@ -10,6 +11,8 @@ namespace Game.Commands.Player
 		[Command("sellhouse")]
 		public static void SellHouse(RPPlayer player)
 		{
+			if (!HouseService.HasPlayerHouse(player.DbId)) return;
+
 			player.ShowComponent("Input", true, JsonConvert.SerializeObject(new
 			{
 				Title = "Haus",

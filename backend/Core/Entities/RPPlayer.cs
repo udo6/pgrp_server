@@ -96,9 +96,7 @@ namespace Core.Entities
 		public int AllowedHealth { get; set; } = 200;
 		public int ExplosionsCaused { get; set; }
 
-		public int KillerId { get; set; }
-		public uint KillerWeapon { get; set; }
-		public DateTime KillerDate { get; set; }
+		public int LastAttackerId { get; set; }
 
 		public float VoiceRange { get; set; }
 		public bool VoiceFirstConnect { get; set; }

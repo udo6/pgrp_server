@@ -1,5 +1,7 @@
 ﻿using Core.Attribute;
 using Core.Entities;
+using Database.Models;
+using Database.Services;
 using Game.Controllers;
 using Game.Modules;
 
@@ -32,8 +34,10 @@ namespace Game.Commands.Player
 		[Command("r")]
 		public static void Report(RPPlayer player)
 		{
-			
-			player.Notify("Ticket System", $"Dein Ticket wurde an die Administration weitergeleitet!", Core.Enums.NotificationType.INFO);
+			var model = new ReportModel(player.DbId, player.LastAttackerId, DateTime.Now);
+			ReportService.Add(model);
+
+			player.Notify("Report System", $"Dein Report wurde erstellt und an die Administration weitergeleitet! Report-ID: {model.Id}", Core.Enums.NotificationType.INFO);
 		}
 	}
 }

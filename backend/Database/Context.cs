@@ -127,6 +127,7 @@ namespace Database
 		public DbSet<CaseLootModel> CaseLootTable { get; set; }
 		public DbSet<BarberBeardModel> BarberBeardModels { get; set; }
 		public DbSet<GardenerJobModel> GardenerJobs { get; set; }
+		public DbSet<ReportModel> Reports { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

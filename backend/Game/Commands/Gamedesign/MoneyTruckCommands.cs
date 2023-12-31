@@ -11,8 +11,10 @@ namespace Game.Commands.Gamedesign
     {
         [Command("createroute")]
         public static void CreateRoute(RPPlayer player, string routeName, int reward)
-        {
-            var route = new MoneyTruckJobRouteModel(routeName.Replace('_', ' '), reward);
+		{
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
+
+			var route = new MoneyTruckJobRouteModel(routeName.Replace('_', ' '), reward);
             MoneyTruckJobRouteService.Add(route);
 
             player.Notify("MoneyJob", $"Du hast die Route {routeName} erstellt.", NotificationType.SUCCESS);
@@ -20,8 +22,10 @@ namespace Game.Commands.Gamedesign
 
         [Command("addroutepos")]
         public static void CreateRoute(RPPlayer player, int routeId)
-        {
-            var pos = new PositionModel(player.Position);
+		{
+			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
+
+			var pos = new PositionModel(player.Position);
             PositionService.Add(pos);
 
             var route = new MoneyTruckJobRoutePositionModel(routeId, pos.Id);

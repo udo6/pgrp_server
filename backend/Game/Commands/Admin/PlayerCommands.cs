@@ -265,7 +265,7 @@ namespace Game.Commands.Admin
 		[Command("kickall", true)]
 		public static void KickAllPlayers(RPPlayer player, string reason)
 		{
-			if (player.AdminRank < AdminRank.SUPERADMIN) return;
+			if (player.AdminRank < AdminRank.MANAGER) return;
 
 			foreach (var target in RPPlayer.All.ToList())
 			{
@@ -291,7 +291,7 @@ namespace Game.Commands.Admin
 		[Command("dimension")]
 		public static void KickPlayer(RPPlayer player)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.GUIDE) return;
 
 			player.Notify("Information", $"Du befindest dich in Dimension {player.Dimension}", NotificationType.INFO);
 		}
@@ -299,9 +299,9 @@ namespace Game.Commands.Admin
 		[Command("setdimension")]
 		public static void KickPlayer(RPPlayer player, string targetName, int dimension)
 		{
-			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
-                        var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
+            var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
 			if (target == null)
 			{
 				player.Notify("Administration", "Es konnte kein Spieler mit dem namen gefunden werden!", NotificationType.ERROR);

@@ -62,14 +62,6 @@ namespace Game.Commands.Admin
 			}
 		}
 
-		[Command("fixveh")]
-		public static void FixVehicle(RPPlayer player)
-		{
-			if (!player.LoggedIn || !player.IsInVehicle || player.AdminRank < AdminRank.SUPERADMIN) return;
-
-			player.Vehicle.Repair();
-		}
-
 		[Command("drift")]
 		public static void ToggleDriftMode(RPPlayer player)
 		{
@@ -80,25 +72,23 @@ namespace Game.Commands.Admin
 		}
 
 		[Command("applyteamtuning")]
-		public static void ApplyTeamTuning(RPPlayer player, int color, int type)
+		public static void ApplyTeamTuning(RPPlayer player, int color)
 		{
 			if (!player.LoggedIn || !player.IsInVehicle || player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			var vehicle = (RPVehicle)player.Vehicle;
 
-			// 0 = armored schafter, 1 = schafter, 2 = drafter
-			var tuningBase = type == 2 ? 311 : type == 1 ? 312 : 313;
-
-			var tuning = TuningService.Get(tuningBase);
-			if (tuning == null) return;
-
 			var vehTuning = TuningService.Get(vehicle.TuningId);
 			if (vehTuning == null) return;
+
+			vehicle.PrimaryColor = (byte)color;
+			vehicle.SecondaryColor = (byte)color;
+			vehicle.PearlColor = (byte)color;
 
 			vehTuning.PrimaryColor = (byte)color;
 			vehTuning.SecondaryColor = (byte)color;
 			vehTuning.PearlColor = (byte)color;
-			vehTuning.Spoiler = tuning.Spoiler;
+			/*vehTuning.Spoiler = tuning.Spoiler;
 			vehTuning.FrontBumper = tuning.FrontBumper;
 			vehTuning.RearBumper = tuning.RearBumper;
 			vehTuning.SideSkirt = tuning.SideSkirt;
@@ -124,10 +114,8 @@ namespace Game.Commands.Admin
 			vehTuning.TrimDesign = tuning.TrimDesign;
 			vehTuning.WindowTint = tuning.WindowTint;
 			vehTuning.HeadlightColor = tuning.HeadlightColor;
-			vehTuning.Livery = tuning.Livery;
+			vehTuning.Livery = tuning.Livery;*/
 			TuningService.Update(vehTuning);
-
-			VehicleController.ApplyVehicleTuning(vehicle);
 		}
 	}
 }
