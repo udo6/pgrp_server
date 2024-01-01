@@ -56,6 +56,7 @@ namespace Game
 		public static void UpdateLogs()
 		{
 			LogService.SendDamageLogsToDatabase();
+			LogService.SendMagicBulletLogsToDatabase();
 		}
 	}
 }

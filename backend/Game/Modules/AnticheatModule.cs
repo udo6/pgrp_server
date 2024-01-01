@@ -146,8 +146,9 @@ namespace Game.Modules
 				}
 
 				var dist = player.Position.Distance(target.Position);
-				if (dist > 50 && damage == maxDamage)
+				if (dist > 40 && damage == maxDamage)
 				{
+					AdminController.BroadcastTeam("Anticheat", $"Magic bullets wurden bei {player.Name} vom System erkannt!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.ADMINISTRATOR);
 					LogService.LogMagicBullet(player.DbId, weapon, damage, dist);
 					return false;
 				}

@@ -237,7 +237,7 @@ namespace Database.Models.Account
 
 			builder.Property(x => x.IsInHospital).HasColumnName("hospital").HasColumnType("tinyint(1)");
 
-			builder.Property(x => x.PhoneVolume).HasColumnName("phone_volume").HasColumnType("int(11)");
+			builder.Property(x => x.PhoneVolume).HasColumnName("phone_volume").HasColumnType("float");
 		}
 	}
 }
