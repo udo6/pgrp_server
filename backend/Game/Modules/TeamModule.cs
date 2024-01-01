@@ -183,19 +183,25 @@ namespace Game.Modules
 				return;
 			}
 
-			var weapons = new List<LoadoutModel>()
-			{
-				new(player.DbId, 3219281620, 500, 0, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT),
-				// new(player.DbId, team.MeeleWeaponHash, 0, 0, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT)
-			};
+			var weapons = new List<LoadoutModel>();
 
-			if(team.Type == TeamType.FEDERAL)
+			if(team.Id == 3)
 			{
+				weapons.Add(new(player.DbId, 911657153u, 0, 0, LoadoutType.FEDERAL));
+				weapons.Add(new(player.DbId, 1233104067u, 25, 0, LoadoutType.FEDERAL));
+			}
+			else if(team.Type == TeamType.FEDERAL)
+			{
+				weapons.Add(new(player.DbId, 3219281620, 500, 0, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT));
+				// weapons.Add(new(player.DbId, team.MeeleWeaponHash, 0, 0, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT));
 				weapons.Add(new(player.DbId, 911657153u, 0, 0, LoadoutType.FEDERAL));
 				weapons.Add(new(player.DbId, 1233104067u, 25, 0, LoadoutType.FEDERAL));
 			}
 			else
 			{
+				weapons.Add(new(player.DbId, 3219281620, 500, 0, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT));
+				// weapons.Add(new(player.DbId, team.MeeleWeaponHash, 0, 0, team.Type == TeamType.FEDERAL ? LoadoutType.FEDERAL : LoadoutType.DEFAULT));
+
 				if (account.Money < 2500)
 				{
 					player.Notify("Fraktion", "Du benötigst $2500!", NotificationType.ERROR);

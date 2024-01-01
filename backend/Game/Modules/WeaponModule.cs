@@ -22,7 +22,7 @@ namespace Game.Modules
 			{ 2132975508u, 0xC5A12F80 },  // Bullpuprifle
 			{ 3231910285u, 0xC6C7E581 },  // Specialcarbine
 			{ 2636060646u, 0x2D46D83B },  // Militaryrifle
-			{ 3347935668u, 0 },           // Heavyrifle
+			{ 3347935668u, 1525977990 },  // Heavyrifle
 		};
 
 		[Initialize]

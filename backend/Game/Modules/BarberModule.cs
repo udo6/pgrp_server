@@ -17,7 +17,7 @@ namespace Game.Modules
 
 			Alt.OnClient<RPPlayer, int>("Server:Barber:Open", Open);
 			Alt.OnClient<RPPlayer, int, int, int, uint, int, int>("Server:Barber:Try", Try);
-			Alt.OnClient<RPPlayer, int, int, int>("Server:Barber:Buy", Buy);
+			Alt.OnClient<RPPlayer, int, int, int, int, int>("Server:Barber:Buy", Buy);
 			Alt.OnClient<RPPlayer>("Server:Barber:Reset", Reset);
 		}
 
@@ -68,7 +68,7 @@ namespace Game.Modules
 			}
 		}
 
-		private static void Buy(RPPlayer player, int styleId, int colorId, int highlightColorId)
+		private static void Buy(RPPlayer player, int styleId, int colorId, int highlightColorId, int beardId, int beardColorId)
 		{
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
@@ -83,6 +83,7 @@ namespace Game.Modules
 			{
 				price += style.Price;
 				custom.Hair = style.Value;
+				custom.HairDlc = style.Dlc;
 			}
 
 			var color = BarberService.GetColor(colorId);
@@ -97,6 +98,21 @@ namespace Game.Modules
 			{
 				price += highlightColor.Price;
 				custom.HairHighlightColor = highlightColor.Value;
+			}
+
+			var beard = BarberService.GetBeard(beardId);
+			if(beard != null)
+			{
+				price += beard.Price;
+				custom.Beard = beard.Value;
+				custom.BeardOpacity = 1;
+			}
+
+			var beardColor = BarberService.GetColor(beardColorId);
+			if(beardColor != null)
+			{
+				price += beardColor.Price;
+				custom.BeardColor = beardColor.Value;
 			}
 
 			if(account.Money < price)

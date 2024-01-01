@@ -36,9 +36,16 @@ namespace Game.Modules
 		private static void Finish(RPPlayer player, string data)
 		{
 			var custom = JsonConvert.DeserializeObject<CustomizationModel>(data);
-			if (custom == null) return;
+			if (custom == null)
+			{
+				Console.WriteLine($"[CREATOR] {player.Name}: Customization was null");
+				return;
+			}
 
-			if(custom.Id != player.CustomizationId) custom.Id = player.CustomizationId;
+			if(custom.Id != player.CustomizationId)
+				custom.Id = player.CustomizationId;
+
+			player.ShowComponent("Creator", false);
 
 			custom.Finished = true;
 			CustomizationService.Update(custom);
@@ -46,8 +53,6 @@ namespace Game.Modules
 			player.InInterior = false;
 			player.Visible = true;
 			PlayerController.LoadPlayer(player);
-
-			player.ShowComponent("Creator", false);
 		}
 	}
 }

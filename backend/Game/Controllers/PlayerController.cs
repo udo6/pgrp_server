@@ -59,6 +59,7 @@ namespace Game.Controllers
 			ApplyPlayerLoadout(player);
 			player.ShowComponent("Hud", true);
 			player.EmitBrowser("Hud:ShowInfo", true, JsonConvert.SerializeObject(new HudClientData(account.Money, account.Hunger, account.Thirst)));
+			player.EmitBrowser("Hud:SetId", account.Id);
 
 			if (!account.Alive)
 				SetPlayerDead(player, account.InjuryType);
@@ -77,6 +78,8 @@ namespace Game.Controllers
 			player.Emit("Client:MarkerStreamer:SetMarkers", JsonConvert.SerializeObject(MarkerStreamer.Markers));
 			player.Emit("Client:PlayerModule:SetIdentifier", account.Id);
 			player.SetStreamSyncedMetaData("PLAYER_NAME", player.Name);
+			player.Streamed = true;
+			player.Visible = true;
 
 			VoiceModule.ConnectToVoice(player);
 

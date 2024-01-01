@@ -16,7 +16,7 @@ namespace Game.Http.Listener
 	public class UCPListener : RequestScript
 	{
 		[Request("/ucp/createaccount")]
-		public void CreateAccount(int forumId, string name, long discordId, bool cookieFlag)
+		public void CreateAccount(int forumId, string name, long discordId)
 		{
 			var pos = new PositionModel(-1042.4572f, -2745.323f, 21.343628f, 0, 0, -0.49473903f);
 			PositionService.Add(pos);
@@ -55,7 +55,7 @@ namespace Game.Http.Listener
 				locker.Id,
 				0,
 				license.Id,
-				cookieFlag);
+				false);
 			AccountService.Add(account);
 		}
 	}

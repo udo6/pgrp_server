@@ -1,5 +1,4 @@
-﻿using Core;
-using Core.Attribute;
+﻿using Core.Attribute;
 using Core.Entities;
 using Database.Models;
 using Database.Models.Barber;
@@ -28,7 +27,7 @@ namespace Game.Commands.Gamedesign
 		{
 			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
-			var model = new BarberStyleModel(barberId, label, style, (uint)dlc, 450, gender);
+			var model = new BarberStyleModel(barberId, label.Replace('_', ' '), style, (uint)dlc, 450, gender);
 			BarberService.AddStyle(model);
 		}
 	}

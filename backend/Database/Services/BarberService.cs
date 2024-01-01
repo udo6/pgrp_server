@@ -79,6 +79,12 @@ namespace Database.Services
 			return ctx.BarberStyles.FirstOrDefault(x => x.Id == id);
 		}
 
+		public static BarberBeardModel? GetBeard(int id)
+		{
+			using var ctx = new Context();
+			return ctx.BarberBeardModels.FirstOrDefault(x => x.Id == id);
+		}
+
 		// colors
 
 		public static List<BarberColorModel> GetAllColors()

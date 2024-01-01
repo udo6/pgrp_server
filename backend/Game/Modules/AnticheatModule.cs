@@ -6,6 +6,7 @@ using Core.Entities;
 using Database.Services;
 using Game.Controllers;
 using Logs;
+using System.Collections.Generic;
 
 namespace Game.Modules
 {
@@ -69,7 +70,8 @@ namespace Game.Modules
 
 		private static void DetectedNoreload(RPPlayer player, uint weapon)
 		{
-			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Weapon no reload (Weapon: {weapon})");
+			LogService.LogPlayerBan(player.DbId, 0, $"[ONLY LOGGED] Weapon no reload (Weapon: {weapon})");
+			AdminController.BroadcastTeam("Anticheat", $"Der Spieler {player.Name} hat ein No-Reload Flag ausgelöst!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.ADMINISTRATOR);
 		}
 
 		private static void DetectedRapidfire(RPPlayer player, uint weapon, float time)
@@ -87,7 +89,8 @@ namespace Game.Modules
 			var dist = player.Position.Distance(position);
 			if (player.LastPositionChange.AddSeconds(5) >= DateTime.Now || dist <= 15) return;
 
-			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Teleport (Distance: {dist})");
+			LogService.LogPlayerBan(player.DbId, 0, $"[ONLY LOGGED] Teleport (Distance: {dist})");
+			AdminController.BroadcastTeam("Anticheat", $"Der Spieler {player.Name} hat sich Teleportiert! Distance: {dist}m", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.ADMINISTRATOR);
 		}
 
 		private static void DetectedGodmode(RPPlayer player, bool state)

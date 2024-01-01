@@ -14,7 +14,7 @@ namespace Game.Http
 			"176.96.138.70" // forum/ucp server
 		};
 		private static WebServer? _webServer;
-		private static string _key = "abc123";
+		private static string _key = "Ik8KtINYumyZyfnhbHQYVlN4LaXx2SXEmIMnogREBrwiaJkL6i";
 
 		public static void Register()
 		{

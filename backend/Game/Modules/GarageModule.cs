@@ -44,7 +44,7 @@ namespace Game.Modules
 		private static void TakeVehicle(RPPlayer player, int garageId, int vehId)
 		{
 			var vehicle = VehicleService.Get(vehId);
-			if(vehicle == null) return;
+			if(vehicle == null || !vehicle.Parked) return;
 
 			var spawns = GarageService.GetGarageSpawns(garageId);
 
