@@ -75,6 +75,7 @@ namespace Game.Controllers
 			player.Emit("Client:DoorModule:Init", DoorModule.JSONData);
 			player.Emit("Client:PlayerModule:SetSuperSecretFeature", player.DamageCap);
 			player.Emit("Client:MarkerStreamer:SetMarkers", JsonConvert.SerializeObject(MarkerStreamer.Markers));
+			player.Emit("Client:PlayerModule:SetIdentifier", account.Id);
 			player.SetStreamSyncedMetaData("PLAYER_NAME", player.Name);
 
 			VoiceModule.ConnectToVoice(player);

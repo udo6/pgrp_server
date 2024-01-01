@@ -41,7 +41,6 @@ namespace Game.Modules
 
 			// get the discord oauth data
 			var http = new HttpClient();
-			http.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
 			http.DefaultRequestHeaders.Add("Authorization", $"Bearer {oAuthToken}");
 
 			var response = http.GetAsync("https://discordapp.com/api/users/@me").Result;
@@ -60,7 +59,7 @@ namespace Game.Modules
 				return;
 			}
 
-			var discordId = data!.id;
+			var discordId = Convert.ToInt64((string)data!.id);
 
 			// set default data
 			player.Model = 1885233650;

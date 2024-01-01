@@ -1,4 +1,4 @@
-﻿using Game.UCP.Utils;
+﻿using Game.Http.Utils;
 using System.Net;
 using System.Reflection;
 using System.Web;
