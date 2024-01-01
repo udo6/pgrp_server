@@ -281,6 +281,12 @@ namespace Game.Modules
 				return;
 			}
 
+			if (!target.IsInHospital)
+			{
+				player.Notify("Information", "Die Person muss im Krankenhaus sein!", NotificationType.ERROR);
+				return;
+			}
+
 			player.PlayAnimation(AnimationType.USE_MEDIKIT);
 			player.StartInteraction(() =>
 			{
@@ -637,31 +643,31 @@ namespace Game.Modules
 			switch (type)
 			{
 				case InjuryType.FALL_DAMAGE:
-					result = "FALL DAMAGE";
+					result = "Die Person hat schmerzen in den Beinen.";
 					break;
 				case InjuryType.PUNCH:
-					result = "PUNCH!";
+					result = "Die Person hat blaue Flecken.";
 					break;
 				case InjuryType.DROWN:
-					result = "DROWN";
+					result = "Die Person atmet nicht.";
 					break;
 				case InjuryType.SLICE:
-					result = "SLICE";
+					result = "Die Person hat eine Schnittwunde.";
 					break;
 				case InjuryType.SHOT_LOW:
-					result = "SHOT LOW";
+					result = "Die Person hat einen Durchschuss.";
 					break;
 				case InjuryType.VEHICLE:
-					result = "VEHICLE";
+					result = "Die Person wurde angefahren.";
 					break;
 				case InjuryType.SHOT_HIGH:
-					result = "SHOT HIGH";
+					result = "Die Person hat einen Steckschuss.";
 					break;
 				case InjuryType.FIRE:
-					result = "FIRE";
+					result = "Die Person hat eine verbrennung am Körper.";
 					break;
 				case InjuryType.EXPLOSION:
-					result = "EXPLOSION";
+					result = "Die Person hat zerfetzte Organe.";
 					break;
 			}
 
