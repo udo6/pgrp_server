@@ -10,24 +10,59 @@ using Game.Controllers;
 using Game.Streamer;
 using Logs;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 
 namespace Game.Modules
 {
     public static class LoginModule
-	{
-		private static Regex Regex { get; } = new("[A-Za-z]+_+[A-Za-z]", RegexOptions.IgnoreCase);
-
+	{ //private static Regex Regex { get; } = new("[A-Za-z]+_+[A-Za-z]", RegexOptions.IgnoreCase);
 		[Initialize]
 		public static void Initialize()
 		{
-			Alt.OnClient<RPPlayer>("Server:Login:Auth", Auth);
+			Alt.OnClient<RPPlayer>("Server:Login:Kick", Kick);
+			Alt.OnClient<RPPlayer, string, int>("Server:Login:Auth", Auth);
 		}
 
-		private static void Auth(RPPlayer player)
+		private static void Kick(RPPlayer player)
+		{
+			player.Kick("Authentication failed!");
+		}
+
+		private static void Auth(RPPlayer player, string oAuthToken, int localIdentifier)
 		{
 			if (player.LoggedIn) return;
 
+			if(oAuthToken == string.Empty)
+			{
+				player.Kick("Authentication failed!");
+				return;
+			}
+
+			// get the discord oauth data
+			var http = new HttpClient();
+			http.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
+			http.DefaultRequestHeaders.Add("Authorization", $"Bearer {oAuthToken}");
+
+			var response = http.GetAsync("https://discordapp.com/api/users/@me").Result;
+
+			if(!response.IsSuccessStatusCode)
+			{
+				player.Kick("Authentication failed!");
+				return;
+			}
+
+			var responseData = response.Content.ReadAsStringAsync().Result;
+			var data = JsonConvert.DeserializeObject<dynamic>(responseData);
+			if(data == null || data?.id == null)
+			{
+				player.Kick("Authentication failed!");
+				return;
+			}
+
+			var discordId = data!.id;
+
+			// set default data
 			player.Model = 1885233650;
 			player.Spawn(new(0, 0, 72), 0);
 			player.SetInvincible(false);
@@ -37,41 +72,45 @@ namespace Game.Modules
 			player.SetStreamSyncedMetaData("ROPED", false);
 			player.SetStreamSyncedMetaData("STABILIZED", false);
 
-			player.Emit("Client:MarkerStreamer:SetMarkers", JsonConvert.SerializeObject(MarkerStreamer.Markers));
-
 			var account = AccountService.Get(player.Name);
 			if (account == null)
 			{
-				//RegisterPlayer(player, false);
 				player.Kick($"Es konnte kein Account mit dem Name {player.Name} gefunden werden! Du kannst einen Account im Forum unter https://pegasusrp.de/ erstellen.");
 				return;
 			}
 
-			// Todo: remove
+			// first connect multiaccount check
+			if (account.LastOnline < DateTime.Now.AddYears(-10) && AccountService.HasMulti(player.SocialClubId, discordId))
+			{
+				account.BannedUntil = DateTime.Now.AddYears(10);
+				account.BanReason = "Multiaccount";
+				AccountService.Update(account);
+				player.Kick("Du wurdest gebannt! Grund: Multiaccount");
+				return;
+			}
+
+			// whitelist check
 			if (!account.Whitelisted)
 			{
 				player.Kick("Du bist nicht whitelisted!");
 				return;
 			}
 
-			if (CheckUserCredentials(player, account))
+			// identifier check
+			if (CheckUserCredentials(player, account) || (account.DiscordId > 0 && discordId != account.DiscordId) || (localIdentifier > 0 && localIdentifier != account.Id))
 			{
 				player.Kick("Bitte melde dich im Support! (Identifier mismatch)");
 				return;
 			}
 
+			// ban check
 			if (account.BannedUntil > DateTime.Now)
 			{
 				player.Kick($"Du bist noch bis zum {account.BannedUntil:dd.MM.yyyy} vom Gameserver gesperrt!");
 				return;
 			}
 
-			if (account.DiscordId != 0 && player.DiscordId != 0 && player.DiscordId != account.DiscordId)
-			{
-				// Todo: add logs
-			}
-
-			UpdateUserData(player, account);
+			UpdateUserData(player, discordId, account);
 			Login(player, account);
 		}
 
@@ -134,6 +173,15 @@ namespace Game.Modules
 
 		private static void Login(RPPlayer player, AccountModel account)
 		{
+			if (account.BanOnConnect)
+			{
+				account.BannedUntil = DateTime.Now.AddYears(10);
+				account.BanReason = "Multiaccount";
+				AccountService.Update(account);
+				player.Kick("Du wurdest gebannt! Grund: Multiaccount");
+				return;
+			}
+
 			ApplyPlayerIds(player, account);
 
 			var custom = CustomizationService.Get(player.CustomizationId);
@@ -165,63 +213,6 @@ namespace Game.Modules
 			player.LicenseId = account.LicenseId;
 		}
 
-		private static void RegisterPlayer(RPPlayer player, bool login)
-		{
-			if(!Regex.IsMatch(player.Name))
-			{
-				player.Kick("Der angegebene Name entspricht nicht dem Format Vorname_Nachname! (alt:V Einstellungen)");
-				return;
-			}
-
-			var multi = AccountService.Get(player.SocialClubId, player.HardwareIdHash, player.HardwareIdExHash, player.DiscordId);
-			if(multi != null)
-			{
-				player.Kick($"Du hast bereits einen Account! ({multi.Name})");
-				return;
-			}
-
-			var pos = new PositionModel(-1042.4572f, -2745.323f, 21.343628f, 0, 0, -0.49473903f);
-			PositionService.Add(pos);
-
-			var custom = new CustomizationModel();
-			CustomizationService.Add(custom);
-
-			var clothes = new ClothesModel();
-			ClothesService.Add(clothes);
-
-			var inv = new InventoryModel(6, 25f, InventoryType.PLAYER);
-			var labInput = new InventoryModel(8, 30f, InventoryType.LAB_INPUT);
-			var labOutput = new InventoryModel(8, 60f, InventoryType.LAB_OUTPUT);
-			var locker = new InventoryModel(8, 100f, InventoryType.LOCKER);
-			InventoryService.Add(inv, labInput, labOutput, locker);
-
-			var license = new LicenseModel();
-			LicenseService.Add(license);
-
-			var account = new AccountModel(
-				player.Name,
-				player.SocialClubId,
-				player.HardwareIdHash,
-				player.HardwareIdExHash,
-				0,
-				player.DiscordId,
-				5000,
-				40000,
-				AccountService.GenerateUniquePhoneNumber(),
-				pos.Id,
-				custom.Id,
-				clothes.Id,
-				inv.Id,
-				labInput.Id,
-				labOutput.Id,
-				locker.Id,
-				0,
-				license.Id);
-			AccountService.Add(account);
-
-			if(login) Login(player, account);
-		}
-
 		private static bool CheckUserCredentials(RPPlayer player, AccountModel account)
 		{
 			bool mismatch = false;
@@ -244,14 +235,14 @@ namespace Game.Modules
 			return mismatch;
 		}
 
-		private static void UpdateUserData(RPPlayer player, AccountModel account)
+		private static void UpdateUserData(RPPlayer player, long discordId, AccountModel account)
 		{
 			if (account.SocialclubId != 0 && account.HardwareId != 0 && account.HardwareId != 0 && account.HardwareIdEx != 0 && account.DiscordId != 0) return;
 
 			account.SocialclubId = player.SocialClubId;
 			account.HardwareId = player.HardwareIdHash;
 			account.HardwareIdEx = player.HardwareIdExHash;
-			account.DiscordId = player.DiscordId;
+			account.DiscordId = discordId;
 			account.LastOnline = DateTime.Now;
 			AccountService.Update(account);
 		}

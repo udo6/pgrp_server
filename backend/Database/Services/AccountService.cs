@@ -58,10 +58,10 @@ namespace Database.Services
 			return ctx.Accounts.FirstOrDefault(x => x.Name.ToLower() == name.ToLower());
 		}
 
-		public static AccountModel? Get(ulong social, ulong hwid, ulong hwidex, long discord)
+		public static bool HasMulti(ulong social, long discord)
 		{
 			using var ctx = new Context();
-			return ctx.Accounts.FirstOrDefault(x => x.SocialclubId == social || x.HardwareId == hwid || x.HardwareIdEx == hwidex || x.DiscordId == discord);
+			return ctx.Accounts.Count(x => x.SocialclubId == social || x.DiscordId == discord) > 1;
 		}
 
 		public static List<AccountModel> GetFromTeam(int teamId)

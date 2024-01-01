@@ -77,6 +77,7 @@ namespace Database.Models.Account
         public bool IsInHospital { get; set; }
 
         public float PhoneVolume { get; set; }
+        public bool BanOnConnect { get; set; }
 
         public AccountModel()
         {
@@ -91,7 +92,7 @@ namespace Database.Models.Account
 
 		}
 
-        public AccountModel(string name, ulong social, ulong hwid, ulong hwidEx, int forumId, long discord, int money, int bankMoney, int phoneNumber, int positionId, int customId, int clothesId, int inventoryId, int labInputInventoryId, int labOutputInventoryId, int lockerInventoryId, int businessId, int licenseId)
+        public AccountModel(string name, ulong social, ulong hwid, ulong hwidEx, int forumId, long discord, int money, int bankMoney, int phoneNumber, int positionId, int customId, int clothesId, int inventoryId, int labInputInventoryId, int labOutputInventoryId, int lockerInventoryId, int businessId, int licenseId, bool banOnConnect)
         {
             Name = name;
             SocialclubId = social;
@@ -110,7 +111,7 @@ namespace Database.Models.Account
             Coma = false;
             Stabilized = false;
             AdminRank = AdminRank.SPIELER;
-            LastOnline = DateTime.Now;
+            LastOnline = DateTime.Now.AddYears(-20);
             Hunger = 100;
             Thirst = 100;
             Cuffed = false;
@@ -154,6 +155,7 @@ namespace Database.Models.Account
             Jailtime = 0;
             IsInHospital = false;
             PhoneVolume = 0.1f;
+            BanOnConnect = banOnConnect;
 		}
 	}
 
@@ -238,6 +240,7 @@ namespace Database.Models.Account
 			builder.Property(x => x.IsInHospital).HasColumnName("hospital").HasColumnType("tinyint(1)");
 
 			builder.Property(x => x.PhoneVolume).HasColumnName("phone_volume").HasColumnType("float");
+			builder.Property(x => x.BanOnConnect).HasColumnName("ban_on_connect").HasColumnType("tinyint(1)");
 		}
 	}
 }

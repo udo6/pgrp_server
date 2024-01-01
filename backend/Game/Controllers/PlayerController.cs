@@ -5,6 +5,7 @@ using Database.Models.Account;
 using Database.Models.ClothesShop;
 using Database.Services;
 using Game.Modules;
+using Game.Streamer;
 using Logs;
 using Newtonsoft.Json;
 
@@ -73,6 +74,7 @@ namespace Game.Controllers
 
 			player.Emit("Client:DoorModule:Init", DoorModule.JSONData);
 			player.Emit("Client:PlayerModule:SetSuperSecretFeature", player.DamageCap);
+			player.Emit("Client:MarkerStreamer:SetMarkers", JsonConvert.SerializeObject(MarkerStreamer.Markers));
 			player.SetStreamSyncedMetaData("PLAYER_NAME", player.Name);
 
 			VoiceModule.ConnectToVoice(player);
