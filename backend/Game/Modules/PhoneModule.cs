@@ -6,6 +6,7 @@ using Database.Models.Bank;
 using Database.Models.Phone;
 using Database.Services;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Game.Modules
 {
@@ -286,6 +287,12 @@ namespace Game.Modules
 
 		private static void SendChatMessage(RPPlayer player, int number, string message)
 		{
+			if(!Regex.IsMatch(message, @"^[a-zA-Z0-9]+$"))
+			{
+				player.Notify("Information", "Beim senden der Nachricht ist ein Fehler aufgetreten!", NotificationType.ERROR);
+				return;
+			}
+
 			var chat = PhoneService.GetChat(player.PhoneNumber, number);
 			if (chat == null) return;
 

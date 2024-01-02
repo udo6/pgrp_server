@@ -70,8 +70,8 @@ namespace Game.Modules
 
 		private static void DetectedNoreload(RPPlayer player, uint weapon)
 		{
-			LogService.LogPlayerBan(player.DbId, 0, $"[ONLY LOGGED] Weapon no reload (Weapon: {weapon})");
-			AdminController.BroadcastTeam("Anticheat", $"Der Spieler {player.Name} hat ein No-Reload Flag ausgelöst!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.ADMINISTRATOR);
+			//LogService.LogPlayerBan(player.DbId, 0, $"[ONLY LOGGED] Weapon no reload (Weapon: {weapon})");
+			//AdminController.BroadcastTeam("Anticheat", $"Der Spieler {player.Name} hat ein No-Reload Flag ausgelöst!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.ADMINISTRATOR);
 		}
 
 		private static void DetectedRapidfire(RPPlayer player, uint weapon, float time)

@@ -62,11 +62,11 @@ namespace Game.Modules
 				var ammo = player.GetWeaponAmmo(oldWeapon);
 				if (ammo == loadout.Ammo) return;
 
-				if (ammo > loadout.Ammo)
+				/*if (ammo > loadout.Ammo)
 				{
 					AnticheatModule.DetectedUnallowedAmmo(player, oldWeapon, ammo, loadout.Ammo);
 					return;
-				}
+				}*/
 
 				loadout.Ammo = ammo;
 				LoadoutService.Update(loadout);

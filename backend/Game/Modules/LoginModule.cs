@@ -2,16 +2,11 @@
 using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
-using Database.Models;
 using Database.Models.Account;
-using Database.Models.Inventory;
 using Database.Services;
 using Game.Controllers;
-using Game.Streamer;
 using Logs;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Text.RegularExpressions;
 
 namespace Game.Modules
 {
@@ -20,13 +15,13 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
-			Alt.OnClient<RPPlayer>("Server:Login:Kick", Kick);
+			Alt.OnClient<RPPlayer, string>("Server:Login:Kick", Kick);
 			Alt.OnClient<RPPlayer, string, int>("Server:Login:Auth", Auth);
 		}
 
-		private static void Kick(RPPlayer player)
+		private static void Kick(RPPlayer player, string reason)
 		{
-			player.Kick("Authentication failed! (Code: 1)");
+			player.Kick(reason);
 		}
 
 		private static void Auth(RPPlayer player, string oAuthToken, int localIdentifier)
