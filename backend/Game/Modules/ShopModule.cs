@@ -64,6 +64,8 @@ namespace Game.Modules
 
 			foreach(var item in data)
 			{
+				if (item.Amount < 1 || item.Amount > 100) return;
+
 				var shopItem = shopItems.FirstOrDefault(x => x.Id == item.Id);
 				if (shopItem == null) continue;
 
