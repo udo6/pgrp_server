@@ -41,9 +41,9 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, int>("Server:Inventory:Open", Open);
 			Alt.OnClient<RPPlayer, int, int, int, int>("Server:Inventory:MoveAll", MoveAll);
 			Alt.OnClient<RPPlayer, int, int, int, int, int>("Server:Inventory:MoveAmount", MoveAmount);
-			Alt.OnClient<RPPlayer, int, int, int>("Server:Inventory:Use", UseItem);
-			Alt.OnClient<RPPlayer, int, int, int, int>("Server:Inventory:Give", GiveItem);
-			Alt.OnClient<RPPlayer, int, int, int>("Server:Inventory:Throw", ThrowItem);
+			Alt.OnClient<RPPlayer, int, int>("Server:Inventory:Use", UseItem);
+			Alt.OnClient<RPPlayer, int, int, int>("Server:Inventory:Give", GiveItem);
+			Alt.OnClient<RPPlayer, int, int>("Server:Inventory:Throw", ThrowItem);
 			Alt.OnClient<RPPlayer, int>("Server:Inventory:QuickUse", QuickUse);
 			Alt.OnClient<RPPlayer, int>("Server:Inventory:PackItem", PackItem);
 			Alt.OnClient<RPPlayer, int, int>("Server:Inventory:PackTargetItem", PackTargetItem);
@@ -121,23 +121,35 @@ namespace Game.Modules
 
 		private static void MoveAll(RPPlayer player, int rootInventoryId, int targetInventoryId, int oldSlot, int newSlot)
 		{
-			var inventories = InventoryService.Get(rootInventoryId, targetInventoryId);
-			var inventory = inventories.FirstOrDefault(x => x.Type == InventoryType.WAREHOUSE);
-			if (inventory != null)
+			var rootInventory = InventoryService.Get(rootInventoryId);
+			var targetInventory = InventoryService.Get(targetInventoryId);
+			if (rootInventory == null || targetInventory == null || targetInventory.Slots < newSlot) return;
+
+			var containerInventory = player.InventoryId != rootInventoryId ? rootInventory : targetInventory;
+
+			if (rootInventoryId != targetInventoryId)
 			{
-				var warehouse = WarehouseService.GetByInventoryId(inventory.Id);
-				if(warehouse != null && warehouse.OwnerType == OwnerType.TEAM)
+				if(rootInventoryId != player.InventoryId && targetInventoryId != player.InventoryId) return;
+				if (!HasInventoryAccess(player, containerInventory)) return;
+
+				var warehouseInventory = rootInventory.Type == InventoryType.WAREHOUSE ? rootInventory : targetInventory.Type == InventoryType.WAREHOUSE ? targetInventory : null;
+				if (warehouseInventory != null)
 				{
-					var account = AccountService.Get(player.DbId);
-					if (account == null || !account.TeamStorage || warehouse.OwnerId != account.TeamId)
+					var warehouse = WarehouseService.GetByInventoryId(warehouseInventory.Id);
+					if (warehouse != null && warehouse.OwnerType == OwnerType.TEAM)
 					{
-						player.Notify("Information", "Du bist nicht berechtigt an das Fraktionslager zu gehen!", NotificationType.ERROR);
-						return;
+						var account = AccountService.Get(player.DbId);
+						if (account == null || !account.TeamStorage || warehouse.OwnerId != account.TeamId)
+						{
+							player.Notify("Information", "Du bist nicht berechtigt an das Fraktionslager zu gehen!", NotificationType.ERROR);
+							return;
+						}
 					}
 				}
 			}
 
 			var item = InventoryService.GetInventoryItemBySlot(rootInventoryId, oldSlot);
+			if (item == null) return;
 
 			if (rootInventoryId == targetInventoryId)
 			{
@@ -147,7 +159,6 @@ namespace Game.Modules
 
 			InventoryController.MoveAllToContainer(player, rootInventoryId, targetInventoryId, oldSlot, newSlot);
 
-			if (item == null) return;
 			LogService.LogInventoryMove(rootInventoryId, targetInventoryId, item.ItemId, item.Amount, Logs.Enums.InventoryMoveType.MOVE);
 		}
 
@@ -155,18 +166,29 @@ namespace Game.Modules
 		{
 			if (amount < 1) return;
 
-			var inventories = InventoryService.Get(rootInventoryId, targetInventoryId);
-			var inventory = inventories.FirstOrDefault(x => x.Type == InventoryType.WAREHOUSE);
-			if (inventory != null)
+			var rootInventory = InventoryService.Get(rootInventoryId);
+			var targetInventory = InventoryService.Get(targetInventoryId);
+			if (rootInventory == null || targetInventory == null || targetInventory.Slots < newSlot) return;
+
+			var containerInventory = player.InventoryId != rootInventoryId ? rootInventory : targetInventory;
+
+			if (rootInventoryId != targetInventoryId)
 			{
-				var warehouse = WarehouseService.GetByInventoryId(inventory.Id);
-				if (warehouse != null && warehouse.OwnerType == OwnerType.TEAM)
+				if (rootInventoryId != player.InventoryId && targetInventoryId != player.InventoryId) return;
+				if (!HasInventoryAccess(player, containerInventory)) return;
+
+				var warehouseInventory = rootInventory.Type == InventoryType.WAREHOUSE ? rootInventory : targetInventory.Type == InventoryType.WAREHOUSE ? targetInventory : null;
+				if (warehouseInventory != null)
 				{
-					var account = AccountService.Get(player.DbId);
-					if (account == null || !account.TeamStorage || warehouse.OwnerId != account.TeamId)
+					var warehouse = WarehouseService.GetByInventoryId(warehouseInventory.Id);
+					if (warehouse != null && warehouse.OwnerType == OwnerType.TEAM)
 					{
-						player.Notify("Information", "Du bist nicht berechtigt an das Fraktionslager zu gehen!", NotificationType.ERROR);
-						return;
+						var account = AccountService.Get(player.DbId);
+						if (account == null || !account.TeamStorage || warehouse.OwnerId != account.TeamId)
+						{
+							player.Notify("Information", "Du bist nicht berechtigt an das Fraktionslager zu gehen!", NotificationType.ERROR);
+							return;
+						}
 					}
 				}
 			}
@@ -185,12 +207,14 @@ namespace Game.Modules
 			LogService.LogInventoryMove(rootInventoryId, targetInventoryId, item.ItemId, amount, Logs.Enums.InventoryMoveType.MOVE);
 		}
 
-		private static void UseItem(RPPlayer player, int inventoryId, int slot, int amount)
+		private static void UseItem(RPPlayer player, int slot, int amount)
 		{
-			var inventory = InventoryService.Get(inventoryId);
+			if (amount < 1) return;
+
+			var inventory = InventoryService.Get(player.InventoryId);
 			if (inventory == null) return;
 
-			var item = InventoryService.GetInventoryItemBySlot(inventoryId, slot);
+			var item = InventoryService.GetInventoryItemBySlot(player.InventoryId, slot);
 			if (item == null || item.Amount < amount) return;
 
 			var script = InventoryController.GetItemScript(item.ItemId);
@@ -209,7 +233,7 @@ namespace Game.Modules
 		private static void QuickUse(RPPlayer player, int slot)
 		{
 			var inventory = InventoryService.Get(player.InventoryId);
-			if (inventory == null) return;
+			if (inventory == null || slot > inventory.Slots) return;
 
 			var item = InventoryService.GetInventoryItemBySlot(player.InventoryId, slot);
 			if (item == null) return;
@@ -481,15 +505,17 @@ namespace Game.Modules
 			}, 4000);
 		}
 
-		private static void GiveItem(RPPlayer player, int inventoryId, int targetId, int slot, int amount)
+		private static void GiveItem(RPPlayer player, int targetId, int slot, int amount)
 		{
+			if (amount < 1) return;
+
 			var target = RPPlayer.All.FirstOrDefault(x => x.Id == targetId);
 			if (target == null) return;
 
 			var item = InventoryService.GetInventoryItemBySlot(player.InventoryId, slot);
 			if (item == null || item.Amount < amount) return;
 
-			var inventory = InventoryService.Get(inventoryId);
+			var inventory = InventoryService.Get(player.InventoryId);
 			if (inventory == null) return;
 
 			if (!InventoryController.AddItem(target.InventoryId, item.ItemId, amount)) return;
@@ -501,12 +527,14 @@ namespace Game.Modules
 			LogService.LogInventoryMove(player.InventoryId, target.InventoryId, item.ItemId, amount, Logs.Enums.InventoryMoveType.GIVE);
 		}
 
-		private static void ThrowItem(RPPlayer player, int inventoryId, int slot, int amount)
+		private static void ThrowItem(RPPlayer player, int slot, int amount)
 		{
-			var inventory = InventoryService.Get(inventoryId);
+			if (amount < 1) return;
+
+			var inventory = InventoryService.Get(player.InventoryId);
 			if (inventory == null) return;
 
-			var item = InventoryService.GetInventoryItemBySlot(inventoryId, slot);
+			var item = InventoryService.GetInventoryItemBySlot(player.InventoryId, slot);
 			if (item == null) return;
 
 			player.PlayAnimation(AnimationType.GIVE_ITEM);
@@ -525,6 +553,47 @@ namespace Game.Modules
 			if (!ContainerLabels.ContainsKey(type)) return "Unbekannt";
 
 			return ContainerLabels[type];
+		}
+
+		public static bool HasInventoryAccess(RPPlayer player, InventoryModel inventory)
+		{
+			switch(inventory.Type)
+			{
+				case InventoryType.PLAYER:
+					var targetPlayer = RPPlayer.All.FirstOrDefault(x => x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
+					return targetPlayer != null && player.Position.Distance(targetPlayer.Position) < 5f;
+				case InventoryType.TRUNK:
+					var targetVehicle = RPVehicle.All.FirstOrDefault(x => x.TrunkId == inventory.Id && x.Dimension == player.Dimension);
+					return targetVehicle != null && player.Position.Distance(targetVehicle.Position) < 5f;
+				case InventoryType.GLOVEBOX:
+					return player.IsInVehicle && ((RPVehicle)player.Vehicle).GloveBoxId == inventory.Id && player.Position.Distance(player.Vehicle.Position) < 5f;
+				case InventoryType.LAB_FUEL:
+					var labFuelShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.LABORATORY_FUEL && x.InventoryId == inventory.Id && x.Dimension == player.Dimension && x.InventoryAccess.Count > 0 && x.InventoryAccess[0].Id == player.TeamId);
+					return labFuelShape != null && player.Position.Distance(labFuelShape.Position) < labFuelShape.Size;
+				case InventoryType.LAB_INPUT:
+					return player.LaboratoryInputInventoryId == inventory.Id;
+				case InventoryType.LAB_OUTPUT:
+					return player.LaboratoryOutputInventoryId == inventory.Id;
+				case InventoryType.LAB_ROB:
+					var labRobShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.LABORATORY_ROB && x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
+					return labRobShape != null && player.Position.Distance(labRobShape.Position) < labRobShape.Size;
+				case InventoryType.LOCKER:
+					return player.LockerInventoryId == inventory.Id;
+				case InventoryType.HOUSE:
+					var houseShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.HOUSE_INVENTORY && x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
+					return houseShape != null && player.Position.Distance(houseShape.Position) < houseShape.Size;
+				case InventoryType.WAREHOUSE:
+					var warehouseShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.WAREHOUSE_BOX && x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
+					return warehouseShape != null && player.Position.Distance(warehouseShape.Position) < warehouseShape.Size;
+				case InventoryType.FEDERAL_BANK_ROB:
+					var bankRobberyShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.FEDERAL_BANK_ROBBERY_LOOT && x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
+					return bankRobberyShape != null && player.Position.Distance(bankRobberyShape.Position) < bankRobberyShape.Size;
+				case InventoryType.JEWELERY_ROB:
+					var jewleryRobberyShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.JEWELERY_LOOT && x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
+					return jewleryRobberyShape != null && player.Position.Distance(jewleryRobberyShape.Position) < jewleryRobberyShape.Size;
+			}
+
+			return false;
 		}
 	}
 }
