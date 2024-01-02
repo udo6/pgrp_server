@@ -5,18 +5,13 @@ using Database.Models.Inventory;
 using Database.Models;
 using Database.Services;
 using Game.Http.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Game.Http.Listener
 {
 	public class UCPListener : RequestScript
 	{
-		[Request("/ucp/createaccount")]
-		public void CreateAccount(int forumId, string name, long discordId)
+		[Request("/createaccount")]
+		public static void CreateAccount(int forumId, string name, long discordId)
 		{
 			var pos = new PositionModel(-1042.4572f, -2745.323f, 21.343628f, 0, 0, -0.49473903f);
 			PositionService.Add(pos);

@@ -141,6 +141,15 @@ namespace Game.Modules
 				return;
 			}
 
+			var targetAccount = AccountService.Get(target.DbId);
+			if (targetAccount == null) return;
+
+			if(targetAccount.TeamLeaveDate.AddDays(7) > DateTime.Now)
+			{
+				player.Notify("Information", "Die Person hat aktuell eine Fraktionssperre!", NotificationType.ERROR);
+				return;
+			}
+
 			/*if(target.Level < 8)
 			{
 				player.Notify("Information", $"Die Person muss mind. Visumstufe 8 erreicht haben!", NotificationType.ERROR);

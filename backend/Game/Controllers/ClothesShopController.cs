@@ -28,7 +28,9 @@ namespace Game.Controllers
 
 			switch (model.Type)
 			{
-				case ClothesShopType.CLOTHES:
+				case ClothesShopType.CLOTHES_LOW:
+				case ClothesShopType.CLOTHES_MID:
+				case ClothesShopType.CLOTHES_HIGH:
 					blip.Name = Config.DevMode ? $"Kleidungsladen #{model.Id}" : "Kleidungsladen";
 					blip.Sprite = 73;
 					blip.Color = 4;

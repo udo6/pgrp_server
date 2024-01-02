@@ -1,4 +1,5 @@
-﻿using Database.Models.ClothesShop;
+﻿using Core.Enums;
+using Database.Models.ClothesShop;
 
 namespace Database.Services
 {
@@ -59,16 +60,10 @@ namespace Database.Services
 			ctx.SaveChanges();
 		}
 
-		public static List<ClothesShopItemModel> GetItemsFromShop(int shopId)
+		public static List<ClothesShopItemModel> GetItemsFromShop(ClothesShopType type, int gender)
 		{
 			using var ctx = new Context();
-			return ctx.ClothesShopItems.Where(x => x.ShopId == shopId || x.ShopId == 0).ToList();
-		}
-
-		public static List<ClothesShopItemModel> GetItemsFromShop(int shopId, int gender)
-		{
-			using var ctx = new Context();
-			return ctx.ClothesShopItems.Where(x => (x.ShopId == shopId || x.ShopId == 0) && (x.Gender == 2 || x.Gender == gender)).ToList();
+			return ctx.ClothesShopItems.Where(x => (x.ShopId == (int)type || x.ShopId == 0) && (x.Gender == 2 || x.Gender == gender)).ToList();
 		}
 
 		public static ClothesShopItemModel? GetItem(int id)

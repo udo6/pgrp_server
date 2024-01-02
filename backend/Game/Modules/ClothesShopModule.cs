@@ -37,7 +37,7 @@ namespace Game.Modules
 			var custom = CustomizationService.Get(player.CustomizationId);
 			if (custom == null) return;
 
-			var items = ClothesShopService.GetItemsFromShop(id, custom.Gender ? 1 : 0);
+			var items = ClothesShopService.GetItemsFromShop(shop.Type, custom.Gender ? 1 : 0);
 			if (items == null) return;
 
 			player.Rotation = pos.Rotation;
@@ -81,7 +81,7 @@ namespace Game.Modules
 			if (ids == null) return;
 
 			var wardrobeItems = WardrobeService.GetItemsFromOwner(player.DbId, player.TeamId, custom.Gender ? 1 : 0);
-			var items = ClothesShopService.GetItemsFromShop(id, custom.Gender ? 1 : 0);
+			var items = ClothesShopService.GetItemsFromShop(shop.Type, custom.Gender ? 1 : 0);
 			var newClothes = new List<ClothesShopItemModel>();
 			var ownedClothes = new List<ClothesShopItemModel>();
 

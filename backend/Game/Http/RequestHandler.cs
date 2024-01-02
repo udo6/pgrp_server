@@ -106,9 +106,7 @@ namespace Game.Http
 		{
 			if (request == null || request.RawUrl == null || request.HttpMethod != "POST") return "METHOD NOT ALLOWED";
 
-			var data = GetPostData(request);
-
-			data.Remove("secret", out var secretKey);
+			var secretKey = request.Headers["Secret"];
 			if (secretKey != _key)
 			{
 				Console.WriteLine($"[REQUEST HANDLER] A request has been refused. (SECRET KEY MISMATCH)");
@@ -121,6 +119,8 @@ namespace Game.Http
 				Console.WriteLine($"[REQUEST HANDLER] A request has been refused. (IP BLOCK)");
 				return "UNAUTHORIZED";
 			}
+
+			var data = GetPostData(request);
 
 			var success = Parse(request.RawUrl, data);
 			return success ? "OK" : "BAD REQUEST";
