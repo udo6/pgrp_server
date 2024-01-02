@@ -23,7 +23,7 @@ namespace Logs
 
 			var connectionString = new MySqlConnectionStringBuilder
 			{
-				Server = "localhost",
+				Server = "176.96.137.221",
 				Port = 3306,
 				UserID = "mason",
 				Password = "Paiyai43234!",

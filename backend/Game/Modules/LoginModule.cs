@@ -26,7 +26,7 @@ namespace Game.Modules
 
 		private static void Kick(RPPlayer player)
 		{
-			player.Kick("Authentication failed!");
+			player.Kick("Authentication failed! (Code: 1)");
 		}
 
 		private static void Auth(RPPlayer player, string oAuthToken, int localIdentifier)
@@ -35,7 +35,7 @@ namespace Game.Modules
 
 			if(oAuthToken == string.Empty)
 			{
-				player.Kick("Authentication failed!");
+				player.Kick("Authentication failed! (Code: 2)");
 				return;
 			}
 
@@ -47,7 +47,7 @@ namespace Game.Modules
 
 			if(!response.IsSuccessStatusCode)
 			{
-				player.Kick("Authentication failed!");
+				player.Kick("Authentication failed! (Code: 3)");
 				return;
 			}
 
@@ -55,7 +55,7 @@ namespace Game.Modules
 			var data = JsonConvert.DeserializeObject<dynamic>(responseData);
 			if(data == null || data?.id == null)
 			{
-				player.Kick("Authentication failed!");
+				player.Kick("Authentication failed! (Code: 4)");
 				return;
 			}
 
@@ -89,11 +89,11 @@ namespace Game.Modules
 			}
 
 			// whitelist check
-			if (!account.Whitelisted)
+			/*if (!account.Whitelisted)
 			{
 				player.Kick("Du bist nicht whitelisted!");
 				return;
-			}
+			} */
 
 			// identifier check
 			if (CheckUserCredentials(player, account) || (account.DiscordId > 0 && discordId != account.DiscordId) || (localIdentifier > 0 && localIdentifier != account.Id))
