@@ -189,6 +189,32 @@ namespace Game.Modules.Jobs
             }
 
             vehicle.GetData("MONEY_COUNT", out int count);
+            if (count == 0)
+            {
+                player.Notify("Geldtransporter", "Du hast den Job beendet.", NotificationType.ERROR);
+                player.IsInMoneyTruckJob = false;
+                player.Emit("Client:PropSyncModule:Clear");
+                player.TempClothesId = 0;
+                PlayerController.ApplyPlayerClothes(player);
+
+                route.InWork = false;
+                route.PlayerId = 0;
+
+                if (player.JobVehicle != null)
+                {
+                    player.JobVehicle.Delete();
+                    player.JobVehicle = null!;
+                }
+
+                foreach (var blip in player.TemporaryBlips)
+                {
+                    blip.Destroy();
+                }
+
+                player.TemporaryBlips.Clear();
+                return;
+            }
+
             if (count < routePositions.Count)
             {
                 player.Notify("Geldtransporter", "Du hast nicht alle Geldsäcke gesichert.", NotificationType.ERROR);
