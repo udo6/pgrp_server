@@ -64,6 +64,12 @@ namespace Database.Services
 			return ctx.Accounts.Count(x => x.SocialclubId == social || x.DiscordId == discord) > 1;
 		}
 
+		public static bool CheckForumId(int forumId)
+		{
+			using var ctx = new Context();
+			return ctx.Accounts.Any(x => x.ForumId == forumId);
+		}
+
 		public static List<AccountModel> GetFromTeam(int teamId)
 		{
 			using var ctx = new Context();

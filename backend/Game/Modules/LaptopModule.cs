@@ -36,6 +36,7 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, string>("Server:Laptop:ACPVehicles:Search", ACPVehiclesSearch);
 
 			// ACP PLAYERS APP
+			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:SetTeamBan", ACPSetPlayerTeamBan);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:UnwarnPlayer", ACPUnwarnPlayer);
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPPlayers:SetDimension", ACPSetPlayerDimension);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:ACPPlayers:Uncuff", ACPUncuffPlayer);
@@ -278,6 +279,24 @@ namespace Game.Modules
 		#endregion
 
 		#region ACP Players
+
+		private static void ACPSetPlayerTeamBan(RPPlayer player, int id, string date)
+		{
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
+
+			var datetime = DateTime.Parse(date);
+			var diff = datetime - DateTime.Now;
+
+			var account = AccountService.Get(id);
+			if (account == null) return;
+
+			account.TeamLeaveDate = (DateTime.Now + diff).AddDays(-7);
+			AccountService.Update(account);
+
+			var history = new AdminHistoryModel(id, $"Bis zum {datetime.ToString("dd.MM.yyyy")}", player.DbId, player.Name, DateTime.Now, AdminHistoryType.TEAM_BAN);
+			AccountService.AddAdminHistory(history);
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_TEAMBAN);
+		}
 
 		private static void ACPUnwarnPlayer(RPPlayer player, int id, string reason)
 		{
@@ -604,7 +623,10 @@ namespace Game.Modules
 				Warns = WarnService.GetPlayerWarnsCount(account.Id),
 				Money = account.Money,
 				BankMoney = account.BankMoney,
-				AdminHistory = historyData
+				AdminHistory = historyData,
+				ForumId = account.ForumId,
+				BannedUntil = account.BannedUntil.ToString("HH:mm dd.MM.yyyy"),
+				BanReason = account.BanReason
 			};
 
 			player.EmitBrowser("Laptop:ACPPlayers:SetUserData", JsonConvert.SerializeObject(data));

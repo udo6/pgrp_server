@@ -21,7 +21,7 @@ namespace Game.Controllers
 			shape.ShapeType = ColshapeType.CLOTHES_SHOP;
 			shape.Size = 3f;
 
-			if (model.Type == ClothesShopType.HATS) return;
+			if (model.Type == ClothesShopType.HATS || model.Type == ClothesShopType.UNKNOWN) return;
 
 			var blip = Alt.CreateBlip(true, 4, pos.Position, Array.Empty<IPlayer>());
 			blip.ShortRange = true;
@@ -29,19 +29,27 @@ namespace Game.Controllers
 			switch (model.Type)
 			{
 				case ClothesShopType.CLOTHES_LOW:
+					blip.Name = "Kleidungsladen";
+					blip.Sprite = 73;
+					blip.Color = 4;
+					break;
 				case ClothesShopType.CLOTHES_MID:
+					blip.Name = "Kleidungsladen";
+					blip.Sprite = 73;
+					blip.Color = 4;
+					break;
 				case ClothesShopType.CLOTHES_HIGH:
-					blip.Name = Config.DevMode ? $"Kleidungsladen #{model.Id}" : "Kleidungsladen";
+					blip.Name = "Kleidungsladen";
 					blip.Sprite = 73;
 					blip.Color = 4;
 					break;
 				case ClothesShopType.MASKS:
-					blip.Name = Config.DevMode ? $"Maskenladen #{model.Id}" : "Maskenladen";
+					blip.Name = "Maskenladen";
 					blip.Sprite = 362;
 					blip.Color = 4;
 					break;
 				case ClothesShopType.JEWLERY:
-					blip.Name = Config.DevMode ? $"Juwelier #{model.Id}" : "Juwelier";
+					blip.Name = "Juwelier";
 					blip.Sprite = 617;
 					blip.Color = 26;
 					break;

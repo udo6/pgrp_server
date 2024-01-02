@@ -1,5 +1,4 @@
-﻿using AltV.Net.Elements.Entities;
-using Core.Enums;
+﻿using Core.Enums;
 using Database.Models.Account;
 using Database.Models.Inventory;
 using Database.Models;
@@ -11,8 +10,10 @@ namespace Game.Http.Listener
 	public class UCPListener : RequestScript
 	{
 		[Request("/createaccount")]
-		public static void CreateAccount(int forumId, string name, long discordId)
+		public static void CreateAccount(int forumId, string name)
 		{
+			if (AccountService.CheckForumId(forumId)) return;
+
 			var pos = new PositionModel(-1042.4572f, -2745.323f, 21.343628f, 0, 0, -0.49473903f);
 			PositionService.Add(pos);
 
@@ -37,7 +38,7 @@ namespace Game.Http.Listener
 				0,
 				0,
 				forumId,
-				discordId,
+				0,
 				5000,
 				40000,
 				AccountService.GenerateUniquePhoneNumber(),
