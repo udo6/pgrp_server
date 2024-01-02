@@ -4,7 +4,6 @@ using Core.Entities;
 using Database.Services;
 using Game.Controllers;
 using Core.Enums;
-using Database.Models;
 
 namespace Game.Modules
 {
@@ -129,7 +128,7 @@ namespace Game.Modules
 				var input = items.Where(x => x.ItemId == inputItem.Id).Sum(x => x.Amount);
 				var utility = items.Where(x => x.ItemId == utilityInput.Id).Sum(x => x.Amount);
 
-				if(input < 20 || utility < 10)
+				if(input < 20 || utility < 1)
 				{
 					player.LabRunning = false;
 					player.Notify("Drogenlabor", "Das Labor hat keine Ressourcen mehr!", NotificationType.ERROR);
@@ -137,7 +136,7 @@ namespace Game.Modules
 				}
 
 				var inputInventory = InventoryService.Get(player.LaboratoryInputInventoryId);
-				var outputInvnetory = InventoryService.Get(player.LaboratoryInputInventoryId);
+				var outputInvnetory = InventoryService.Get(player.LaboratoryOutputInventoryId);
 				var batteryInventory = InventoryService.Get(lab.FuelInventoryId);
 				if (inputInventory == null || outputInvnetory == null || batteryInventory == null) continue;
 

@@ -32,10 +32,13 @@ namespace Game.Controllers
 			var items = InventoryService.GetInventoryItemsWithSlot(inventoryId, oldSlot, newSlot);
 			if (items.Count < 1) return;
 
-			if (items.Count == 1 && items[0].Slot == oldSlot)
+			if (items.Count == 1)
 			{
-				items[0].Slot = newSlot;
-				InventoryService.UpdateInventoryItem(items[0]);
+				if(items[0].Slot == oldSlot)
+				{
+					items[0].Slot = newSlot;
+					InventoryService.UpdateInventoryItem(items[0]);
+				}
 				return;
 			}
 

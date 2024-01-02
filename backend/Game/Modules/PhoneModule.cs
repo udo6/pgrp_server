@@ -427,8 +427,14 @@ namespace Game.Modules
 				return;
 			}
 
+			if (player.CallPartner > 0)
+			{
+				player.Notify("Information", "Du bist bereits in einem Gespräch!", NotificationType.ERROR);
+				return;
+			}
+
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.PhoneNumber == number);
-			if (target == null || !target.Phone)
+			if (target == null || !target.Phone || target.CallPartner > 0)
 			{
 				player.Notify("Information", "Die angegebene Rufnummer ist aktuell nicht erreichbar!", NotificationType.ERROR);
 				return;
@@ -448,7 +454,7 @@ namespace Game.Modules
 				State = (int)CallState.CALLING,
 				Started = now,
 				Partner = target.PhoneNumber,
-				PartnerName = playerContact == null ? "" : playerContact.Name,
+				PartnerName = playerContact == null ? "Unbekannt" : playerContact.Name,
 				Mute = player.CallMute
 			}));
 			player.EmitBrowser("Phone:PlayRinging", player.PhoneVolume);
@@ -462,7 +468,7 @@ namespace Game.Modules
 				State = (int)CallState.GET_CALLED,
 				Started = now.ToString("o"),
 				Partner = player.PhoneNumber,
-				PartnerName = targetContact == null ? "" : targetContact.Name
+				PartnerName = targetContact == null ? "Unbekannt" : targetContact.Name
 			}));
 			target.EmitBrowser("Phone:PlayRingtone", target.PhoneVolume);
 			target.Notify("Information", $"Eingehender Anruf", NotificationType.INFO);
@@ -530,6 +536,13 @@ namespace Game.Modules
 			if (account == null) return;
 
 			var callPartner = RPPlayer.All.FirstOrDefault(x => x.DbId == player.CallPartner);
+			var callPhoneNumber = callPartner?.PhoneNumber;
+			var contactName = "Unbekannt";
+			if(callPhoneNumber != null)
+			{
+				var playerContact = PhoneService.GetContactByNumber(player.DbId, (int)callPhoneNumber);
+				if(playerContact != null) contactName = playerContact.Name;
+			}
 
 			player.PlayAnimation(AnimationType.PHONE);
 			player.ShowComponent("Phone", true, JsonConvert.SerializeObject(new

@@ -48,7 +48,7 @@ namespace Game.Modules
 
 		private static void Deposit(RPPlayer player, int bankId, int amount)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || amount < 1) return;
 
 			var bank = BankService.Get(bankId);
 			if (bank == null) return;
@@ -103,7 +103,7 @@ namespace Game.Modules
 
 		private static void Withdraw(RPPlayer player, int bankId, int amount)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || amount < 1) return;
 
 			var bank = BankService.Get(bankId);
 			if (bank == null) return;

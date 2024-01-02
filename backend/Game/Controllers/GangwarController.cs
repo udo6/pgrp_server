@@ -154,6 +154,8 @@ namespace Game.Controllers
 			foreach (var player in RPPlayer.All.ToList())
 			{
 				if (player == null || !player.Exists || player.CurrentGangwarId != gw.DbId) continue;
+
+				player.RemoveAllWeapons(true);
 				RespawnPlayer(player);
 				QuitGangwar(player);
 				player.GangwarWeapon = -1;

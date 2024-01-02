@@ -285,6 +285,7 @@ namespace Game.Controllers
 			player.Alive = true;
 			player.InjuryType = 0;
 			player.Coma = false;
+			player.Stabilized = false;
 			player.SetInvincible(false);
 			player.IsInHospital = false;
 			player.SetStreamSyncedMetaData("ALIVE", true);

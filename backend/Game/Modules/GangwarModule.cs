@@ -33,7 +33,7 @@ namespace Game.Modules
 			var gangwar = GangwarController.RunningGangwars.FirstOrDefault(x => x.AttackerId == player.TeamId || x.OwnerId == player.TeamId);
 			if (gangwar == null) return;
 
-			if(RPPlayer.All.Count(x => x.IsGangwar && x.Dimension == gangwar.DbId) >= 20)
+			if(RPPlayer.All.Count(x => x.IsGangwar && x.Dimension == gangwar.DbId && x.TeamId == player.TeamId) >= 20)
 			{
 				player.Notify("Gangwar", "Es sind bereits 20 Personen im Gangwar!", NotificationType.ERROR);
 				return;
