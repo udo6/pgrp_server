@@ -292,7 +292,7 @@ namespace Game.Modules
 
 		private static void SendChatMessage(RPPlayer player, int number, string message)
 		{
-			if(!Regex.IsMatch(message, @"^[a-zA-Z0-9]+$"))
+			if(!LaptopModule.CheckString(message))
 			{
 				player.Notify("Information", "Beim senden der Nachricht ist ein Fehler aufgetreten!", NotificationType.ERROR);
 				return;

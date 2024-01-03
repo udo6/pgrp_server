@@ -85,7 +85,7 @@ namespace Game.Modules
 			var price = 0;
 
 			var style = BarberService.GetStyle(styleId);
-			if (style != null)
+			if (style != null && custom.Hair != style.Value && custom.HairDlc != style.Dlc)
 			{
 				price += style.Price;
 				custom.Hair = style.Value;
@@ -93,21 +93,21 @@ namespace Game.Modules
 			}
 
 			var color = BarberService.GetColor(colorId);
-			if(color != null)
+			if(color != null && custom.HairColor != color.Value)
 			{
 				price += color.Price;
 				custom.HairColor = color.Value;
 			}
 
 			var highlightColor = BarberService.GetColor(highlightColorId);
-			if (highlightColor != null)
+			if (highlightColor != null && custom.HairHighlightColor != highlightColor.Value)
 			{
 				price += highlightColor.Price;
 				custom.HairHighlightColor = highlightColor.Value;
 			}
 
 			var beard = BarberService.GetBeard(beardId);
-			if(beard != null)
+			if(beard != null && custom.Beard != beard.Value)
 			{
 				price += beard.Price;
 				custom.Beard = beard.Value;
@@ -115,7 +115,7 @@ namespace Game.Modules
 			}
 
 			var beardColor = BarberService.GetColor(beardColorId);
-			if(beardColor != null)
+			if(beardColor != null && custom.BeardColor != beardColor.Value)
 			{
 				price += beardColor.Price;
 				custom.BeardColor = beardColor.Value;
