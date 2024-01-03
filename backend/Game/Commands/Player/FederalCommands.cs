@@ -13,7 +13,7 @@ namespace Game.Commands.Player
 		[Command("gov", true)]
 		public static void SendGovAnnounce(RPPlayer player, string message)
 		{
-			if((player.TeamId < 1 || player.TeamId > 2) && player.TeamId != 5) return;
+			if(!player.LoggedIn || ((player.TeamId < 1 || player.TeamId > 2) && player.TeamId != 5)) return;
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null || account.TeamRank < 7) return;
@@ -37,7 +37,7 @@ namespace Game.Commands.Player
 		[Command("takelic")]
 		public static void TakeLicense(RPPlayer player, string name)
 		{
-			if ((player.TeamId < 1 || player.TeamId > 2) && player.TeamId != 5) return;
+			if (!player.LoggedIn || ((player.TeamId < 1 || player.TeamId > 2) && player.TeamId != 5)) return;
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
@@ -71,7 +71,7 @@ namespace Game.Commands.Player
 		[Command("swat")]
 		public static void ToggleSwatStatus(RPPlayer player)
 		{
-			if (player.TeamId < 1 && player.TeamId > 2) return;
+			if (!player.LoggedIn || (player.TeamId < 1 && player.TeamId > 2)) return;
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null || !account.TeamAdmin) return;

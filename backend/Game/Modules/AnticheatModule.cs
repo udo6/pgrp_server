@@ -7,6 +7,7 @@ using Database.Services;
 using Game.Controllers;
 using Logs;
 using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Game.Modules
 {
@@ -121,6 +122,17 @@ namespace Game.Modules
 		private static WeaponDamageResponse OnWeaponDamage(IPlayer _player, IEntity target, uint weapon, ushort damage, Position shotOffset, BodyPart bodyPart)
 		{
 			var player = (RPPlayer)_player;
+			if(!player.LoggedIn)
+			{
+				player.Kick("Du wurdest gekicked!");
+				if(target.Type == BaseObjectType.Player)
+				{
+					var targetPlayer = ((RPPlayer)target);
+					targetPlayer.Spawn(player.Position, 0);
+					PlayerController.SetPlayerAlive(targetPlayer, false);
+				}
+				return false;
+			}
 
 			if (target.Type == BaseObjectType.Player)
 			{
@@ -164,15 +176,59 @@ namespace Game.Modules
 		private static bool OnExplosion(IPlayer _player, ExplosionType explosionType, Position position, uint explosionFx, IEntity targetEntity)
 		{
 			var player = (RPPlayer) _player;
+			if (!player.LoggedIn)
+			{
+				player.Kick("Du wurdest gekicked!");
+				if(targetEntity.Type == BaseObjectType.Player)
+				{
+					var targetPlayer = (RPPlayer)targetEntity;
+					targetPlayer.Spawn(player.Position, 0);
+					PlayerController.SetPlayerAlive(targetPlayer, false);
+				}
+				if(targetEntity.Type == BaseObjectType.Vehicle)
+				{
+					var targetVehicle = (RPVehicle)targetEntity;
+					targetVehicle.Repair();
+					targetVehicle.Rotation = new();
+				}
+				return false;
+			}
 
-			if(explosionType == ExplosionType.Unknown || explosionType == ExplosionType.Car) return false;
+			if (explosionType == ExplosionType.Unknown || explosionType == ExplosionType.Car) return false;
 
 			if(explosionType != ExplosionType.Flare && explosionType != ExplosionType.Snowball)
 			{
 				player.ExplosionsCaused++;
-				if (player.ExplosionsCaused > 10)
+				if (player.ExplosionsCaused > 40)
 				{
-					AdminController.BroadcastTeam("Anticheat", $"{player.Name} hat {player.ExplosionsCaused} Explosionen verursacht!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.MODERATOR);
+					var account = AccountService.Get(player.DbId);
+					if (account != null)
+					{
+						account.BannedUntil = DateTime.Now.AddYears(10);
+						account.BanReason = "Cheating";
+						AccountService.Update(account);
+					}
+
+					LogService.LogPlayerBan(player.DbId, 0, $"Caused too many explosions!");
+					player.Kick("Du wurdest gebannt! Grund: Cheating");
+
+					foreach(var target in RPPlayer.All.ToList())
+					{
+						if (target.Position.Distance(player.Position) > 100f) continue;
+
+						PlayerController.SetPlayerAlive(target, false);
+						target.Notify("Anticheat", "Du wurdest wiederbelebt da du durch einen sogenannten Letzten Ritt getötet wurdest!", Core.Enums.NotificationType.SUCCESS);
+					}
+
+					foreach(var vehicle in RPVehicle.All.ToList())
+					{
+						if (vehicle.Position.Distance(player.Position) > 100f) continue;
+
+						vehicle.Repair();
+						vehicle.Rotation = new();
+					}
+
+					return false;
 				}
 			}
 

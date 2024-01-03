@@ -9,7 +9,7 @@ namespace Game.Commands.Player
 		[Command("quitffa")]
 		public static void QuitFFA(RPPlayer player)
 		{
-			if (!player.IsInFFA) return;
+			if (!player.LoggedIn || !player.IsInFFA) return;
 
 			FFAController.QuitFFA(player);
 		}

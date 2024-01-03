@@ -14,7 +14,7 @@ namespace Game.Commands.Player
 		[Command("wanteds")]
 		public static void ShowWanteds(RPPlayer player)
 		{
-			if (player.TeamId != 2 || !player.TeamDuty) return;
+			if (!player.LoggedIn || player.TeamId != 2 || !player.TeamDuty) return;
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null || account.TeamRank < 3) return;
@@ -33,7 +33,7 @@ namespace Game.Commands.Player
 		[Command("findhouse")]
 		public static void FindHouse(RPPlayer player, int houseId)
 		{
-			if (player.TeamId != 2 || !player.TeamDuty) return;
+			if (!player.LoggedIn || player.TeamId != 2 || !player.TeamDuty) return;
 
 			var house = HouseService.Get(houseId);
 			if (house == null) return;
@@ -48,7 +48,7 @@ namespace Game.Commands.Player
 		[Command("friskhouse")]
 		public static void FriskHouse(RPPlayer player)
 		{
-			if (player.TeamId != 2 || !player.TeamDuty || player.Dimension == 0) return;
+			if (!player.LoggedIn || player.TeamId != 2 || !player.TeamDuty || player.Dimension == 0) return;
 
 			var house = HouseService.Get(player.Dimension);
 			if (house == null || house.OwnerId <= 0) return;

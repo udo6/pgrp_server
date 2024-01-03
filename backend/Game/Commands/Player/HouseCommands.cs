@@ -11,7 +11,7 @@ namespace Game.Commands.Player
 		[Command("sellhouse")]
 		public static void SellHouse(RPPlayer player)
 		{
-			if (!HouseService.HasPlayerHouse(player.DbId)) return;
+			if (!player.LoggedIn || !HouseService.HasPlayerHouse(player.DbId)) return;
 
 			player.ShowComponent("Input", true, JsonConvert.SerializeObject(new
 			{

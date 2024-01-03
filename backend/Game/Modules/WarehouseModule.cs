@@ -180,6 +180,8 @@ namespace Game.Modules
 
 		private static void UpgradeWarehouse(RPPlayer player, int warehouseId)
 		{
+			if (!player.LoggedIn) return;
+
 			var model = WarehouseService.Get(warehouseId);
 			if (model == null || !WarehouseController.IsWarehouseOwner(player, model.OwnerId, model.OwnerType)) return;
 

@@ -24,6 +24,19 @@ namespace Game.Modules
 			player.Kick(reason);
 		}
 
+		[Core.Attribute.ServerEvent(ServerEventType.PLAYER_CONNECT)]
+		public static void OnPlayerConnect(RPPlayer player)
+		{
+			var name = player.Name.ToLower();
+			if(RPPlayer.All.Any(x => x.Name.ToLower() == name))
+			{
+				player.Kick("Es ist ein Fehler aufgetreten!");
+				return;
+			}
+
+			player.SetDimension(10000 + (int)player.Id);
+		}
+
 		private static void Auth(RPPlayer player, string oAuthToken, int localIdentifier)
 		{
 			if (player.LoggedIn) return;
@@ -60,7 +73,6 @@ namespace Game.Modules
 			player.Model = 1885233650;
 			player.Spawn(new(0, 0, 72), 0);
 			player.SetInvincible(false);
-			player.SetDimension((int)player.Id);
 			player.SetStreamSyncedMetaData("ALIVE", true);
 			player.SetStreamSyncedMetaData("CUFFED", false);
 			player.SetStreamSyncedMetaData("ROPED", false);
@@ -70,6 +82,12 @@ namespace Game.Modules
 			if (account == null)
 			{
 				player.Kick($"Es konnte kein Account mit dem Name {player.Name} gefunden werden! Du kannst einen Account im Forum unter https://pegasusrp.de/ erstellen.");
+				return;
+			}
+
+			if(RPPlayer.All.Any(x => x.DbId == account.Id))
+			{
+				player.Kick("Es ist ein Fehler aufgetreten!");
 				return;
 			}
 

@@ -12,6 +12,8 @@ namespace Game.Commands.Player
 		[Command("support", true)]
 		public static void CreateTicket(RPPlayer player, string message)
 		{
+			if (!player.LoggedIn) return;
+
 			var existingTicket = SupportModule.Tickets.FirstOrDefault(x => x.CreatorId == player.DbId);
 			if (existingTicket != null)
 			{

@@ -16,6 +16,8 @@ namespace Game.Commands.Player
 		[Command("ooc", true)]
 		public static void OutOfCharacter(RPPlayer player, string message)
 		{
+			if (!player.LoggedIn) return;
+
 			var blacklistedWord = BlacklistedWords.FirstOrDefault(x => x == message.ToLower());
 
 			if (blacklistedWord != null)

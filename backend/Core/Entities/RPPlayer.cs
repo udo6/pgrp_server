@@ -4,9 +4,7 @@ using AltV.Net.Elements.Entities;
 using Core.Enums;
 using Core.Models.NativeMenu;
 using Core.Models.Player;
-using Logs.Models;
 using Newtonsoft.Json;
-using System.Numerics;
 
 namespace Core.Entities
 {

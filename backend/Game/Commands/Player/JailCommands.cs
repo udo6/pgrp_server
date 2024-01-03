@@ -9,7 +9,7 @@ namespace Game.Commands.Player
 		[Command("jailtime")]
 		public static void Jailtime(RPPlayer player)
 		{
-			if (player.Jailtime < 1) return;
+			if (!player.LoggedIn || player.Jailtime < 1) return;
 
 			player.Notify("Information", $"Du bist noch für {player.Jailtime} Hafteinheiten im Gefängnis!", Core.Enums.NotificationType.INFO);
 		}
@@ -17,7 +17,7 @@ namespace Game.Commands.Player
 		[Command("jail")]
 		public static void Jail(RPPlayer player)
 		{
-			if ((player.TeamId < 1 || player.TeamId > 2) && player.TeamId != 5) return;
+			if (!player.LoggedIn || ((player.TeamId < 1 || player.TeamId > 2) && player.TeamId != 5)) return;
 
 			var list = new List<NativeMenuItem>();
 			foreach (var target in RPPlayer.All.ToList())

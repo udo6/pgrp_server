@@ -9,7 +9,7 @@ namespace Game.Commands.Player
 		[Command("impound")]
 		public static void ImpoundVehicle(RPPlayer player, int vehId)
 		{
-			if (player.TeamId != 4 || !player.TeamDuty || vehId < 1) return;
+			if (!player.LoggedIn || player.TeamId != 4 || !player.TeamDuty || vehId < 1) return;
 
 			var shape = RPShape.All.FirstOrDefault(x => x.ShapeType == Core.Enums.ColshapeType.IMPOUND && x.Position.Distance(player.Position) <= x.Size);
 			if (shape == null) return;

@@ -90,6 +90,13 @@ namespace Game.Modules
 			if (killer != null && killer.Type == BaseObjectType.Player)
 			{
 				var killerPlayer = (RPPlayer)killer;
+				if(!killerPlayer.LoggedIn)
+				{
+					killerPlayer.Kick("Du wurdest gekicked!");
+					player.Spawn(player.Position, 0);
+					PlayerController.SetPlayerAlive(player, false);
+					return;
+				}
 
 				player.LastAttackerId = killerPlayer.DbId;
 
@@ -100,6 +107,13 @@ namespace Game.Modules
 			{
 				var killerVehicle = (RPVehicle)killer;
 				var killerPlayer = (RPPlayer)killerVehicle.NetworkOwner;
+				if (!killerPlayer.LoggedIn)
+				{
+					killerPlayer.Kick("Du wurdest gekicked!");
+					player.Spawn(player.Position, 0);
+					PlayerController.SetPlayerAlive(player, false);
+					return;
+				}
 
 				player.LastAttackerId = killerPlayer.DbId;
 
