@@ -8,5 +8,10 @@ namespace Core.Extensions
 		{
 			return new(position.X, position.Y, position.Z - offset);
 		}
+
+		public static Position Up(this Position position, float offset = 1)
+		{
+			return new(position.X, position.Y, position.Z + offset);
+		}
 	}
 }

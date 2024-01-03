@@ -557,6 +557,8 @@ namespace Game.Modules
 
 		public static bool HasInventoryAccess(RPPlayer player, InventoryModel inventory)
 		{
+			Console.WriteLine($"{player.Name}: {inventory.Id} | {inventory.Type}");
+
 			switch(inventory.Type)
 			{
 				case InventoryType.PLAYER:
@@ -580,10 +582,10 @@ namespace Game.Modules
 				case InventoryType.LOCKER:
 					return player.LockerInventoryId == inventory.Id;
 				case InventoryType.HOUSE:
-					var houseShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.HOUSE_INVENTORY && x.InventoryId == inventory.Id && x.Dimension == player.Dimension && player.Position.Distance(x.Position) <= x.Size);
+					var houseShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.HOUSE_INVENTORY && x.InventoryId == inventory.Id && x.Dimension == player.Dimension && player.Position.Distance(x.Position.Up()) <= x.Size);
 					return houseShape != null && houseShape.InventoryAccess.Any(x => (x.Id == player.DbId && x.Type == OwnerType.PLAYER) || (x.Id == player.TeamId && x.Type == OwnerType.TEAM));
 				case InventoryType.WAREHOUSE:
-					var warehouseShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.WAREHOUSE_BOX && x.InventoryId == inventory.Id && x.Dimension == player.Dimension && player.Position.Distance(x.Position) <= x.Size);
+					var warehouseShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.WAREHOUSE_BOX && x.InventoryId == inventory.Id && x.Dimension == player.Dimension && player.Position.Distance(x.Position.Up()) <= x.Size);
 					return warehouseShape != null && warehouseShape.InventoryAccess.Any(x => (x.Id == player.DbId && x.Type == OwnerType.PLAYER) || (x.Id == player.TeamId && x.Type == OwnerType.TEAM));
 				case InventoryType.FEDERAL_BANK_ROB:
 					var bankRobberyShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.FEDERAL_BANK_ROBBERY_LOOT && x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
