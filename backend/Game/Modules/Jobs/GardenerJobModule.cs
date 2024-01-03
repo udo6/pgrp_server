@@ -3,7 +3,6 @@ using Core.Attribute;
 using Core.Entities;
 using Database.Services.Jobs;
 using Game.Controllers.Jobs;
-using System;
 using AltV.Net.Enums;
 using Core.Enums;
 using Core.Models.NativeMenu;
@@ -22,7 +21,7 @@ public static class GardenerJobModule
         Alt.OnClient<RPPlayer>("Server:GardenerJob:Open", Open);
         Alt.OnClient<RPPlayer, int>("Server:GardenerJob:Start", Start);
         Alt.OnClient<RPPlayer, int>("Server:GardenerJob:Stop", Stop);
-        Alt.OnClient<RPPlayer, int>("Server:GardenerJob:StopJob", StopJob);
+        Alt.OnClient<RPPlayer, string, int>("Server:GardenerJob:StopJob", StopJob);
     }
 
     private static void Open(RPPlayer player)

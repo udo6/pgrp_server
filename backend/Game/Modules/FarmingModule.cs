@@ -86,11 +86,16 @@ namespace Game.Modules
 					continue;
 				}
 
-				spot.Health--;
+				// spot.Health--;
 				if (spot.Health <= 0) FarmingController.DisableSpot(spot);
 
 				var amount = random.Next(model.MinGain, model.MaxGain);
-				InventoryController.AddItem(player.InventoryId, item.Id, amount);
+				if(!InventoryController.AddItem(player.InventoryId, item.Id, amount))
+				{
+					FarmingController.StopFarming(player);
+					player.Notify("Farming", "Deine Taschen sind voll!", NotificationType.ERROR);
+					return;
+				}
 				player.Notify("Farming", $"+{amount} {item.Name}", Core.Enums.NotificationType.INFO);
 			}
 		}

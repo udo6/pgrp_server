@@ -1158,11 +1158,11 @@ namespace Game.Modules
 			return dispatch.Team == team;
 		}
 
-		private static bool CheckString(string str)
+		public static bool CheckString(string str)
 		{
 			foreach(char c in str)
 			{
-				if (!Char.IsLetterOrDigit(c) && c != '_' && c != '-' && c != '/' && c != '(' && c != ')')
+				if (!Char.IsLetterOrDigit(c) && c != '_' && c != '-' && c != '/' && c != '(' && c != ')' && c != ' ')
 					return false;
 			}
 

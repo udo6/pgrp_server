@@ -176,7 +176,7 @@ namespace Core.Entities
 
 		public void Notify(string title, string msg, NotificationType type, int duration = 3500)
 		{
-			Emit("Client:Hud:PushNotification", JsonConvert.SerializeObject(new { Title = title, Message = msg, Type = type, duration }));
+			Emit("Client:Hud:PushNotification", JsonConvert.SerializeObject(new { Title = title, Message = msg, Type = type, Duration = duration }));
 		}
 
 		public void EmitBrowser(string eventName, params object[] args)

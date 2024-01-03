@@ -42,7 +42,7 @@ namespace Game.Modules
 
 		private static void ToggleDuty(RPPlayer player)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.MODERATOR) return;
+			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER) return;
 
 			var custom = CustomizationService.Get(player.CustomizationId);
 			if (custom == null) return;
@@ -66,7 +66,7 @@ namespace Game.Modules
 
 		private static void ToggleNoclip(RPPlayer player, bool state)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.GUIDE) return;
+			if (player.AdminRank < Core.Enums.AdminRank.MODERATOR) return;
 
 			player.Streamed = !state;
 			player.Visible = player.Streamed;
