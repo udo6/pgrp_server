@@ -14,7 +14,7 @@ namespace Core.Entities
 		}
 		public static RPShape? Get(int id, ColshapeType type)
 		{
-			return All.FirstOrDefault(x => x.Id == id && x.ShapeType == type);
+			return All.FirstOrDefault(x => x.ShapeId == id && x.ShapeType == type);
 		}
 
 		public int ShapeId { get; set; }

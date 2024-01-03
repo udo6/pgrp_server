@@ -56,7 +56,7 @@ namespace Game.Modules
 
 		private static void UseTeleporter(RPPlayer player, int index)
 		{
-			if (index >= TeleporterPositions.Count || player.Position.Distance(TeleporterPositions[0]) > 30f) return;
+			if (index >= TeleporterPositions.Count) return;
 
 			var pos = TeleporterPositions[index];
 			player.SetPosition(pos);

@@ -32,7 +32,7 @@ namespace Game.Modules
 
 		private static void AcceptInvite(RPPlayer player, int team)
 		{
-			if (!player.LoggedIn || player.PendingTeamInvite == 0 || team < 1) return;
+			if (!player.LoggedIn || player.PendingTeamInvite != team || team < 1) return;
 
 			/*if(player.Level < 3)
 			{

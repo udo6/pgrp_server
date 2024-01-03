@@ -139,7 +139,7 @@ namespace Game.Modules
 			var account = AccountService.Get(player.DbId);
 			if (account == null || !account.TeamAdmin) return;
 
-			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
+			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Name.ToLower() == targetName.ToLower());
 			if (target == null)
 			{
 				player.Notify("Information", $"Der Spieler {targetName} konnte nicht gefunden werden!", NotificationType.ERROR);

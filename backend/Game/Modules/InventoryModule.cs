@@ -556,8 +556,6 @@ namespace Game.Modules
 
 		public static bool HasInventoryAccess(RPPlayer player, InventoryModel inventory)
 		{
-			Console.WriteLine($"{player.Name}: {inventory.Id} | {inventory.Type}");
-
 			switch(inventory.Type)
 			{
 				case InventoryType.PLAYER:
