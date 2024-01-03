@@ -50,7 +50,7 @@ namespace Game.Modules
 			if (vehicle.OwnerType != OwnerType.TEAM || vehicle.OwnerId != 3) return;
 
 			var driver = (RPPlayer)vehicle.Driver;
-			if (driver.TeamId != 3) return;
+			if (driver == null || driver.TeamId != 3) return;
 
 			var players = RPPlayer.All.Where(x => x.LoggedIn && x.Vehicle == vehicle && !x.Alive).ToList();
 			if (players.Count < 1) return;
