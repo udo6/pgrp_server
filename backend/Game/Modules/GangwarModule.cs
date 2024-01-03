@@ -68,7 +68,7 @@ namespace Game.Modules
 				return;
 			}
 
-			if (!Config.DevMode && gangwar.LastAttack.AddHours(36) > DateTime.Now)
+			if (gangwar.LastAttack.AddHours(36) > DateTime.Now)
 			{
 				player.Notify("Gangwar", "Das Gebiet wurde bereits in den letzten 36 Stunden attackiert!", NotificationType.ERROR);
 				return;
@@ -82,7 +82,7 @@ namespace Game.Modules
 
 			var defenderOnline = RPPlayer.All.Count(x => x.TeamId == gangwar.OwnerId);
 
-			if (!Config.DevMode && defenderOnline < 15)
+			if (defenderOnline < 12)
 			{
 				player.Notify("Gangwar", "Es sind nicht genug Mitglieder der verteidigenden Fraktion online!", NotificationType.ERROR);
 				return;
