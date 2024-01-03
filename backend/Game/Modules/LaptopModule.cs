@@ -1098,6 +1098,8 @@ namespace Game.Modules
 
 		private static void AcceptDispatch(RPPlayer player, int dispatchId)
 		{
+			if (player.TeamId < 1 || player.TeamId > 5) return;
+
 			var dispatch = Dispatches.FirstOrDefault(x => x.Id == dispatchId);
 			if (dispatch == null || dispatch.Officer != "") return;
 
@@ -1114,6 +1116,8 @@ namespace Game.Modules
 
 		private static void CloseDispatch(RPPlayer player, int dispatchId)
 		{
+			if (player.TeamId < 1 || player.TeamId > 5) return;
+
 			var dispatch = Dispatches.FirstOrDefault(x => x.Id == dispatchId);
 			if (dispatch == null) return;
 

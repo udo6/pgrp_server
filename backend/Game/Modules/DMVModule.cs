@@ -69,6 +69,9 @@ namespace Game.Modules
 
 		private static void BuyLicense(RPPlayer player, int type)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.DMV);
+			if (shape == null) return;
+
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
 

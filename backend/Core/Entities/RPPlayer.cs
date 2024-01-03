@@ -114,6 +114,14 @@ namespace Core.Entities
 		public int RadioFrequency { get; set; }
 		public bool RadioTalking { get; set; }
 
+		public bool Cuffed { get; set; }
+		public bool Roped { get; set; }
+
+		public int PendingTeamInvite { get; set; }
+
+		public DateTime LastServerEvent { get; set; } = DateTime.Now;
+		public int ServerEventsExecuted { get; set; }
+
 		public List<IBlip> TemporaryBlips { get; set; }
 
 		public (uint, uint) TemporaryTattoo { get; set; }
@@ -164,9 +172,9 @@ namespace Core.Entities
 			TeamspeakName = string.Empty;
 		}
 
-		public void Notify(string title, string msg, NotificationType type)
+		public void Notify(string title, string msg, NotificationType type, int duration = 3500)
 		{
-			Emit("Client:Hud:PushNotification", JsonConvert.SerializeObject(new { Title = title, Message = msg, Type = type, Duration = 3500 }));
+			Emit("Client:Hud:PushNotification", JsonConvert.SerializeObject(new { Title = title, Message = msg, Type = type, duration }));
 		}
 
 		public void EmitBrowser(string eventName, params object[] args)

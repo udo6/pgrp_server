@@ -19,6 +19,7 @@ namespace Core.Entities
 		public OwnerType OwnerType { get; set; }
 		public GarageType GarageType { get; set; }
 		public float Fuel { get; set; }
+		public float MaxFuel { get; set; }
 
 		public bool Locked { get; set; }
 		public bool TrunkLocked { get; set; }
@@ -46,6 +47,7 @@ namespace Core.Entities
 
 		public void SetMaxFuel(float value)
 		{
+			MaxFuel = value;
 			SetStreamSyncedMetaData("MAX_FUEL", value);
 		}
 

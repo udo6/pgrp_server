@@ -29,7 +29,7 @@ namespace Game.Modules
 			if (!int.TryParse(data, out var money) || money < 1) return;
 
 			var account = AccountService.Get(player.DbId);
-			if (account == null || account.Money <  money) return;
+			if (account == null || account.Money < money) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
 			if (target == null) return;

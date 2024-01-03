@@ -42,6 +42,9 @@ namespace Game.Modules
 
 		private static void Open(RPPlayer player)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.FFA);
+			if (shape == null) return;
+
 			var maps = FFAService.GetAll();
 			var nativeItems = new List<NativeMenuItem>();
 			foreach(var map in maps)

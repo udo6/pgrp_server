@@ -44,6 +44,11 @@ namespace Game.Modules
 
 		private static void StartGangwar(RPPlayer player, int id)
 		{
+			if (player.TeamId <= 5) return;
+
+			var shape = RPShape.Get(id, ColshapeType.GANGWAR_START);
+			if (shape == null || player.Position.Distance(shape.Position) > shape.Size) return;
+
 			var gangwar = GangwarService.Get(id);
 			if (gangwar == null || gangwar.OwnerId == player.TeamId) return;
 

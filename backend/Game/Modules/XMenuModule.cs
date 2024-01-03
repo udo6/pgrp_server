@@ -113,7 +113,7 @@ namespace Game.Modules
 			if (!player.LoggedIn) return;
 
 			var veh = RPVehicle.All.FirstOrDefault(x => x.Id == vehicleId);
-			if (veh == null || (!player.IsGangwar && veh.Engine)) return;
+			if (veh == null) return;
 
 			var inventory = InventoryService.Get(player.InventoryId);
 			if (inventory == null) return;
@@ -173,7 +173,7 @@ namespace Game.Modules
 				Id = station.Id,
 				Vehicle = vehicleId,
 				Max = baseModel.MaxFuel - veh.Fuel,
-				Price = 20
+				Price = 7
 			}));
 		}
 

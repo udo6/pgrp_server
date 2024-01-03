@@ -45,7 +45,7 @@ namespace Game.Modules
 			}
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
-			if (target == null) return;
+			if (target == null || target.Jailtime <= 0) return;
 
 			ReleasePlayer(target);
 		}
@@ -68,7 +68,7 @@ namespace Game.Modules
 			if ((player.TeamId < 1 || player.TeamId > 2) && player.TeamId != 5) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
-			if (target == null || target.Position.Distance(ImprisonPosition) > 5f)
+			if (target == null || player.Position.Distance(target.Position) > 10f || target.Position.Distance(ImprisonPosition) > 5f)
 			{
 				player.Notify("Information", "Die Person muss am Inhaftierungspunkt stehen!", Core.Enums.NotificationType.ERROR);
 				return;

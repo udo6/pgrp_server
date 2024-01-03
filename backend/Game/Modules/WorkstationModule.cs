@@ -26,6 +26,9 @@ namespace Game.Modules
 			var station = WorkstationService.Get(stationId);
 			if (station == null) return;
 
+			var pos = PositionService.Get(station.PositionId);
+			if (pos == null || player.Position.Distance(pos.Position) > 5f) return;
+
 			var item = WorkstationService.GetItem(itemId);
 			if (item == null || item.AccountId != player.DbId || item.WorkstationId != stationId || item.TimeLeft > 0) return;
 

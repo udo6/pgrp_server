@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using Database.Models.Account;
 using Database.Models.Team;
 using Database.Models.Bank;
-using AltV.Net.Enums;
 
 namespace Game.Modules
 {
@@ -33,7 +32,7 @@ namespace Game.Modules
 
 		private static void AcceptInvite(RPPlayer player, int team)
 		{
-			if (!player.LoggedIn || team < 1) return;
+			if (!player.LoggedIn || player.PendingTeamInvite == 0 || team < 1) return;
 
 			/*if(player.Level < 3)
 			{
@@ -41,6 +40,7 @@ namespace Game.Modules
 				return;
 			}*/
 
+			player.PendingTeamInvite = 0;
 			TeamController.SetPlayerTeam(player, team, 0, false, false, false);
 			TeamController.Broadcast(team, $"{player.Name} ist der Fraktion beigetreten!", NotificationType.INFO);
 		}
@@ -131,7 +131,7 @@ namespace Game.Modules
 			if (account == null || !account.TeamAdmin) return;
 
 			var target = AccountService.Get(id);
-			if (target == null || target.TeamRank >= account.TeamRank) return;
+			if (target == null || target.TeamId != player.TeamId || target.TeamRank >= account.TeamRank) return;
 
 			var federal = target.TeamId > 0 && target.TeamId <= 5;
 
@@ -233,7 +233,7 @@ namespace Game.Modules
 			}
 
 			var target = AccountService.Get(targetId);
-			if (target == null) return;
+			if (target == null || target.TeamId != player.TeamId) return;
 
 			TeamController.Broadcast(account.TeamId, $"{player.Name} hat {target.Name} auf Rang {rank} gesetzt!", NotificationType.INFO);
 

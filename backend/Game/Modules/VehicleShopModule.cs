@@ -8,8 +8,6 @@ using Database.Models.Inventory;
 using Database.Models.Vehicle;
 using Database.Services;
 using Game.Controllers;
-using System.Buffers.Text;
-using System.Diagnostics;
 
 namespace Game.Modules
 {
@@ -47,6 +45,9 @@ namespace Game.Modules
 
 		private static void Buy(RPPlayer player, int itemId)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.VEHICLE_SHOP);
+			if (shape == null) return;
+
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
 

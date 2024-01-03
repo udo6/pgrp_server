@@ -43,6 +43,7 @@ namespace Game.Modules
 
 			Alt.OnWeaponDamage += OnWeaponDamage;
 			Alt.OnExplosion += OnExplosion;
+			Alt.OnPlayerEvent += OnPlayerEvent;
 		}
 
 		// server ac
@@ -192,6 +193,25 @@ namespace Game.Modules
 			LogService.LogExplosion(player.DbId, (int)explosionType);
 
 			return true;
+		}
+
+		private static void OnPlayerEvent(IPlayer _player, string eventName, object[] args)
+		{
+			var player = (RPPlayer)_player;
+
+			if(player.LastServerEvent.AddSeconds(1) < DateTime.Now)
+			{
+				player.ServerEventsExecuted = 0;
+			}
+
+			if(player.ServerEventsExecuted > 30)
+			{
+				player.Kick("Du wurdest gekicked! Grund: Spam");
+				return;
+			}
+
+			player.ServerEventsExecuted++;
+			player.LastServerEvent = DateTime.Now;
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using AltV.Net;
 using Core.Attribute;
 using Core.Entities;
+using Core.Enums;
 using Database.Services;
 using Game.Controllers;
 using Newtonsoft.Json;
@@ -30,6 +31,9 @@ namespace Game.Modules
 
 		private static void Try(RPPlayer player, uint collection, uint overlay)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.TATTOO_SHOP);
+			if (shape == null) return;
+
 			player.RemoveDecoration(player.TemporaryTattoo.Item1, player.TemporaryTattoo.Item2);
 			player.TemporaryTattoo = (collection, overlay);
 			player.AddDecoration(collection, overlay);
@@ -42,6 +46,9 @@ namespace Game.Modules
 
 		private static void Buy(RPPlayer player, int itemId)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.TATTOO_SHOP);
+			if (shape == null) return;
+
 			var item = TattooService.GetItem(itemId);
 			if (item == null) return;
 

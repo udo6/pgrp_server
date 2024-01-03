@@ -54,6 +54,9 @@ namespace Game.Modules
 
 		private static void Try(RPPlayer player, int style, int color, int highlightColor, uint dlc, int beard, int beardColor)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, Core.Enums.ColshapeType.BARBER);
+			if(shape == null) return;
+
 			player.SetClothing(2, style, 0, dlc);
 			player.HairColor = (byte)color;
 			player.HairHighlightColor = (byte)highlightColor;
@@ -70,6 +73,9 @@ namespace Game.Modules
 
 		private static void Buy(RPPlayer player, int styleId, int colorId, int highlightColorId, int beardId, int beardColorId)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, Core.Enums.ColshapeType.BARBER);
+			if (shape == null) return;
+
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
 

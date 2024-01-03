@@ -34,6 +34,9 @@ namespace Game.Modules
 
 		private static void Open(RPPlayer player)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.EXPORT_DEALER);
+			if (shape == null) return;
+
 			var items = InventoryService.GetItems();
 			var exportItems = ExportDealerService.GetAll();
 			var nativeItems = new List<NativeMenuItem>();
@@ -50,6 +53,9 @@ namespace Game.Modules
 
 		private static void Sell(RPPlayer player, int exportItemId)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.EXPORT_DEALER);
+			if (shape == null) return;
+
 			var exportItem = ExportDealerService.Get(exportItemId);
 			if (exportItem == null) return;
 

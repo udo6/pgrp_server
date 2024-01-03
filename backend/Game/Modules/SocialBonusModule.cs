@@ -51,10 +51,12 @@ namespace Game.Modules
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
 
-			PlayerController.AddMoney(player, account.SocialBonusMoney);
-
+			var money = account.SocialBonusMoney;
 			account.SocialBonusMoney = 0;
 			AccountService.Update(account);
+
+			PlayerController.AddMoney(player, money);
+
 			player.Notify("Information", $"Du hast deinen Sozialbonus abgeholt!", NotificationType.SUCCESS);
 		}
 	}

@@ -43,6 +43,9 @@ namespace Game.Modules
 
 		private static void TakeVehicle(RPPlayer player, int garageId, int vehId)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.GARAGE);
+			if (shape == null) return;
+
 			var vehicle = VehicleService.Get(vehId);
 			if(vehicle == null || !vehicle.Parked) return;
 
@@ -77,11 +80,17 @@ namespace Game.Modules
 
 		private static void ParkVehicle(RPPlayer player, int garageId, int vehId)
 		{
+			var veh = RPVehicle.All.FirstOrDefault(x => x.DbId == vehId);
+			if (veh == null || player.Position.Distance(veh.Position) > 30f) return;
+
+			var garage = GarageService.Get(garageId);
+			if (garage == null) return;
+
+			var garagePos = PositionService.Get(garage.PositionId);
+			if (garagePos == null || veh.Position.Distance(garagePos.Position) > 30f) return;
+
 			var vehicle = VehicleService.Get(vehId);
 			if (vehicle == null) return;
-
-			var veh = RPVehicle.All.FirstOrDefault(x => x.DbId == vehId);
-			if (veh == null) return;
 
 			vehicle.Parked = true;
 			vehicle.GarageId = garageId;

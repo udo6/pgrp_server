@@ -11,7 +11,7 @@ namespace Game.Controllers
 			{
 				if (player.AdminRank < minRank || !player.AdminNotifications) continue;
 
-				player.Notify(title, message, type);
+				player.Notify(title, message, type, 10000);
 			}
 		}
 
@@ -21,7 +21,7 @@ namespace Game.Controllers
 			{
 				if (player.AdminRank < AdminRank.SUPERADMIN) continue;
 
-				player.Notify(title, message, type);
+				player.Notify(title, message, type, 10000);
 			}
 		}
 	}

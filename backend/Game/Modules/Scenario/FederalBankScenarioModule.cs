@@ -4,7 +4,6 @@ using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
 using Core.Extensions;
-using Database.Models;
 using Database.Models.Inventory;
 using Database.Services;
 using Game.Controllers;

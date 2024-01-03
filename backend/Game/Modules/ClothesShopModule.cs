@@ -51,6 +51,9 @@ namespace Game.Modules
 
 		private static void Try(RPPlayer player, int id)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.CLOTHES_SHOP);
+			if (shape == null) return;
+
 			var clothes = ClothesShopService.GetItem(id);
 			if (clothes == null) return;
 
@@ -65,6 +68,9 @@ namespace Game.Modules
 
 		private static void Buy(RPPlayer player, int id, string data)
 		{
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.CLOTHES_SHOP);
+			if (shape == null) return;
+
 			var shop = ClothesShopService.Get(id);
 			if (shop == null) return;
 

@@ -44,7 +44,7 @@ namespace Game.Modules
 		{
 			if (player.TeamId <= 5) return;
 
-			var shape = RPShape.All.FirstOrDefault(x => x.ShapeType == Core.Enums.ColshapeType.DEALER && x.Dimension == player.Dimension && x.Position.Distance(player.Position) <= x.Size);
+			var shape = RPShape.Get(player.Position, player.Dimension, Core.Enums.ColshapeType.DEALER);
 			if (shape == null) return;
 
 			var itemBases = InventoryService.GetItems();

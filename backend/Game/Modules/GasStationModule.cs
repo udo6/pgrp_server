@@ -22,18 +22,18 @@ namespace Game.Modules
 
 		private static void FuelVehicle(RPPlayer player, int vehicleId, int stationId, int value)
 		{
-			if (player.IsInVehicle) return;
+			if (player.IsInVehicle || value < 1) return;
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;
 
 			var vehicle = RPVehicle.All.FirstOrDefault(x => x.Id == vehicleId);
-			if (vehicle == null) return;
+			if (vehicle == null || vehicle.Fuel + value > vehicle.MaxFuel) return;
 
 			var station = GasStationService.Get(stationId);
 			if (station == null) return;
 
-			var price = 20 * value;
+			var price = 7 * value;
 
 			if (vehicle.OwnerType != Core.Enums.OwnerType.PLAYER && account.Money < price)
 			{

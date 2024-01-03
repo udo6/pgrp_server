@@ -1,6 +1,7 @@
 ﻿using AltV.Net;
 using Core.Attribute;
 using Core.Entities;
+using Core.Enums;
 using Core.Models.NativeMenu;
 using Database.Services;
 using Game.Controllers;
@@ -54,7 +55,7 @@ namespace Game.Modules
 
 		private static void Open(RPPlayer player)
 		{
-			var shape = RPShape.All.FirstOrDefault(x => x.ShapeType == Core.Enums.ColshapeType.IMPOUND && x.Position.Distance(player.Position) <= x.Size);
+			var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.IMPOUND);
 			if (shape == null) return;
 
 			var vehicles = VehicleService.GetPlayerImpoundedVehicles(player.DbId);

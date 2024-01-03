@@ -219,11 +219,9 @@ namespace Game.Controllers
 			var targetItem = InventoryService.GetInventoryItemBySlot(targetInventoryId, newSlot);
 			if (targetItem != null) return;
 
-			// add checks like team storage perms here
-
 			var targetInventoryWeight = CalcInventoryWeight(targetInventory);
 
-			if (targetInventoryWeight + rootItemBase.Weight * rootItem.Amount > targetInventory.MaxWeight)
+			if (targetInventoryWeight + (rootItemBase.Weight * amount) > targetInventory.MaxWeight)
 			{
 				player.ShowComponent("Inventory", false);
 				player.Notify("System", "Es ist ein Fehler aufgetreten!", NotificationType.ERROR);

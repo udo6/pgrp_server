@@ -121,7 +121,7 @@ namespace Game.Modules.Jobs
         {
             if (!player.LoggedIn || player == null || player.JobVehicle == null) return;
 
-            var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == Core.Enums.ColshapeType.GARBAGE_JOB_RETURN && x.Position.Distance(player.Position) <= x.Size);
+            var shape = RPShape.All.FirstOrDefault(x => x.Dimension == player.Dimension && x.ShapeType == ColshapeType.GARBAGE_JOB_RETURN && x.Position.Distance(player.Position) <= x.Size);
             if (shape == null) return;
 
             var model = GarbageJobService.Get(shape.ShapeId);
@@ -129,20 +129,20 @@ namespace Game.Modules.Jobs
 
             if (!player.IsInGarbageJob)
             {
-                player.Notify("Müllabfuhr", "Du bist nicht in dem Job.", Core.Enums.NotificationType.ERROR);
+                player.Notify("Müllabfuhr", "Du bist nicht in dem Job.", NotificationType.ERROR);
                 return;
             }
 
             if (player.JobVehicle.Position.Distance(shape.Position) > 9f)
             {
-                player.Notify("Müllabfuhr", "Du bist nicht am Müllplatz.", Core.Enums.NotificationType.ERROR);
+                player.Notify("Müllabfuhr", "Du bist nicht am Müllplatz.", NotificationType.ERROR);
                 return;
             }
 
             player.JobVehicle.GetData("GARBAGE_COUNT", out int garbageCount);
             if (garbageCount <= 0)
             {
-                player.Notify("Müllabfuhr", "Der Müllwagen ist leer.", Core.Enums.NotificationType.ERROR);
+                player.Notify("Müllabfuhr", "Der Müllwagen ist leer.", NotificationType.ERROR);
                 return;
             }
 
@@ -150,7 +150,7 @@ namespace Game.Modules.Jobs
             {
                 player.JobVehicle.GetData("GARBAGE_COUNT", out int garbageCount);
                 player.JobVehicle.SetData("GARBAGE_COUNT", 0);
-                player.Notify("Müllabfuhr", "Du hast den Müll entladen.", Core.Enums.NotificationType.SUCCESS);
+                player.Notify("Müllabfuhr", "Du hast den Müll entladen.", NotificationType.SUCCESS);
                 PlayerController.AddMoney(player, model.Price * garbageCount);
             }, (1000 * 2) * garbageCount);
         }
@@ -164,7 +164,7 @@ namespace Game.Modules.Jobs
 
             if (player.JobVehicle != null)
             {
-                player.Notify("Müllabfuhr", "Du hast besitzt bereits einen Müllwagen.", Core.Enums.NotificationType.INFO);
+                player.Notify("Müllabfuhr", "Du hast besitzt bereits einen Müllwagen.", NotificationType.INFO);
                 return;
             }
 

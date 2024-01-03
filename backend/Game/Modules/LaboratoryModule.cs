@@ -20,7 +20,7 @@ namespace Game.Modules
 
 		private static void ToggleLaboratory(RPPlayer player)
 		{
-			if (player.TeamId < 1) return;
+			if (player.TeamId < 1 || player.Dimension < 1) return;
 
 			var lab = TeamService.GetLaboratory(player.Dimension);
 			if (lab == null) return;

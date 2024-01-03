@@ -36,12 +36,14 @@ namespace Game.Modules
 			shape.ShapeType = ColshapeType.SWAT_SHOP;
 			shape.Size = 2f;
 
+			var index = 0;
 			foreach(var tp in TeleporterPositions)
 			{
 				var tpShape = (RPShape)Alt.CreateColShapeCylinder(tp.Down(), 2f, 2f);
-				tpShape.ShapeId = 1;
+				tpShape.ShapeId = index;
 				tpShape.ShapeType = ColshapeType.LSPD_TELEPORTER;
 				tpShape.Size = 2f;
+				index++;
 			}
 
 			Alt.OnClient<RPPlayer, int>("Server:Police:Teleport", UseTeleporter);
@@ -54,7 +56,7 @@ namespace Game.Modules
 
 		private static void UseTeleporter(RPPlayer player, int index)
 		{
-			if (index >= TeleporterPositions.Count) return;
+			if (index >= TeleporterPositions.Count || player.Position.Distance(TeleporterPositions[0]) > 30f) return;
 
 			var pos = TeleporterPositions[index];
 			player.SetPosition(pos);
@@ -131,7 +133,7 @@ namespace Game.Modules
 
 		public static void SetSWATDuty(RPPlayer player, bool state)
 		{
-			if (player.SWATDuty == state) return;
+			if (player.TeamId < 0 || player.TeamId > 2 || player.SWATDuty == state) return;
 
 			if(!SWATStatus && state)
 			{

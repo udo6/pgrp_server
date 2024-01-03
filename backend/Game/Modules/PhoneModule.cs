@@ -109,6 +109,8 @@ namespace Game.Modules
 
 		private static void RequestTeamData(RPPlayer player)
 		{
+			if (player.TeamId < 1) return;
+
 			var data = new List<object>();
 			foreach (var user in RPPlayer.All.ToList())
 			{
@@ -132,6 +134,8 @@ namespace Game.Modules
 
 		private static void TeamInvitePlayer(RPPlayer player, string targetName)
 		{
+			if (player.TeamId < 1) return;
+
 			var account = AccountService.Get(player.DbId);
 			if (account == null || !account.TeamAdmin) return;
 
@@ -172,6 +176,7 @@ namespace Game.Modules
 			var team = TeamService.Get(player.TeamId);
 			if (team == null) return;
 
+			target.PendingTeamInvite = player.TeamId;
 			target.ShowComponent("Input", true, JsonConvert.SerializeObject(new
 			{
 				Title = "Fraktionseinladung",
@@ -520,7 +525,7 @@ namespace Game.Modules
 
 		private static void MuteCall(RPPlayer player)
 		{
-			if(player.CallState == CallState.NONE) return;
+			if(player.CallPartner < 1 || player.CallState == CallState.NONE) return;
 
 			player.CallMute = !player.CallMute;
 			player.EmitBrowser("Phone:UpdateCallState", (int)player.CallState, player.CallMute);

@@ -80,7 +80,7 @@ namespace Game.Modules
 
 		private static void UpdateFuel(RPPlayer player, float mod)
 		{
-			if (!player.LoggedIn || !player.IsInVehicle || float.IsNaN(mod)) return;
+			if (!player.LoggedIn || !player.IsInVehicle || float.IsNaN(mod) || mod < 0) return;
 
 			var veh = (RPVehicle)player.Vehicle;
 			VehicleController.SetVehicleFuel(veh, veh.Fuel - mod);

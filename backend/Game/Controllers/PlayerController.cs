@@ -42,6 +42,8 @@ namespace Game.Controllers
 			player.SWATDuty = account.SWATDuty;
 			player.DamageCap = account.DamageCap;
 			player.PhoneVolume = account.PhoneVolume;
+			player.Cuffed = account.Cuffed;
+			player.Roped = account.Roped;
 
 			player.ApplyTeam();
 			player.ApplyAdmin();
@@ -347,6 +349,7 @@ namespace Game.Controllers
 
 			player.SetStreamSyncedMetaData("CUFFED", state);
 			player.HasBeenSearched = false;
+			player.Cuffed = state;
 
 			account.Cuffed = state;
 			AccountService.Update(account);
@@ -367,6 +370,7 @@ namespace Game.Controllers
 
 			player.SetStreamSyncedMetaData("ROPED", state);
 			player.HasBeenSearched = false;
+			player.Roped = state;
 
 			account.Roped = state;
 			AccountService.Update(account);
