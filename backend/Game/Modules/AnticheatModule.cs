@@ -194,7 +194,7 @@ namespace Game.Modules
 				return false;
 			}
 
-			if (explosionType == ExplosionType.Unknown || explosionType == ExplosionType.Car) return false;
+			if (explosionType == ExplosionType.Unknown || explosionType == ExplosionType.GasTank || explosionType == ExplosionType.Propane) return false;
 
 			if(explosionType != ExplosionType.Flare && explosionType != ExplosionType.Snowball)
 			{

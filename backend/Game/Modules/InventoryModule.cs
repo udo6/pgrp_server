@@ -8,7 +8,6 @@ using Core.Enums;
 using Database.Models.Account;
 using Database.Models.Inventory;
 using Logs;
-using System.Diagnostics;
 using Core.Extensions;
 
 namespace Game.Modules

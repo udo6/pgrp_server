@@ -80,13 +80,25 @@ namespace Game
 
 		public override void OnUse(RPPlayer player, InventoryModel inventory, InventoryItemModel item, int slot, int amount)
 		{
-			if (player.CurrentWeapon != WeaponHash || player.Interaction || player.IsInVehicle) return;
+			if (player.CurrentWeapon != WeaponHash || player.Interaction || player.IsInVehicle)
+			{
+				player.ShowComponent("Inventory", false);
+				return;
+			}
 
 			var loadout = LoadoutService.GetLoadout(player.DbId, player.CurrentWeapon);
-			if (loadout == null) return;
+			if (loadout == null)
+			{
+				player.ShowComponent("Inventory", false);
+				return;
+			}
 
 			var attatchments = LoadoutService.GetLoadoutAttatchments(loadout.Id);
-			if (attatchments.FirstOrDefault(x => x.Hash == Hash) != null) return;
+			if (attatchments.FirstOrDefault(x => x.Hash == Hash) != null)
+			{
+				player.ShowComponent("Inventory", false);
+				return;
+			}
 
 			player.PlayAnimation(AnimationType.SEARCH);
 			player.StartInteraction(() =>
@@ -118,12 +130,20 @@ namespace Game
 
 		public override void OnUse(RPPlayer player, InventoryModel inventory, InventoryItemModel item, int slot, int amount)
 		{
-			if (player.CurrentWeapon != WeaponHash || Federal && !player.TeamDuty) return;
+			if (player.CurrentWeapon != WeaponHash || Federal && !player.TeamDuty)
+			{
+				player.ShowComponent("Inventory", false);
+				return;
+			}
 
 			var loadout = LoadoutService.GetLoadout(player.DbId, WeaponHash);
-			if (loadout == null) return;
+			if (loadout == null)
+			{
+				player.ShowComponent("Inventory", false);
+				return;
+			}
 
-			if(InventoryController.RemoveItem(inventory, item.Slot, amount))
+			if (InventoryController.RemoveItem(inventory, item.Slot, amount))
 			{
 				var ammo = amount * MagSize;
 
@@ -145,7 +165,11 @@ namespace Game
 
 		public override void OnUse(RPPlayer player, InventoryModel inventory, InventoryItemModel item, int slot, int amount)
 		{
-			if (player.Interaction) return;
+			if (player.Interaction)
+			{
+				player.ShowComponent("Inventory", false);
+				return;
+			}
 
 			player.PlayAnimation(AnimationType.USE_VEST);
 			player.StartInteraction(() =>

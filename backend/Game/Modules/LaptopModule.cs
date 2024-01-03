@@ -1103,7 +1103,7 @@ namespace Game.Modules
 			var dispatch = Dispatches.FirstOrDefault(x => x.Id == dispatchId);
 			if (dispatch == null || dispatch.Officer != "") return;
 
-			var creator = RPPlayer.All.FirstOrDefault(x => x.DbId == dispatch.Id);
+			var creator = RPPlayer.All.FirstOrDefault(x => x.DbId == dispatch.CreatorId);
 			if (creator != null)
 			{
 				creator.Notify("Information", "Dein Dispatch wurde angenommen!", NotificationType.INFO);
