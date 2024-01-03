@@ -139,6 +139,9 @@ namespace Game.Modules
 
 			var clothes = new ClothesModel();
 			currentCothes.CopyTo(clothes);
+			clothes.Armor = 0;
+			clothes.ArmorColor = 0;
+			clothes.ArmorDlc = 0;
 			ClothesService.Add(clothes);
 
 			var outfit = new OutfitModel(name, player.DbId, clothes.Id);
