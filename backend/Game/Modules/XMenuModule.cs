@@ -1,4 +1,5 @@
 ﻿using AltV.Net;
+using AltV.Net.Elements.Entities;
 using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
@@ -64,7 +65,8 @@ namespace Game.Modules
 
 			veh.SetEngineState(!veh.Engine);
 			player.Notify("Fahrzeug", veh.Engine ? "Eingeschaltet." : "Ausgeschaltet.", veh.Engine ? NotificationType.SUCCESS : NotificationType.ERROR);
-		}
+            player.Emit("Client:Hud:UpdateVehicleState", veh.Engine, veh.Locked);
+        }
 
 		private static void Lock(RPPlayer player, int vehicleId)
 		{
@@ -75,7 +77,8 @@ namespace Game.Modules
 
 			veh.SetLockState(!veh.Locked);
 			player.Notify("Fahrzeug", veh.Locked ? "Abgeschlossen." : "Aufgeschlossen.", veh.Locked ? NotificationType.ERROR : NotificationType.SUCCESS);
-		}
+            player.Emit("Client:Hud:UpdateVehicleState", veh.Engine, veh.Locked);
+        }
 
 		private static void LockTrunk(RPPlayer player, int vehicleId)
 		{

@@ -96,6 +96,8 @@ namespace Game.Modules
 			vehicle.SetLockState(!vehicle.Locked);
 			if (vehicle.Locked) player.Notify("FAHRZEUG", $"Fahrzeug abgeschlossen.", NotificationType.ERROR);
 			else player.Notify("FAHRZEUG", $"Fahrzeug aufgeschlossen.", NotificationType.SUCCESS);
+
+			player.Emit("Client:Hud:UpdateVehicleState", vehicle.Engine, vehicle.Locked);
 		}
 
 		private static void LockTrunk(RPPlayer player)
