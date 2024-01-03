@@ -25,10 +25,10 @@ namespace Game.Modules
 		}
 
 		[Core.Attribute.ServerEvent(ServerEventType.PLAYER_CONNECT)]
-		public static void OnPlayerConnect(RPPlayer player)
+		public static void OnPlayerConnect(RPPlayer player, string reason)
 		{
 			var name = player.Name.ToLower();
-			if(RPPlayer.All.Any(x => x.Name.ToLower() == name))
+			if(RPPlayer.All.Any(x => x.LoggedIn && x.Name.ToLower() == name))
 			{
 				player.Kick("Es ist ein Fehler aufgetreten!");
 				return;
@@ -115,6 +115,8 @@ namespace Game.Modules
 				return;
 			}
 
+			UpdateUserData(player, discordId, account);
+
 			// ban check
 			if (account.BannedUntil > DateTime.Now)
 			{
@@ -122,7 +124,6 @@ namespace Game.Modules
 				return;
 			}
 
-			UpdateUserData(player, discordId, account);
 			Login(player, account);
 		}
 

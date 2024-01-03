@@ -199,7 +199,7 @@ namespace Game.Modules
 			if(explosionType != ExplosionType.Flare && explosionType != ExplosionType.Snowball)
 			{
 				player.ExplosionsCaused++;
-				if (player.ExplosionsCaused > 40)
+				if (player.ExplosionsCaused > 20)
 				{
 					var account = AccountService.Get(player.DbId);
 					if (account != null)
@@ -255,12 +255,12 @@ namespace Game.Modules
 		{
 			var player = (RPPlayer)_player;
 
-			if(player.LastServerEvent.AddSeconds(1) < DateTime.Now)
+			if(player.LastServerEvent.AddMilliseconds(300) < DateTime.Now)
 			{
 				player.ServerEventsExecuted = 0;
 			}
 
-			if(player.ServerEventsExecuted > 30)
+			if(player.ServerEventsExecuted > 40)
 			{
 				player.Kick("Du wurdest gekicked! Grund: Spam");
 				return;
