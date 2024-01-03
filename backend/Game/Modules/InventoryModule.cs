@@ -581,10 +581,10 @@ namespace Game.Modules
 					return player.LockerInventoryId == inventory.Id;
 				case InventoryType.HOUSE:
 					var houseShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.HOUSE_INVENTORY && x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
-					return houseShape != null && houseShape.InventoryAccess.Any(x => x.Id == player.DbId && x.Type == OwnerType.PLAYER || x.Id == player.TeamId && x.Type == OwnerType.TEAM) && player.Position.Distance(houseShape.Position) < houseShape.Size;
+					return houseShape != null && houseShape.InventoryAccess.Any(x => (x.Id == player.DbId && x.Type == OwnerType.PLAYER) || (x.Id == player.TeamId && x.Type == OwnerType.TEAM)) && player.Position.Distance(houseShape.Position) < houseShape.Size;
 				case InventoryType.WAREHOUSE:
 					var warehouseShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.WAREHOUSE_BOX && x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
-					return warehouseShape != null && warehouseShape.InventoryAccess.Any(x => x.Id == player.DbId && x.Type == OwnerType.PLAYER || x.Id == player.TeamId && x.Type == OwnerType.TEAM) && player.Position.Distance(warehouseShape.Position) < warehouseShape.Size;
+					return warehouseShape != null && warehouseShape.InventoryAccess.Any(x => (x.Id == player.DbId && x.Type == OwnerType.PLAYER) || (x.Id == player.TeamId && x.Type == OwnerType.TEAM)) && player.Position.Distance(warehouseShape.Position) < warehouseShape.Size;
 				case InventoryType.FEDERAL_BANK_ROB:
 					var bankRobberyShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.FEDERAL_BANK_ROBBERY_LOOT && x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
 					return bankRobberyShape != null && player.Position.Distance(bankRobberyShape.Position) < bankRobberyShape.Size;
