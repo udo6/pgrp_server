@@ -126,7 +126,7 @@ namespace Game.Commands.Admin
 		[Command("spectate")]
 		public static void SpectatePlayer(RPPlayer player, string targetName)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
 			if (target == null) return;
@@ -140,7 +140,7 @@ namespace Game.Commands.Admin
 		[Command("stopspectate")]
 		public static void StopSpectatePlayer(RPPlayer player)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			player.Emit("Client:AdminModule:StopSpectating");
 			player.InInterior = false;
@@ -181,7 +181,7 @@ namespace Game.Commands.Admin
 		[Command("afind")]
 		public static void FindPlayer(RPPlayer player, string targetName)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.ADMINISTRATOR) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
 			if (target == null) return;
@@ -265,7 +265,7 @@ namespace Game.Commands.Admin
 
 		private static void RevivePlayer(RPPlayer player, int targetId)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
 			if (target == null) return;
@@ -276,7 +276,7 @@ namespace Game.Commands.Admin
 
 		private static void RespawnPlayer(RPPlayer player, int targetId)
 		{
-			if (player.AdminRank < AdminRank.SUPPORTER) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
 			if (target == null) return;

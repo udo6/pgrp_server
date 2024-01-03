@@ -122,6 +122,8 @@ namespace Core.Entities
 		public DateTime LastServerEvent { get; set; } = DateTime.Now;
 		public int ServerEventsExecuted { get; set; }
 
+		public string JobCallbackKey { get; set; } = string.Empty;
+
 		public List<IBlip> TemporaryBlips { get; set; }
 
 		public (uint, uint) TemporaryTattoo { get; set; }

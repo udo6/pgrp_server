@@ -135,7 +135,7 @@ namespace Game.Modules.Jobs
 
             if (player.JobVehicle.Position.Distance(shape.Position) > 9f)
             {
-                player.Notify("Müllabfuhr", "Du bist nicht am Müllplatz.", NotificationType.ERROR);
+                player.Notify("Müllabfuhr", "Das Fahrzeug ist nicht am Müllplatz.", NotificationType.ERROR);
                 return;
             }
 
@@ -198,7 +198,7 @@ namespace Game.Modules.Jobs
             if (!player.LoggedIn || player == null || !player.IsInGarbageJob ||!player.HasGarbageInHand) return;
 
             RPVehicle vehicle = RPVehicle.All.FirstOrDefault(x => x.Id == vehicleId)!;
-            if (vehicle == null) return;
+            if (vehicle == null || vehicle.DbId > 0) return;
 
             vehicle.GetData("GARBAGE_COUNT", out int garbageCount);
 

@@ -10,7 +10,7 @@ namespace Game.Commands.Admin
 		[Command("laptop")]
 		public static void OpenLaptop(RPPlayer player)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER) return;
+			if (player.AdminRank < Core.Enums.AdminRank.ADMINISTRATOR) return;
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null) return;

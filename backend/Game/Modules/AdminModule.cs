@@ -42,7 +42,7 @@ namespace Game.Modules
 
 		private static void ToggleDuty(RPPlayer player)
 		{
-			if (player.AdminRank < Core.Enums.AdminRank.SUPPORTER) return;
+			if (player.AdminRank < Core.Enums.AdminRank.MODERATOR) return;
 
 			var custom = CustomizationService.Get(player.CustomizationId);
 			if (custom == null) return;

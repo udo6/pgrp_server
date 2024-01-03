@@ -110,44 +110,35 @@ public static class GardenerJobModule
         var spawnPosition = PositionService.Get(model.VehicleSpawnPositionId);
         if (spawnPosition == null) return;
 
-        var vehicle = RPVehicle.All.FirstOrDefault(x => x.OwnerId == player.DbId && x.OwnerType == OwnerType.PLAYER);
-        if (vehicle == null)
+		if (player.JobVehicle == null)
         {
-            if(player.JobVehicle != null)
-            {
-				player.IsInGardenerJob = false;
-				player.Notify("Gärtner", "Du hast den Job beendet.", NotificationType.ERROR);
-				player.Emit("Client:GardenerJob:StopJob");
-				player.TempClothesId = 0;
-				PlayerController.ApplyPlayerClothes(player);
-				player.JobVehicle = null;
-			}
-
-            return;
+			player.IsInGardenerJob = false;
+			player.Notify("Gärtner", "Du hast den Job beendet.", NotificationType.ERROR);
+			player.JobCallbackKey = $"{player.Id}{player.HardwareIdHash}{DateTime.Now}";
+			player.Emit("Client:GardenerJob:StopJob");
+			player.TempClothesId = 0;
+			PlayerController.ApplyPlayerClothes(player);
+			player.JobVehicle = null;
+			return;
         }
 
-        if (vehicle.Position.Distance(spawnPosition.Position) > 40f)
+        if (player.JobVehicle.Position.Distance(spawnPosition.Position) > 40f)
         {
             player.Notify("Gärtner", "Dein Rasenmäher ist nicht in der nähe.", NotificationType.ERROR);
             return;
         }
 
+        player.JobCallbackKey = $"{player.Id}{player.HardwareIdHash}{DateTime.Now}";
         player.IsInGardenerJob = false;
         player.Notify("Gärtner", "Du hast den Job beendet.", NotificationType.SUCCESS);
-        player.Emit("Client:GardenerJob:StopJob");
+        player.Emit("Client:GardenerJob:StopJob", player.JobCallbackKey);
         player.TempClothesId = 0;
         PlayerController.ApplyPlayerClothes(player);
-
-        if (player.JobVehicle != null)
-        {
-            player.JobVehicle.Delete();
-            player.JobVehicle = null!;
-        }
     }
 
-    private static void StopJob(RPPlayer player, int count)
+    private static void StopJob(RPPlayer player, string callbackKey, int count)
     {
-        if (!player.LoggedIn || player == null || player.JobVehicle == null) return;
+        if (!player.LoggedIn || player == null || player.JobVehicle == null || player.JobCallbackKey == string.Empty || player.JobCallbackKey != callbackKey) return;
 
         if (count <= 0)
         {
@@ -155,7 +146,11 @@ public static class GardenerJobModule
             return;
         }
 
-        PlayerController.AddMoney(player, count * 5);
+		player.JobVehicle.Delete();
+		player.JobVehicle = null;
+        player.JobCallbackKey = string.Empty;
+
+		PlayerController.AddMoney(player, count * 5);
         player.Notify("Gärtner", "Du hast dein Geld erhalten.", NotificationType.SUCCESS);
     }
 }
