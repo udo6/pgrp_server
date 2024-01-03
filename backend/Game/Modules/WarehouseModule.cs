@@ -128,7 +128,7 @@ namespace Game.Modules
 			player.ShowNativeMenu(true, new($"Lagerhalle {warehouse.Id}", new()
 			{
 				new("Kiste einbauen", true, "Server:Warehouse:UpgradeBox", warehouse.Id),
-				new("Lagerhalle ausbauen", true, "Server:Warehouse:Upgrade", warehouse.Id)
+				new($"Lagerhalle ausbauen (${WarehouseController.WarehouseUpgradePrice})", true, "Server:Warehouse:Upgrade", warehouse.Id)
 			}));
 		}
 
