@@ -25,6 +25,7 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
 			// ACP VEHICLES APP
+			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:SetFuel", ACPSetVehicleFuel);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPVehicles:SetPlate", ACPSetVehiclePlate);
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:ParkVehicle", ACPParkVehicle);
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:SetKeyHolder", ACPSetVehicleKeyHolder);
@@ -93,6 +94,24 @@ namespace Game.Modules
 
 		#region ACP Vehicles
 
+		private static void ACPSetVehicleFuel(RPPlayer player, int vehId, int fuel)
+		{
+			if (player.AdminRank < AdminRank.MODERATOR) return;
+
+			var vehicle = VehicleService.Get(vehId);
+			if (vehicle == null) return;
+
+			vehicle.Fuel = fuel;
+			VehicleService.UpdateVehicle(vehicle);
+
+			var veh = RPVehicle.All.FirstOrDefault(x => x.DbId == vehId);
+			if (veh == null) return;
+
+			veh.SetFuel(fuel);
+			player.Notify("Administration", "Du hast den Tank Füllstand verändert!", NotificationType.SUCCESS);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.VEHICLE, ACPActionType.VEHICLE_SETFUEL);
+		}
+
 		private static void ACPSetVehiclePlate(RPPlayer player, int vehId, string plate)
 		{
 			if (player.AdminRank < AdminRank.SUPPORTER) return;
@@ -115,7 +134,7 @@ namespace Game.Modules
 
 			veh.NumberplateText = plate;
 			player.Notify("Administration", "Du hast das Kennzeichen verändert!", NotificationType.SUCCESS);
-			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_SETPLATE);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.VEHICLE, ACPActionType.VEHICLE_SETPLATE);
 		}
 
 		private static void ACPParkVehicle(RPPlayer player, int vehId, int garageId)
@@ -134,7 +153,7 @@ namespace Game.Modules
 
 			veh.Delete();
 			player.Notify("Administration", "Du hast ein Fahrzeug eingeparkt!", NotificationType.SUCCESS);
-			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_PARK);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.VEHICLE, ACPActionType.VEHICLE_PARK);
 		}
 
 		private static void ACPSetVehicleKeyHolder(RPPlayer player, int vehId, int keyHolderId)
@@ -152,7 +171,7 @@ namespace Game.Modules
 
 			veh.KeyHolderId = keyHolderId;
 			player.Notify("Administration", "Du hast den Schlüsselbesitzer umgesetzt!", NotificationType.SUCCESS);
-			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_SETKEYHOLDER);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.VEHICLE, ACPActionType.VEHICLE_SETKEYHOLDER);
 		}
 
 		private static void ACPSetVehicleOwner(RPPlayer player, int vehId, int ownerId, int ownerType)
@@ -172,7 +191,7 @@ namespace Game.Modules
 			veh.OwnerId = ownerId;
 			veh.OwnerType = (OwnerType)ownerType;
 			player.Notify("Administration", "Du hast den Owner umgesetzt!", NotificationType.SUCCESS);
-			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_SETOWNER);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.VEHICLE, ACPActionType.VEHICLE_SETOWNER);
 		}
 
 		private static void ACPDeleteVehicle(RPPlayer player, int vehId)
@@ -190,7 +209,7 @@ namespace Game.Modules
 
 			veh.Delete();
 			player.Notify("Administration", "Du hast ein Fahrzeug gelöscht!", NotificationType.SUCCESS);
-			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_DELETE);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.VEHICLE, ACPActionType.VEHICLE_DELETE);
 		}
 
 		private static void ACPGotoVehicle(RPPlayer player, int vehId)
@@ -202,7 +221,7 @@ namespace Game.Modules
 
 			player.SetPosition(vehicle.Position);
 			player.Notify("Administration", "Du hast dich zu einem Fahrzeug teleportiert!", NotificationType.SUCCESS);
-			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_GOTO);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.VEHICLE, ACPActionType.VEHICLE_GOTO);
 		}
 
 		private static void ACPBringVehicle(RPPlayer player, int vehId)
@@ -215,7 +234,7 @@ namespace Game.Modules
 			vehicle.Position = player.Position;
 			vehicle.Rotation = Rotation.Zero;
 			player.Notify("Administration", "Du hast ein Fahrzeug zu dir teleportiert!", NotificationType.SUCCESS);
-			LogService.LogACPAction(player.DbId, vehId, TargetType.PLAYER, ACPActionType.VEHICLE_BRING);
+			LogService.LogACPAction(player.DbId, vehId, TargetType.VEHICLE, ACPActionType.VEHICLE_BRING);
 		}
 
 		private static void ACPRequestVehicleData(RPPlayer player, int vehId)

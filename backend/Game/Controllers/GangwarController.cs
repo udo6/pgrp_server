@@ -8,6 +8,7 @@ using Database.Models.Gangwar;
 using Database.Services;
 using Newtonsoft.Json;
 using Game.Streamer;
+using Database.Models.Inventory;
 
 namespace Game.Controllers
 {
@@ -252,8 +253,20 @@ namespace Game.Controllers
 			player.InInterior = false;
 			player.SetPosition(player.OutsideInteriorPosition);
 			player.SetDimension(0);
+			player.Armor = 0;
+			player.AllowedHealth = player.Health;
 			PlayerController.ApplyPlayerLoadout(player);
 			player.EmitBrowser("Hud:ShowGangwar", false, "");
+
+			var items = InventoryService.GetInventoryItems(player.InventoryId);
+			var removeItems = new List<InventoryItemModel>();
+			foreach (var item in items)
+			{
+				if (item.ItemId != 6 && item.ItemId != 7 && item.ItemId != 26) continue;
+
+				removeItems.Add(item);
+			}
+			InventoryService.RemoveInventoryItems(removeItems);
 		}
 
 		public static object? GetData(RunningGangwar gangwar, bool useTime)

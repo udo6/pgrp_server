@@ -1,6 +1,7 @@
 ﻿using AltV.Net;
 using Core.Attribute;
 using Core.Entities;
+using Core.Models.Dealer;
 using Core.Models.NativeMenu;
 using Database.Services;
 using Game.Controllers;
@@ -29,12 +30,13 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
+			var items = DealerService.GetAllItems();
 			var models = DealerService.GetAll();
 
 			DealerController.ResetDealers(models);
 
 			foreach (var model in models)
-				DealerController.LoadDealer(model);
+				DealerController.LoadDealer(model, items);
 
 			Alt.OnClient<RPPlayer>("Server:Dealer:Open", Open);
 			Alt.OnClient<RPPlayer, int, int>("Server:Dealer:Sell", Sell);
@@ -47,6 +49,9 @@ namespace Game.Modules
 			var shape = RPShape.Get(player.Position, player.Dimension, Core.Enums.ColshapeType.DEALER);
 			if (shape == null) return;
 
+			var dealerCache = DealerController.DealerCache.FirstOrDefault(x => x.DealerId == shape.Id);
+			if (dealerCache == null) return;
+
 			var itemBases = InventoryService.GetItems();
 			var items = DealerService.GetAllItems();
 			var nativeItems = new List<NativeMenuItem>();
@@ -56,7 +61,10 @@ namespace Game.Modules
 				var itemBase = itemBases.FirstOrDefault(x => x.Id == item.ItemId);
 				if (itemBase == null) continue;
 
-				nativeItems.Add(new($"{itemBase.Name} - ${item.Price}", false, "Server:Dealer:Sell", shape.ShapeId, item.Id));
+				var itemCache = dealerCache.Items.FirstOrDefault(x => x.Id == item.Id);
+				if (itemCache == null) continue;
+
+				nativeItems.Add(new($"{itemBase.Name} - ${itemCache.Price}", false, "Server:Dealer:Sell", shape.ShapeId, item.Id));
 			}
 
 			player.ShowNativeMenu(true, new("Dealer", nativeItems));
@@ -87,10 +95,16 @@ namespace Game.Modules
 				return;
 			}
 
+			var dealerCache = DealerController.DealerCache.FirstOrDefault(x => x.DealerId == shape.Id);
+			if (dealerCache == null) return;
+
+			var itemCache = dealerCache.Items.FirstOrDefault(x => x.Id == itemId);
+			if (itemCache == null) return;
+
 			var itemBase = InventoryService.GetItem(item.ItemId);
 			if (itemBase == null) return;
 
-			var price = item.Price;
+			var price = itemCache.Price;
 
 			if(item.ItemId == 3 || item.ItemId == 276)
 			{
@@ -113,7 +127,7 @@ namespace Game.Modules
 			}
 
 			InventoryController.RemoveItem(inventory, itemBase, 1);
-			PlayerController.AddMoney(player, item.Price);
+			PlayerController.AddMoney(player, price);
 		}
 	}
 }

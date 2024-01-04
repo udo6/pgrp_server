@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Enums;
 using Core.Extensions;
+using Core.Models.Dealer;
 using Database.Models.Dealer;
 using Database.Services;
 
@@ -9,9 +10,10 @@ namespace Game.Controllers
 {
 	public static class DealerController
 	{
+		public static List<DealerCache> DealerCache = new();
 		private static Random Random = new Random();
 
-		public static void LoadDealer(DealerModel model, bool forceActivate = false)
+		public static void LoadDealer(DealerModel model, List<DealerItemModel> items, bool forceActivate = false)
 		{
 			if (!forceActivate && Random.Next(0, 101) > 10) return;
 
@@ -30,16 +32,12 @@ namespace Game.Controllers
 
 			model.Active = true;
 			DealerService.Update(model);
-		}
 
-		public static void ResetItemPrices()
-		{
-			var items = DealerService.GetAllItems();
-			var random = new Random();
-			foreach (var item in items)
-				item.Price = random.Next(item.MinPrice, item.MaxPrice);
-
-			DealerService.UpdateItems(items);
+			var dealerCache = new DealerCache(model.Id);
+			foreach(var item in items)
+			{
+				dealerCache.Items.Add(new(item.Id, Random.Next(item.MinPrice, item.MaxPrice)));
+			}
 		}
 
 		public static void ResetDealers(List<DealerModel> models)
@@ -48,7 +46,6 @@ namespace Game.Controllers
 				model.Active = false;
 
 			DealerService.Update(models);
-			ResetItemPrices();
 		}
 	}
 }

@@ -88,34 +88,33 @@ namespace Game.Commands.Admin
 			vehTuning.PrimaryColor = (byte)color;
 			vehTuning.SecondaryColor = (byte)color;
 			vehTuning.PearlColor = (byte)color;
-			/*vehTuning.Spoiler = tuning.Spoiler;
-			vehTuning.FrontBumper = tuning.FrontBumper;
-			vehTuning.RearBumper = tuning.RearBumper;
-			vehTuning.SideSkirt = tuning.SideSkirt;
-			vehTuning.Exhaust = tuning.Exhaust;
-			vehTuning.Frame = tuning.Frame;
-			vehTuning.Grille = tuning.Grille;
-			vehTuning.Hood = tuning.Hood;
-			vehTuning.Fender = tuning.Fender;
-			vehTuning.RightFender = tuning.RightFender;
-			vehTuning.Roof = tuning.Roof;
-			vehTuning.Engine = tuning.Engine;
-			vehTuning.Brakes = tuning.Brakes;
-			vehTuning.Transmission = tuning.Transmission;
-			vehTuning.Horns = tuning.Horns;
-			vehTuning.Suspension = tuning.Suspension;
-			vehTuning.Armor = tuning.Armor;
-			vehTuning.Turbo = tuning.Turbo;
-			vehTuning.Xenon = tuning.Xenon;
-			vehTuning.Wheels = tuning.Wheels;
-			vehTuning.WheelType = tuning.WheelType;
-			vehTuning.WheelColor = tuning.WheelColor;
-			vehTuning.PlateHolders = tuning.PlateHolders;
-			vehTuning.TrimDesign = tuning.TrimDesign;
-			vehTuning.WindowTint = tuning.WindowTint;
-			vehTuning.HeadlightColor = tuning.HeadlightColor;
-			vehTuning.Livery = tuning.Livery;*/
 			TuningService.Update(vehTuning);
+		}
+
+		[Command("fixvehradius")]
+		public static void FixVehRadius(RPPlayer player, int radius)
+		{
+			if (!player.LoggedIn || player.AdminRank < AdminRank.MODERATOR) return;
+
+			foreach(var vehicle in RPVehicle.All.ToList())
+			{
+				if(player.Position.Distance(vehicle.Position) > radius) continue;
+
+				vehicle.Repair();
+				var oldZ = vehicle.Rotation.Yaw;
+				vehicle.Rotation = new(0, 0, oldZ);
+			}
+
+			player.Notify("Administration", "Du hast alle Fahrzeuge im Umkreis repariert!", NotificationType.SUCCESS);
+		}
+
+		[Command("fixveh")]
+		public static void FixVeh(RPPlayer player)
+		{
+			if (!player.LoggedIn || !player.IsInVehicle || player.AdminRank < AdminRank.SUPERADMIN) return;
+
+			player.Vehicle.Repair();
+			player.Notify("Administration", "Du hast dein Fahrzeug repariert!", NotificationType.SUCCESS);
 		}
 	}
 }

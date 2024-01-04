@@ -20,12 +20,48 @@ namespace Game.Modules
 			foreach (var model in WarehouseService.GetAll())
 				WarehouseController.LoadWarehouse(model);
 
+			Alt.OnClient<RPPlayer>("Server:Warehouse:Sell", Sell);
 			Alt.OnClient<RPPlayer>("Server:Warehouse:Open", Open);
 			Alt.OnClient<RPPlayer, int>("Server:Warehouse:GiveKey", GiveKey);
 			Alt.OnClient<RPPlayer>("Server:Warehouse:Upgrader", OpenUpgrader);
 			Alt.OnClient<RPPlayer, int>("Server:Warehouse:Buy", BuyWarehouse);
 			Alt.OnClient<RPPlayer, int>("Server:Warehouse:UpgradeBox", UpgradeWarehouseBoxes);
 			Alt.OnClient<RPPlayer, int>("Server:Warehouse:Upgrade", UpgradeWarehouse);
+		}
+
+		private static void Sell(RPPlayer player)
+		{
+			var warehouse = WarehouseService.GetByOwner(player.DbId, OwnerType.PLAYER);
+			if (warehouse == null) return;
+
+			var pos = PositionService.Get(warehouse.PositionId);
+			if (pos == null || player.Position.Distance(pos.Position) > 20f)
+			{
+				player.Notify("Information", "Du musst am Eingang deiner Lagerhalle stehen!", NotificationType.ERROR);
+				return;
+			}
+
+			var jumppoint = JumppointService.Get(warehouse.JumppointId);
+			if (jumppoint == null) return;
+
+			var account = AccountService.Get(player.DbId);
+			if (account == null) return;
+
+			account.BankMoney += (int)(WarehouseController.WarehouseBuyPrice * 0.75);
+			AccountService.Update(account);
+
+			JumppointService.Remove(jumppoint);
+
+			foreach(var shape in RPShape.All.ToList())
+			{
+				if(shape.ShapeType != ColshapeType.JUMP_POINT || shape.ShapeId != jumppoint.Id) continue;
+
+				shape.Remove2();
+			}
+
+			warehouse.OwnerId = 0;
+			warehouse.OwnerType = OwnerType.PLAYER;
+			WarehouseService.Update(warehouse);
 		}
 
 		private static void Open(RPPlayer player)

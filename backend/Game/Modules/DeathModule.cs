@@ -54,7 +54,7 @@ namespace Game.Modules
 
 				if (player.IsGangwar)
 				{
-					if (player.DeathTime.AddMinutes(3) <= DateTime.Now)
+					if (player.DeathTime.AddMinutes(2) <= DateTime.Now)
 					{
 						GangwarController.RespawnPlayer(player);
 					}

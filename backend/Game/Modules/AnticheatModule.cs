@@ -68,7 +68,9 @@ namespace Game.Modules
 		// todo: impl
 		public static void DetectedHealkey(RPPlayer player, int allowedHealth)
 		{
-			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Healkey (Health: {player.Health + player.Armor} Allowed Health: {allowedHealth})");
+			var health = player.Health + player.Armor;
+			AdminController.BroadcastTeam("Anticheat", $"{player.Name} hat ein Healkey Flag ausgelöst!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.MODERATOR);
+			LogService.LogPlayerBan(player.DbId, 0, $"[ONLY LOGGED] Healkey (Health: {health} Allowed: {allowedHealth})");
 		}
 
 		// client ac
@@ -140,6 +142,7 @@ namespace Game.Modules
 					var targetHealth = targetPlayer.Health + targetPlayer.Armor - damage;
 					if (targetHealth > targetPlayer.AllowedHealth)
 					{
+						player.AllowedHealth = targetHealth;
 						DetectedHealkey(targetPlayer, targetPlayer.AllowedHealth);
 						return true;
 					}
