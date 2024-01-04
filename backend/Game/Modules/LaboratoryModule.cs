@@ -9,6 +9,11 @@ namespace Game.Modules
 {
 	public static class LaboratoryModule
 	{
+		private static readonly int LabDrugInput = 20;
+		private static readonly int LabUtilityInput = 1;
+		private static readonly int LabBatteryInput = 1;
+		private static readonly int LabBoxOutput = 1;
+
 		[Initialize]
 		public static void Initialize()
 		{
@@ -128,7 +133,7 @@ namespace Game.Modules
 				var input = items.Where(x => x.ItemId == inputItem.Id).Sum(x => x.Amount);
 				var utility = items.Where(x => x.ItemId == utilityInput.Id).Sum(x => x.Amount);
 
-				if(input < 20 || utility < 1)
+				if(input < LabDrugInput || utility < LabUtilityInput)
 				{
 					player.LabRunning = false;
 					player.Notify("Drogenlabor", "Das Labor hat keine Ressourcen mehr!", NotificationType.ERROR);
@@ -142,10 +147,10 @@ namespace Game.Modules
 
 				var outputItem = team.Type == TeamType.GANG ? weedOutput : cokeOutput;
 
-				InventoryController.RemoveItem(inputInventory, inputItem, 20);
-				InventoryController.RemoveItem(inputInventory, utilityInput, 1);
-				InventoryController.RemoveItem(batteryInventory, batteries, 1);
-				InventoryController.AddItem(outputInvnetory, outputItem, 1);
+				InventoryController.RemoveItem(inputInventory, inputItem, LabDrugInput);
+				InventoryController.RemoveItem(inputInventory, utilityInput, LabUtilityInput);
+				InventoryController.RemoveItem(batteryInventory, batteries, LabBatteryInput);
+				InventoryController.AddItem(outputInvnetory, outputItem, LabBoxOutput);
 			}
 		}
 	}

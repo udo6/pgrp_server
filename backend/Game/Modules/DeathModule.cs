@@ -131,9 +131,8 @@ namespace Game.Modules
 				{
 					var killerPlayer = (RPPlayer)killer;
 
-					killerPlayer.AllowedHealth = 300;
-					killerPlayer.Health = 200;
-					killerPlayer.Armor = 100;
+					killerPlayer.SetHealth(200);
+					killerPlayer.SetArmor(100);
 					killerPlayer.Notify("FFA", $"Du hast {player.Name} getötet!", NotificationType.SUCCESS);
 					player.Notify("FFA", $"Du wurdest von {killerPlayer.Name} getötet!", NotificationType.WARN);
 				}

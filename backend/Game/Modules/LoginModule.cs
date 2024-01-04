@@ -1,4 +1,5 @@
 ﻿using AltV.Net;
+using AltV.Net.Data;
 using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
@@ -11,12 +12,49 @@ using Newtonsoft.Json;
 namespace Game.Modules
 {
     public static class LoginModule
-	{ //private static Regex Regex { get; } = new("[A-Za-z]+_+[A-Za-z]", RegexOptions.IgnoreCase);
+	{
+		private static Random Random = new();
+
 		[Initialize]
 		public static void Initialize()
 		{
+			Alt.OnClient<RPPlayer, string>("Server:Login:PlayerLoaded", PlayerLoaded);
 			Alt.OnClient<RPPlayer, string>("Server:Login:Kick", Kick);
-			Alt.OnClient<RPPlayer, string, int>("Server:Login:Auth", Auth);
+			Alt.OnClient<RPPlayer, string>("Server:Login:Auth", Auth);
+		}
+
+		private static void PlayerLoaded(RPPlayer player, string token)
+		{
+			if (player.LoggedIn) return;
+
+			var pos = new Position(0, 0, 72);
+
+			player.Model = 1885233650;
+			player.Spawn(pos, 0);
+			player.SetPosition(pos);
+			player.Invincible = false;
+			player.SetStreamSyncedMetaData("ALIVE", true);
+			player.SetStreamSyncedMetaData("CUFFED", false);
+			player.SetStreamSyncedMetaData("ROPED", false);
+			player.SetStreamSyncedMetaData("STABILIZED", false);
+
+			var discordId = GetDiscordId(token);
+			if(discordId == 0)
+			{
+				player.Kick("Du wurdest gekicked! Grund: Discord authentifizierung fehlgeschlagen!");
+				return;
+			}
+
+			player.OAuthDiscordId = discordId;
+			player.AuthCode = GenerateAuthCode();
+			var success = Discord.Main.SendAuthCode(discordId, player.AuthCode).Result;
+			if (success)
+			{
+				player.ShowComponent("Login", true);
+				return;
+			}
+
+			player.Kick("Du wurdest gekicked! Grund: Du musst auf dem Pegasus Roleplay Discord sein! (discord.gg/pgrp)");
 		}
 
 		private static void Kick(RPPlayer player, string reason)
@@ -30,54 +68,29 @@ namespace Game.Modules
 			var name = player.Name.ToLower();
 			if(RPPlayer.All.Any(x => x.LoggedIn && x.Name.ToLower() == name))
 			{
-				player.Kick("Es ist ein Fehler aufgetreten!");
+				player.Kick("Du wurdest gekicked! Grund: Dieser Account ist bereits eingeloggt!");
 				return;
 			}
 
 			player.SetDimension(10000 + (int)player.Id);
 		}
 
-		private static void Auth(RPPlayer player, string oAuthToken, int localIdentifier)
+		private static void Auth(RPPlayer player, string code)
 		{
-			if (player.LoggedIn) return;
+			if (player.LoggedIn || player.OAuthDiscordId == 0) return;
 
-			if(oAuthToken == string.Empty)
+			if(player.AuthCode != code)
 			{
-				player.Kick("Authentication failed! (Code: 2)");
+				if(player.AuthTries > 3)
+				{
+					player.Kick("Du wurdest gekicked! Grund: Anmeldung fehlgeschlagen! Bitte starte dein Spiel neu und versuche es erneut.");
+					return;
+				}
+
+				player.AuthTries++;
+				player.Notify("Information", $"Der angegebene Code stimmt nicht überein!", NotificationType.ERROR);
 				return;
 			}
-
-			// get the discord oauth data
-			var http = new HttpClient();
-			http.DefaultRequestHeaders.Add("Authorization", $"Bearer {oAuthToken}");
-
-			var response = http.GetAsync("https://discordapp.com/api/users/@me").Result;
-
-			if(!response.IsSuccessStatusCode)
-			{
-				player.Kick("Authentication failed! (Code: 3)");
-				return;
-			}
-
-			var responseData = response.Content.ReadAsStringAsync().Result;
-			var data = JsonConvert.DeserializeObject<dynamic>(responseData);
-			if(data == null || data?.id == null)
-			{
-				player.Kick("Authentication failed! (Code: 4)");
-				return;
-			}
-
-			var discordId = Convert.ToInt64((string)data!.id);
-
-			// set default data
-			player.Model = 1885233650;
-			player.Spawn(new(0, 0, 72), 0);
-			player.AllowedInvincible = false;
-			player.Invincible = false;
-			player.SetStreamSyncedMetaData("ALIVE", true);
-			player.SetStreamSyncedMetaData("CUFFED", false);
-			player.SetStreamSyncedMetaData("ROPED", false);
-			player.SetStreamSyncedMetaData("STABILIZED", false);
 
 			var account = AccountService.Get(player.Name);
 			if (account == null)
@@ -88,16 +101,16 @@ namespace Game.Modules
 
 			if(RPPlayer.All.Any(x => x.DbId == account.Id))
 			{
-				player.Kick("Es ist ein Fehler aufgetreten!");
+				player.Kick("Du wurdest gekicked! Grund: Dieser Account ist bereits eingeloggt!");
 				return;
 			}
 
 			// first connect multiaccount check
-			if (account.LastOnline < DateTime.Now.AddYears(-10) && AccountService.HasMulti(player.SocialClubId, discordId))
+			if (account.LastOnline < DateTime.Now.AddYears(-10) && AccountService.HasMulti(player.SocialClubId, player.OAuthDiscordId))
 			{
 				account.SocialclubId = player.SocialClubId;
 				account.HardwareId = player.HardwareIdExHash;
-				account.DiscordId = discordId;
+				account.DiscordId = player.OAuthDiscordId;
 				account.IP = player.Ip;
 				account.BannedUntil = DateTime.Now.AddYears(10);
 				account.BanReason = "Multiaccount";
@@ -106,32 +119,31 @@ namespace Game.Modules
 				return;
 			}
 
-			if (AccountService.AnyBannedAccounts(player.Ip, player.SocialClubId, player.DiscordId, player.HardwareIdHash, player.HardwareIdExHash))
+			var anyBannedAcc = AccountService.AnyBannedAccounts(player.Ip, player.SocialClubId, player.OAuthDiscordId, player.HardwareIdHash, account.UseHardwareId, player.HardwareIdExHash, account.UseHardwareIdEx);
+			if (anyBannedAcc != null)
 			{
-				player.Kick("Du bist gebannt!");
+				player.Kick($"Du wurdest gekicked! Grund: Bitte melde dich im Support! Code: 37 ({anyBannedAcc.Id})");
 				return;
 			}
 
-			// whitelist check
 			/*if (!account.Whitelisted)
 			{
-				player.Kick("Du bist nicht whitelisted!");
+				player.Kick("Du wurdest gekicked! Grund: Du bist nicht whitelisted!");
 				return;
-			} */
+			}*/
 
-			// identifier check
-			if (CheckUserCredentials(player, account) || (account.DiscordId > 0 && discordId != account.DiscordId) || (localIdentifier > 0 && localIdentifier != account.Id))
+			if (CheckUserCredentials(player, account) || (account.DiscordId > 0 && player.OAuthDiscordId != account.DiscordId))
 			{
-				player.Kick("Bitte melde dich im Support! (Identifier mismatch)");
+				player.Kick("Du wurdest gekicked! Grund: Bitte melde dich im Support! (Identifier mismatch)");
 				return;
 			}
 
-			UpdateUserData(player, discordId, account);
+			UpdateUserData(player, player.OAuthDiscordId, account);
 
 			// ban check
 			if (account.BannedUntil > DateTime.Now)
 			{
-				player.Kick($"Du bist noch bis zum {account.BannedUntil:dd.MM.yyyy} vom Gameserver gesperrt!");
+				player.Kick($"Du wurdest gekicked! Grund: Du bist noch bis zum {account.BannedUntil:dd.MM.yyyy} vom Gameserver gesperrt!");
 				return;
 			}
 
@@ -237,6 +249,21 @@ namespace Game.Modules
 			player.LicenseId = account.LicenseId;
 		}
 
+		private static string GenerateAuthCode()
+		{
+			var length = 16;
+			var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+			var result = "";
+
+			for (int i = 0; i < length; i++)
+			{
+				var random = Random.Next(0, chars.Length);
+				result += chars[random];
+			}
+
+			return result;
+		}
+
 		private static bool CheckUserCredentials(RPPlayer player, AccountModel account)
 		{
 			bool mismatch = false;
@@ -259,7 +286,7 @@ namespace Game.Modules
 			return mismatch;
 		}
 
-		private static void UpdateUserData(RPPlayer player, long discordId, AccountModel account)
+		private static void UpdateUserData(RPPlayer player, ulong discordId, AccountModel account)
 		{
 			if (account.SocialclubId != 0 && account.HardwareId != 0 && account.HardwareId != 0 && account.HardwareIdEx != 0 && account.DiscordId != 0) return;
 
@@ -270,6 +297,24 @@ namespace Game.Modules
 			account.DiscordId = discordId;
 			account.LastOnline = DateTime.Now;
 			AccountService.Update(account);
+		}
+
+		private static ulong GetDiscordId(string token)
+		{
+			if (token == string.Empty) return 0;
+
+			var http = new HttpClient();
+			http.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+			var response = http.GetAsync("https://discordapp.com/api/users/@me").Result;
+
+			if (!response.IsSuccessStatusCode) return 0;
+
+			var responseData = response.Content.ReadAsStringAsync().Result;
+			var data = JsonConvert.DeserializeObject<dynamic>(responseData);
+			if (data == null || data?.id == null) return 0;
+
+			return Convert.ToUInt64((string)data!.id);
 		}
 	}
 }

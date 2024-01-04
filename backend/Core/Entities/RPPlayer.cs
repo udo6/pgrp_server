@@ -25,6 +25,7 @@ namespace Core.Entities
 		public int BusinessId { get; set; }
 		public int LicenseId { get; set; }
 		public int VestItemId { get; set; }
+		public ulong OAuthDiscordId { get; set; }
 
 		public int PhoneNumber { get; set; }
 		public AdminRank AdminRank { get; set; }
@@ -88,13 +89,15 @@ namespace Core.Entities
 
 		public float PhoneVolume { get; set; }
 
+		public string AuthCode { get; set; } = string.Empty;
+		public int AuthTries { get; set; }
+
 		// ANTICHEAT
 		public DateTime LastHealthChange { get; set; }
 		public DateTime LastGodmodeChange { get; set; }
 		public DateTime LastPositionChange { get; set; }
 
-		public int AllowedHealth { get; set; } = 200;
-		public bool AllowedInvincible { get; set; }
+		// public int AllowedHealth { get; set; } = 200;
 		public int ExplosionsCaused { get; set; }
 
 		public int LastAttackerId { get; set; }
@@ -371,6 +374,30 @@ namespace Core.Entities
 		public void UnloadIPL(string ipl)
 		{
 			Emit("UnloadIPL", ipl);
+		}
+
+		public void SetInvincible(bool state)
+		{
+			LastGodmodeChange = DateTime.Now;
+			Invincible = state;
+			Emit("Client:AnticheatModule:SetGodmode", state);
+			SetStreamSyncedMetaData("GODMODE", state);
+		}
+
+		public void SetHealth(ushort health)
+		{
+			LastHealthChange = DateTime.Now;
+			Health = health;
+			//AllowedHealth = Health + Armor;
+			//Emit("Client:AnticheatModule:SetHealth", AllowedHealth);
+		}
+
+		public void SetArmor(ushort armor)
+		{
+			LastHealthChange = DateTime.Now;
+			Armor = armor;
+			//AllowedHealth = Health + Armor;
+			//Emit("Client:AnticheatModule:SetHealth", AllowedHealth);
 		}
 	}
 }

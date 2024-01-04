@@ -83,7 +83,6 @@ namespace Game.Commands.Admin
 			}
 
 			target.Spawn(target.Position, 0);
-			target.AllowedInvincible = false;
 			target.Invincible = false;
 		}
 

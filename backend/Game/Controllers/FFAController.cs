@@ -34,10 +34,9 @@ namespace Game.Controllers
 			var pos = GetSpawn(player.FFAId);
 			if (pos == null) return;
 
-			player.AllowedHealth = 300;
 			player.Spawn(player.Position, 0);
-			player.Health = 200;
-			player.Armor = 100;
+			player.SetHealth(200);
+			player.SetArmor(100);
 			player.SetPosition(pos.Position);
 			player.Rotation = pos.Rotation;
 		}

@@ -494,9 +494,7 @@ namespace Game.Modules
 						InventoryService.AddItemAttribute(new(item.Id, player.Armor));
 				}
 
-				var armor = player.Armor;
-				player.Armor = 0;
-				player.AllowedHealth -= armor;
+				player.SetArmor(0);
 				player.SetClothing(9, 0, 0, 0);
 				player.VestItemId = 0;
 				clothes.Armor = 0;

@@ -1,5 +1,4 @@
 ﻿using Database.Models.Account;
-using Database.Models.Bank;
 
 namespace Database.Services
 {
@@ -58,17 +57,17 @@ namespace Database.Services
 			return ctx.Accounts.FirstOrDefault(x => x.Name.ToLower() == name.ToLower());
 		}
 
-		public static bool HasMulti(ulong social, long discord)
+		public static bool HasMulti(ulong social, ulong discord)
 		{
 			using var ctx = new Context();
 			return ctx.Accounts.Count(x => x.SocialclubId == social || x.DiscordId == discord) > 1;
 		}
 
-		public static bool AnyBannedAccounts(string ip, ulong social, long discord, ulong hwid, ulong hwidEx)
+		public static AccountModel? AnyBannedAccounts(string ip, ulong social, ulong discord, ulong hwid, bool useHwid, ulong hwidEx, bool useHwidEx)
 		{
 			using var ctx = new Context();
 			var now = DateTime.Now;
-			return ctx.Accounts.Any(x => x.BannedUntil > now && (x.IP == ip || x.SocialclubId == social || x.DiscordId == discord || x.HardwareId == hwid || x.HardwareIdEx == hwidEx));
+			return ctx.Accounts.FirstOrDefault(x => x.BannedUntil > now && (x.IP == ip || x.SocialclubId == social || x.DiscordId == discord || (useHwid && x.HardwareId == hwid) || ( useHwidEx && x.HardwareIdEx == hwidEx)));
 		}
 
 		public static bool CheckForumId(int forumId)
@@ -87,6 +86,18 @@ namespace Database.Services
 		{
 			using var ctx = new Context();
 			return ctx.Accounts.Any(x => x.Name.ToLower() == name.ToLower());
+		}
+
+		public static bool IsForumIdTaken(int id)
+		{
+			using var ctx = new Context();
+			return ctx.Accounts.Any(x => x.ForumId == id);
+		}
+
+		public static bool IsDiscordIdTaken(ulong id)
+		{
+			using var ctx = new Context();
+			return ctx.Accounts.Any(x => x.DiscordId == id);
 		}
 
 		public static void Add(AccountModel model)

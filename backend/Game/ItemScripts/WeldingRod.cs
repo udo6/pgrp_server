@@ -3,7 +3,6 @@ using Core.Enums;
 using Database.Services;
 using Game.Modules.Scenario;
 using Database.Models.Inventory;
-using Core;
 
 namespace Game.ItemScripts
 {
@@ -46,7 +45,7 @@ namespace Game.ItemScripts
 					jumppoint.LastCrack = DateTime.Now;
 					JumppointService.Update(jumppoint);
 					player.Notify("Information", "Du hast den Jump Point aufgebrochen!", NotificationType.SUCCESS);
-				}, Config.DevMode ? 10000 : 180000);
+				}, 180000);
 			}
 
 			var drop = LootdropModule.ActiveLootDrops.FirstOrDefault(x => !x.Open && x.Position.Distance(player.Position) <= 15f);
@@ -59,7 +58,7 @@ namespace Game.ItemScripts
 
 					LootdropModule.SpawnLoot(drop);
 					player.Notify("Information", "Du konntest 3 Kisten aus dem Lootdrop entladen!", NotificationType.SUCCESS);
-				}, Config.DevMode ? 10000 : 240000);
+				}, 240000);
 			}
 		}
 

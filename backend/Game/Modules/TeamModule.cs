@@ -62,9 +62,7 @@ namespace Game.Modules
 
 			if (!account.TeamDuty)
 			{
-				var armor = player.Armor;
-				player.Armor = 0;
-				player.AllowedHealth -= armor;
+				player.SetArmor(0);
 
 				var clothes = ClothesService.Get(player.ClothesId);
 				if(clothes != null)

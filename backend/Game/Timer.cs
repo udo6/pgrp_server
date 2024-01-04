@@ -1,5 +1,4 @@
-﻿using AltV.Net.Elements.Entities;
-using Core.Attribute;
+﻿using Core.Attribute;
 using System.Reflection;
 using System.Timers;
 

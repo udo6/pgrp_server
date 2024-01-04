@@ -59,20 +59,6 @@ namespace Game.Modules
 			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Unallowed attatchment (Weapon: {weapon}, Attatchment: {attatchment})");
 		}
 
-		// todo: impl
-		public static void DetectedGodmode(RPPlayer player, bool state)
-		{
-			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Godmode (Invincible: {player.Invincible} Allowed: {state})");
-		}
-
-		// todo: impl
-		public static void DetectedHealkey(RPPlayer player, int allowedHealth)
-		{
-			var health = player.Health + player.Armor;
-			AdminController.BroadcastTeam("Anticheat", $"{player.Name} hat ein Healkey Flag ausgelöst!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.MODERATOR);
-			LogService.LogPlayerBan(player.DbId, 0, $"[ONLY LOGGED] Healkey (Health: {health} Allowed: {allowedHealth})");
-		}
-
 		// client ac
 
 		private static void DetectedVehicleEngine(RPPlayer player)
@@ -133,21 +119,7 @@ namespace Game.Modules
 			if (target.Type == BaseObjectType.Player)
 			{
 				var targetPlayer = (RPPlayer)target;
-
-				if (!targetPlayer.Invincible || targetPlayer.Health <= 100)
-				{
-					targetPlayer.LastAttackerId = player.DbId;
-					targetPlayer.AllowedHealth -= damage;
-
-					var targetHealth = targetPlayer.Health + targetPlayer.Armor - damage;
-					if (targetHealth > targetPlayer.AllowedHealth)
-					{
-						player.AllowedHealth = targetHealth;
-						DetectedHealkey(targetPlayer, targetPlayer.AllowedHealth);
-						return true;
-					}
-				}
-
+				targetPlayer.LastAttackerId = player.DbId;
 				LogService.LogDamage(player.DbId, targetPlayer.DbId, weapon, damage, (int)bodyPart);
 			}
 
@@ -203,7 +175,7 @@ namespace Game.Modules
 
 			if (explosionType == ExplosionType.Unknown || explosionType == ExplosionType.GasTank || explosionType == ExplosionType.Propane) return false;
 
-			if(explosionType != ExplosionType.Flare && explosionType != ExplosionType.Snowball)
+			if(explosionType != ExplosionType.Flare && explosionType != ExplosionType.Snowball && explosionType != ExplosionType.DirGasCanister && explosionType != ExplosionType.DirFlame)
 			{
 				player.ExplosionsCaused++;
 				if (player.ExplosionsCaused > 20)

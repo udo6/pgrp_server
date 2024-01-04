@@ -2,7 +2,6 @@
 using AltV.Net.Elements.Entities;
 using Core;
 using Core.Factories;
-using Game.Http;
 
 namespace Game
 {
@@ -10,8 +9,8 @@ namespace Game
 	{
 		public override void OnStart()
 		{
+			Discord.Main.Start(); // soll nicht awaited werden
 			Initializer.Initialize();
-			RequestHandler.Register();
 
 			Logger.LogInfo("Resource started!");
 		}

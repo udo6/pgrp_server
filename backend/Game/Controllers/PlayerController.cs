@@ -50,10 +50,8 @@ namespace Game.Controllers
 
 			player.Spawn(player.Position, 0);
 			player.SetPosition(pos.Position);
-			player.AllowedHealth = account.Health + account.Armor;
-			player.Health = account.Health;
-			player.Armor = account.Armor;
-			player.AllowedInvincible = false;
+			player.SetHealth(account.Health);
+			player.SetArmor(account.Armor);
 			player.Invincible = false;
 			player.Rotation = pos.Rotation;
 
@@ -290,7 +288,6 @@ namespace Game.Controllers
 			player.InjuryType = 0;
 			player.Coma = false;
 			player.Stabilized = false;
-			player.AllowedInvincible = false;
 			player.Invincible = false;
 			player.IsInHospital = false;
 			player.SetStreamSyncedMetaData("ALIVE", true);
@@ -328,7 +325,6 @@ namespace Game.Controllers
 					player.Emit("Client:AnticheatModule:SetHealth", 200);
 					if (!player.Alive)
 					{
-						player.AllowedInvincible = true;
 						player.Invincible = true;
 					}
 				});
@@ -339,7 +335,6 @@ namespace Game.Controllers
 			player.Emit("Client:AnticheatModule:SetHealth", 200);
 			if (!player.Alive)
 			{
-				player.AllowedInvincible = true;
 				player.Invincible = true;
 			}
 

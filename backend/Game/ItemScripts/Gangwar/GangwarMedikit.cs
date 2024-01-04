@@ -21,8 +21,7 @@ namespace Game.ItemScripts.Gangwar
             {
                 if (player == null || !player.Exists || !player.IsGangwar) return;
 
-				player.AllowedHealth = 200 + player.Armor;
-				player.Health = 200;
+				player.SetHealth(200);
 				InventoryController.RemoveItem(inventory, item.Slot, 1);
             }, 4000);
         }

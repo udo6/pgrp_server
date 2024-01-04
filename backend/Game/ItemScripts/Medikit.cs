@@ -21,8 +21,7 @@ namespace Game.ItemScripts
 			{
 				if (player == null || !player.Exists) return;
 
-				player.AllowedHealth = 200 + player.Armor;
-				player.Health = 200;
+				player.SetHealth(200);
 				InventoryController.RemoveItem(inventory, item.Slot, 1);
 			}, 4000);
 		}

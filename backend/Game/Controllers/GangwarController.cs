@@ -253,8 +253,8 @@ namespace Game.Controllers
 			player.InInterior = false;
 			player.SetPosition(player.OutsideInteriorPosition);
 			player.SetDimension(0);
+			player.SetArmor(0);
 			player.Armor = 0;
-			player.AllowedHealth = player.Health;
 			PlayerController.ApplyPlayerLoadout(player);
 			player.EmitBrowser("Hud:ShowGangwar", false, "");
 
