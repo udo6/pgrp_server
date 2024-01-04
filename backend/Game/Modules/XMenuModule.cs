@@ -382,7 +382,13 @@ namespace Game.Modules
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn || !target.Alive) return;
 
-			var targetAcc = AccountService.Get(target.DbId);
+            if (player.Position.Distance(target.Position) > 5)
+            {
+				player.Notify("Information", "Du bist zu weit weg von dem Spieler!", NotificationType.ERROR);
+                return;
+            }
+            
+            var targetAcc = AccountService.Get(target.DbId);
 			if (targetAcc == null || targetAcc.Roped) return;
 
 			var inventory = InventoryService.Get(player.InventoryId);
@@ -404,7 +410,13 @@ namespace Game.Modules
 			var target = RPPlayer.All.FirstOrDefault(x => x.LoggedIn && x.Id == targetId);
 			if (target == null || !target.LoggedIn || !target.Alive) return;
 
-			var targetAcc = AccountService.Get(target.DbId);
+            if (player.Position.Distance(target.Position) > 5)
+            {
+                player.Notify("Information", "Du bist zu weit weg von dem Spieler!", NotificationType.ERROR);
+                return;
+            }
+
+            var targetAcc = AccountService.Get(target.DbId);
 			if (targetAcc == null || targetAcc.Cuffed) return;
 
 			var inventory = InventoryService.Get(player.InventoryId);
