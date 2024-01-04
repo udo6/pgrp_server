@@ -37,8 +37,10 @@ namespace Game.ItemScripts.FIB.Vests
 				}
 
 				var attribute = InventoryService.GetItemAttributeByItem(item.Id);
+				var armor = (ushort)(attribute == null ? 100 : attribute.Value);
 
-				player.SetArmor((ushort)(attribute == null ? 100 : attribute.Value));
+				player.AllowedHealth = player.Health + armor;
+				player.Armor = armor;
 				player.SetClothing(9, ArmorDrawable, ArmorTexture, ArmorDlc);
 				player.VestItemId = ItemId;
 				InventoryController.RemoveItem(inventory, item.Slot, 1);

@@ -21,7 +21,8 @@ namespace Game.ItemScripts.Federal
 			{
 				if (player == null || !player.Exists) return;
 
-				player.SetHealth(200);
+				player.AllowedHealth = 200 + player.Armor;
+				player.Health = 200;
 				InventoryController.RemoveItem(inventory, item.Slot, 1);
 			}, 4000);
 		}

@@ -11,7 +11,7 @@ namespace Game.Modules
 		{
 			foreach(var player in RPPlayer.All.ToList())
 			{
-				if (player == null || !player.Exists || !player.LoggedIn || player.AdminDuty || !player.Alive) return;
+				if (player == null || !player.Exists || !player.LoggedIn || player.AdminDuty || !player.Alive) continue;
 
 				if (player.Hunger <= 0 && player.Thirst <= 0)
 				{

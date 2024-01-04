@@ -6,8 +6,6 @@ using Core.Entities;
 using Database.Services;
 using Game.Controllers;
 using Logs;
-using System.Collections.Generic;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Game.Modules
 {
@@ -63,6 +61,18 @@ namespace Game.Modules
 			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Unallowed attatchment (Weapon: {weapon}, Attatchment: {attatchment})");
 		}
 
+		// todo: impl
+		public static void DetectedGodmode(RPPlayer player, bool state)
+		{
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Godmode (Invincible: {player.Invincible} Allowed: {state})");
+		}
+
+		// todo: impl
+		public static void DetectedHealkey(RPPlayer player, int allowedHealth)
+		{
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Healkey (Health: {player.Health + player.Armor} Allowed Health: {allowedHealth})");
+		}
+
 		// client ac
 
 		private static void DetectedVehicleEngine(RPPlayer player)
@@ -95,20 +105,6 @@ namespace Game.Modules
 			AdminController.BroadcastTeam("Anticheat", $"Der Spieler {player.Name} hat sich Teleportiert! Distance: {dist}m", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.ADMINISTRATOR);
 		}
 
-		private static void DetectedGodmode(RPPlayer player, bool state)
-		{
-			if (player.Invincible == state) return;
-
-			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Godmode (Invincible: {player.Invincible} Allowed: {state})");
-		}
-
-		private static void DetectedHealkey(RPPlayer player, int health)
-		{
-			if (player.LastHealthChange.AddSeconds(5) >= DateTime.Now || player.Health + player.Armor <= player.AllowedHealth) return;
-
-			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Healkey (Health: {player.Health + player.Armor} Allowed Health: {health})");
-		}
-
 		private static void DetectedRocketBoost(RPPlayer player)
 		{
 			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Vehicle rocketboost (Vehicle: {player.Vehicle.Model})");
@@ -127,7 +123,7 @@ namespace Game.Modules
 				player.Kick("Du wurdest gekicked!");
 				if(target.Type == BaseObjectType.Player)
 				{
-					var targetPlayer = ((RPPlayer)target);
+					var targetPlayer = (RPPlayer)target;
 					targetPlayer.Spawn(player.Position, 0);
 					PlayerController.SetPlayerAlive(targetPlayer, false);
 				}
@@ -136,10 +132,20 @@ namespace Game.Modules
 
 			if (target.Type == BaseObjectType.Player)
 			{
-				var targetPlayer = ((RPPlayer)target);
+				var targetPlayer = (RPPlayer)target;
 
-				targetPlayer.LastAttackerId = player.DbId;
-				targetPlayer.Emit("Client:AnticheatModule:SetHealth", targetPlayer.Health + targetPlayer.Armor);
+				if (!targetPlayer.Invincible || targetPlayer.Health <= 100)
+				{
+					targetPlayer.LastAttackerId = player.DbId;
+					targetPlayer.AllowedHealth -= damage;
+
+					var targetHealth = targetPlayer.Health + targetPlayer.Armor - damage;
+					if (targetHealth > targetPlayer.AllowedHealth)
+					{
+						DetectedHealkey(targetPlayer, targetPlayer.AllowedHealth);
+						return true;
+					}
+				}
 
 				LogService.LogDamage(player.DbId, targetPlayer.DbId, weapon, damage, (int)bodyPart);
 			}

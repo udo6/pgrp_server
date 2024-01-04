@@ -34,6 +34,7 @@ namespace Game.Http.Listener
 
 			var account = new AccountModel(
 				name,
+				string.Empty,
 				0,
 				0,
 				0,

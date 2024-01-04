@@ -8,6 +8,7 @@ namespace Database.Models.Account
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string IP { get; set; }
         public ulong SocialclubId { get; set; }
         public ulong HardwareId { get; set; }
         public ulong HardwareIdEx { get; set; }
@@ -82,6 +83,7 @@ namespace Database.Models.Account
         public AccountModel()
         {
             Name = string.Empty;
+            IP = string.Empty;
             BanReason = string.Empty;
             SupportCallMessage = string.Empty;
             FederalRecordTeam = string.Empty;
@@ -92,9 +94,10 @@ namespace Database.Models.Account
 
 		}
 
-        public AccountModel(string name, ulong social, ulong hwid, ulong hwidEx, int forumId, long discord, int money, int bankMoney, int phoneNumber, int positionId, int customId, int clothesId, int inventoryId, int labInputInventoryId, int labOutputInventoryId, int lockerInventoryId, int businessId, int licenseId, bool banOnConnect)
+        public AccountModel(string name, string ip, ulong social, ulong hwid, ulong hwidEx, int forumId, long discord, int money, int bankMoney, int phoneNumber, int positionId, int customId, int clothesId, int inventoryId, int labInputInventoryId, int labOutputInventoryId, int lockerInventoryId, int businessId, int licenseId, bool banOnConnect)
         {
             Name = name;
+            IP = ip;
             SocialclubId = social;
             HardwareId = hwid;
             HardwareIdEx = hwidEx;
@@ -168,6 +171,7 @@ namespace Database.Models.Account
 			builder.HasIndex(x => x.Id).HasDatabaseName("id");
 			builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int(11)");
 			builder.Property(x => x.Name).HasColumnName("name").HasColumnType("varchar(255)");
+			builder.Property(x => x.IP).HasColumnName("ip").HasColumnType("varchar(255)");
 			builder.Property(x => x.SocialclubId).HasColumnName("social").HasColumnType("bigint(20)");
 			builder.Property(x => x.HardwareId).HasColumnName("hwid").HasColumnType("bigint(20)");
 			builder.Property(x => x.HardwareIdEx).HasColumnName("hwid_ex").HasColumnType("bigint(20)");

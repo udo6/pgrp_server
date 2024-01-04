@@ -49,7 +49,8 @@ namespace Game.Modules
 
 			player.AdminDuty = !player.AdminDuty;
 
-			player.SetInvincible(player.AdminDuty);
+			player.AllowedInvincible = player.AdminDuty;
+			player.Invincible = player.AdminDuty;
 			player.Emit("Client:AdminModule:SetDuty", player.AdminDuty);
 
 			if (player.AdminDuty)

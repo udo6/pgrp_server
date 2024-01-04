@@ -80,6 +80,12 @@ namespace Game.Modules
 				return;
 			}
 
+			if (GangwarController.RunningGangwars.FirstOrDefault(x => x.OwnerId == gangwar.OwnerId || x.AttackerId == gangwar.OwnerId) != null)
+			{
+				player.Notify("Gangwar", "Die Fraktion befindet sich bereits in einem Gangwar!", NotificationType.ERROR);
+				return;
+			}
+
 			var defenderOnline = RPPlayer.All.Count(x => x.TeamId == gangwar.OwnerId);
 
 			if (defenderOnline < 12)

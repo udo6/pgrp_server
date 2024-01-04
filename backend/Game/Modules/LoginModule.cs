@@ -72,7 +72,8 @@ namespace Game.Modules
 			// set default data
 			player.Model = 1885233650;
 			player.Spawn(new(0, 0, 72), 0);
-			player.SetInvincible(false);
+			player.AllowedInvincible = false;
+			player.Invincible = false;
 			player.SetStreamSyncedMetaData("ALIVE", true);
 			player.SetStreamSyncedMetaData("CUFFED", false);
 			player.SetStreamSyncedMetaData("ROPED", false);
@@ -94,10 +95,20 @@ namespace Game.Modules
 			// first connect multiaccount check
 			if (account.LastOnline < DateTime.Now.AddYears(-10) && AccountService.HasMulti(player.SocialClubId, discordId))
 			{
+				account.SocialclubId = player.SocialClubId;
+				account.HardwareId = player.HardwareIdExHash;
+				account.DiscordId = discordId;
+				account.IP = player.Ip;
 				account.BannedUntil = DateTime.Now.AddYears(10);
 				account.BanReason = "Multiaccount";
 				AccountService.Update(account);
 				player.Kick("Du wurdest gebannt! Grund: Multiaccount");
+				return;
+			}
+
+			if (AccountService.AnyBannedAccounts(player.Ip, player.SocialClubId, player.DiscordId, player.HardwareIdHash, player.HardwareIdExHash))
+			{
+				player.Kick("Du bist gebannt!");
 				return;
 			}
 
@@ -252,6 +263,7 @@ namespace Game.Modules
 		{
 			if (account.SocialclubId != 0 && account.HardwareId != 0 && account.HardwareId != 0 && account.HardwareIdEx != 0 && account.DiscordId != 0) return;
 
+			account.IP = player.Ip;
 			account.SocialclubId = player.SocialClubId;
 			account.HardwareId = player.HardwareIdHash;
 			account.HardwareIdEx = player.HardwareIdExHash;

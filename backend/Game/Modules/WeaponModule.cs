@@ -36,7 +36,7 @@ namespace Game.Modules
 			var player = (RPPlayer)_player;
 			if (player.IsGangwar || player.IsInFFA) return;
 
-			if(newWeapon != 2725352035)
+			if(newWeapon > 0 && newWeapon != 2725352035)
 			{
 				var weapon = player.Weapons.FirstOrDefault(x => x.Hash == newWeapon);
 				if (weapon == null)

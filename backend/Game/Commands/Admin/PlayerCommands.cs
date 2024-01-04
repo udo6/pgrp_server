@@ -83,7 +83,8 @@ namespace Game.Commands.Admin
 			}
 
 			target.Spawn(target.Position, 0);
-			target.SetInvincible(false);
+			target.AllowedInvincible = false;
+			target.Invincible = false;
 		}
 
 		[Command("setfood")]
