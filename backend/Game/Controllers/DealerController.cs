@@ -37,8 +37,10 @@ namespace Game.Controllers
 			foreach(var item in items)
 			{
 				dealerCache.Items.Add(new(item.Id, Random.Next(item.MinPrice, item.MaxPrice)));
-			}
-		}
+            }
+
+            DealerCache.Add(dealerCache);
+        }
 
 		public static void ResetDealers(List<DealerModel> models)
 		{
