@@ -565,5 +565,24 @@ namespace Game.Modules
 				CallPartnerName = callPartner?.Name
 			}));
 		}
-	}
+
+        [Core.Attribute.ServerEvent(ServerEventType.PLAYER_DISCONNECT)]
+        public static void OnPlayerDisconnect(RPPlayer player, string reason)
+        {
+			if (player.CallPartner <= 0) return;
+
+            var partner = RPPlayer.All.FirstOrDefault(x => x.DbId == player.CallPartner);
+            if (partner == null) return;
+
+            partner.CallPartner = 0;
+            partner.CallState = CallState.NONE;
+            partner.CallStarted = DateTime.Now;
+            partner.CallMute = false;
+            partner.EmitBrowser("Phone:ShowCallScreen", false);
+            partner.EmitBrowser("Phone:StopRingtone");
+
+            partner.Emit("client:yaca:phone", player.Id, false);
+            partner.SetSyncedMetaData("CALL_PARTNER", -1);
+        }
+    }
 }
