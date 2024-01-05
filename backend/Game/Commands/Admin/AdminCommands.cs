@@ -77,5 +77,15 @@ namespace Game.Commands.Admin
 			var teamOnline = RPPlayer.All.ToList().Count(x => x.AdminRank > AdminRank.SPIELER);
 			player.Notify("Administration", $"Es sind {teamOnline} Team Mitglieder online!", NotificationType.INFO);
 		}
+
+		[Command("goback")]
+		public static void GoBack(RPPlayer player)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER || player.AdminGoBackPosition.X == 0 && player.AdminGoBackPosition.Y == 0) return;
+
+			player.SetPosition(player.AdminGoBackPosition);
+			player.AdminGoBackPosition = new(0, 0, 0);
+			player.Notify("Administration", "Du hast dich zurück teleportiert!", NotificationType.SUCCESS);
+		}
 	}
 }

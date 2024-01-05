@@ -92,6 +92,8 @@ namespace Core.Entities
 		public string AuthCode { get; set; } = string.Empty;
 		public int AuthTries { get; set; }
 
+		public Position AdminGoBackPosition { get; set; }
+
 		// ANTICHEAT
 		public DateTime LastHealthChange { get; set; }
 		public DateTime LastGodmodeChange { get; set; }

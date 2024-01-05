@@ -192,7 +192,7 @@ namespace Game.Commands.Admin
 		[Command("damagecap")]
 		public static void DamageCap(RPPlayer player, string targetName)
 		{
-			if (player.AdminRank < AdminRank.MANAGER) return;
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
 
 			var account = AccountService.Get(targetName);
 			if(account == null)
@@ -231,6 +231,7 @@ namespace Game.Commands.Admin
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == targetId);
 			if (target == null) return;
 
+			player.AdminGoBackPosition = player.Position;
 			player.SetPosition(target.Position);
 			player.Dimension = target.Dimension;
 			player.Notify("Administration", $"Du hast dich zu {target.Name} teleportiert!", NotificationType.SUCCESS);
