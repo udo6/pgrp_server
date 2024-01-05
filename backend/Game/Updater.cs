@@ -29,7 +29,7 @@ namespace Game
 		{
 			foreach(var player in RPPlayer.All.ToList())
 			{
-				if(player.DbId < 1) continue;
+				if(!player.LoggedIn) continue;
 
 				var account = AccountService.Get(player.DbId);
 				if (account == null) continue;

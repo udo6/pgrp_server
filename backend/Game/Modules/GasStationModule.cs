@@ -44,7 +44,7 @@ namespace Game.Modules
 			player.PlayAnimation(Core.Enums.AnimationType.FUELING);
 			player.StartInteraction(() =>
 			{
-				if (vehicle.OwnerType != Core.Enums.OwnerType.PLAYER)
+				if (vehicle.OwnerType == Core.Enums.OwnerType.PLAYER)
 					PlayerController.RemoveMoney(player, price);
 
 				VehicleController.SetVehicleFuel(vehicle, vehicle.Fuel + value);

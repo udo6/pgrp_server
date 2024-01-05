@@ -27,7 +27,7 @@ namespace Game.Modules
 		{
 			if (player.LoggedIn) return;
 
-			var pos = new Position(0, 0, 72);
+			var pos = new Position(-578.3736f, -718.2198f, 132.77148f);
 
 			player.Model = 1885233650;
 			player.Spawn(pos, 0);
@@ -50,7 +50,7 @@ namespace Game.Modules
 			var success = Discord.Main.SendAuthCode(discordId, player.AuthCode).Result;
 			if (success)
 			{
-				player.ShowComponent("Login", true);
+				player.ShowComponent("Login", true, player.Name);
 				return;
 			}
 
@@ -147,6 +147,7 @@ namespace Game.Modules
 				return;
 			}
 
+			player.ShowComponent("Login", false);
 			Login(player, account);
 		}
 
@@ -251,7 +252,7 @@ namespace Game.Modules
 
 		private static string GenerateAuthCode()
 		{
-			var length = 16;
+			var length = 32;
 			var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
 			var result = "";
 

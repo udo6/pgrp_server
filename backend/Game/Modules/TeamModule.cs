@@ -344,10 +344,10 @@ namespace Game.Modules
 
 			var storageData = new TeamStorageClientData(
 				3,
-				(int)weight,
-				(int)maxWeight,
-				slots,
-				maxSlots,
+				(int)Math.Round(weight),
+				(int)Math.Round(maxWeight),
+				(int)Math.Round((decimal)slots),
+				(int)Math.Round((decimal)maxSlots),
 				drugs);
 
 			var members = new List<TeamClientMemberData>();

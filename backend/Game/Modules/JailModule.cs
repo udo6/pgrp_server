@@ -97,12 +97,16 @@ namespace Game.Modules
 			var targetAccount = AccountService.Get(targetId);
 			if (targetAccount == null) return;
 
+			targetAccount.Phone = false;
+			targetAccount.Laptop = false;
 			targetAccount.Jailtime = jailtime;
 			targetAccount.BankMoney -= fine;
 			AccountService.Update(targetAccount);
 			BankService.AddHistory(new(targetAccount.Id, targetAccount.Name, $"Strafzettel", TransactionType.PLAYER, true, fine, DateTime.Now));
 			CrimeService.RemovePlayerCrimes(targetId);
 			target.Jailtime = jailtime;
+			target.Phone = false;
+			target.Laptop = false;
 			target.Notify("Information", $"Du wurdest für {jailtime} Hafteinheiten Inhaftiert!", NotificationType.INFO);
 
 			var custom = CustomizationService.Get(target.CustomizationId);

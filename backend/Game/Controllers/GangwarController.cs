@@ -45,6 +45,7 @@ namespace Game.Controllers
 			blip.Sprite = 543;
 			blip.ShortRange = true;
 			blip.Color = (byte)(team == null ? 1 : team.BlipColor);
+			blip.SetData("BLIP_GANGWAR_ID", model.Id);
 		}
 
 		public static void StartGangwar(RPPlayer player, GangwarModel gangwar)
@@ -166,6 +167,9 @@ namespace Game.Controllers
 			{
 				TeamController.Broadcast(attacker.Id, "Ihr habt das Gebiet erfolgreich eingenommen!", NotificationType.INFO);
 				TeamController.Broadcast(owner.Id, "Ihr konntet das Gebiet nicht verteidigen!", NotificationType.INFO);
+
+				var blip = Alt.GetAllBlips().FirstOrDefault(x => x.GetData("BLIP_GANGWAR_ID", out int blipGwId) && blipGwId == gw.DbId);
+				if (blip != null) blip.Color = attacker.BlipColor;
 
 				gangwar.OwnerId = gw.AttackerId;
 				GangwarService.Update(gangwar);

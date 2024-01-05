@@ -8,9 +8,14 @@ namespace Game.ItemScripts.Federal.Vests.Training
 {
 	public class LSPDVestTrainingSmall : ItemScript
 	{
-		private static readonly int ArmorDrawable = 1;
-		private static readonly int ArmorTexture = 6;
-		private static readonly uint ArmorDlc = 3602239810;
+		private static readonly int MaleArmorDrawable = 1;
+		private static readonly int MaleArmorTexture = 6;
+		private static readonly uint MaleArmorDlc = 3602239810;
+
+
+		private static readonly int FemaleArmorDrawable = 1;
+		private static readonly int FemaleArmorTexture = 6;
+		private static readonly uint FemaleArmorDlc = 889305561;
 
 		public LSPDVestTrainingSmall() : base(313, true)
 		{
@@ -25,14 +30,21 @@ namespace Game.ItemScripts.Federal.Vests.Training
 			{
 				if (player == null || !player.Exists) return;
 
+				var custom = CustomizationService.Get(player.CustomizationId);
+				if (custom == null) return;
+
+				var drawable = custom.Gender ? MaleArmorDrawable : FemaleArmorDrawable;
+				var texture = custom.Gender ? MaleArmorTexture : FemaleArmorTexture;
+				var dlc = custom.Gender ? MaleArmorDlc : FemaleArmorDlc;
+
 				var clothes = ClothesService.Get(player.ClothesId);
 				if (clothes == null) return;
 
-				if (clothes.Armor != ArmorDrawable || clothes.ArmorColor != ArmorTexture || clothes.ArmorDlc != ArmorDlc)
+				if (clothes.Armor != drawable || clothes.ArmorColor != texture || clothes.ArmorDlc != dlc)
 				{
-					clothes.Armor = ArmorDrawable;
-					clothes.ArmorColor = ArmorTexture;
-					clothes.ArmorDlc = ArmorDlc;
+					clothes.Armor = drawable;
+					clothes.ArmorColor = texture;
+					clothes.ArmorDlc = dlc;
 					ClothesService.Update(clothes);
 				}
 
@@ -40,7 +52,7 @@ namespace Game.ItemScripts.Federal.Vests.Training
 				var armor = (ushort)(attribute == null ? 100 : attribute.Value);
 
 				player.SetArmor(armor);
-				player.SetClothing(9, ArmorDrawable, ArmorTexture, ArmorDlc);
+				player.SetClothing(9, drawable, texture, dlc);
 				player.VestItemId = ItemId;
 				InventoryController.RemoveItem(inventory, item.Slot, 1);
 			}, 4000);

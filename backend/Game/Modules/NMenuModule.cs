@@ -22,7 +22,7 @@ namespace Game.Modules
 
 		private static void Open(RPPlayer player)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsInVehicle) return;
 
 			var items = new List<object>();
 			foreach (var favorite in AnimationService.GetFavorites(player.DbId))
@@ -38,7 +38,7 @@ namespace Game.Modules
 
 		private static void PlayAnimation(RPPlayer player, int animationId)
 		{
-			if (!player.LoggedIn || animationId < -1) return;
+			if (!player.LoggedIn || player.IsInVehicle || animationId < -1) return;
 
 			if(animationId == -1)
 			{

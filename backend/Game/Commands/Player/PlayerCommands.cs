@@ -34,5 +34,11 @@ namespace Game.Commands.Player
 				target.Notify("OOC Chat", $"{player.Name}: {message}", Core.Enums.NotificationType.INFO);
 			}
 		}
+
+		[Command("ping")]
+		public static void Ping(RPPlayer player)
+		{
+			player.Notify("Information", $"Dein Ping ist {player.Ping}ms", Core.Enums.NotificationType.INFO);
+		}
 	}
 }

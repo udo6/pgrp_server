@@ -471,6 +471,24 @@ namespace Game.Modules
 				var targetAcc = AccountService.Get(target.DbId);
 				if (targetAcc == null || (target.Alive && !targetAcc.Cuffed && !targetAcc.Roped) || veh.Position.Distance(target.Position) > 5) return;
 
+				var baseModel = VehicleService.GetBase(veh.BaseId);
+				if (baseModel == null) return;
+
+				var freeSeat = 0;
+				for(var i = 1; i < baseModel.Seats; i++)
+				{
+					if (RPPlayer.All.Any(x => x.Vehicle == veh && x.Seat == i)) continue;
+
+					freeSeat = i;
+					break;
+				}
+
+				if(freeSeat == 0)
+				{
+					player.Notify("Information", "Es ist kein Sitzplatz in dem Auto frei!", NotificationType.ERROR);
+					return;
+				}
+
 				target.SetIntoVehicle(veh, 2);
 			}, 7500);
 		}
@@ -629,7 +647,7 @@ namespace Game.Modules
 					return;
 				}
 
-				if(target.InjuryType == InjuryType.PUNCH || target.InjuryType == InjuryType.FALL_DAMAGE)
+				if((target.InjuryType == InjuryType.PUNCH || target.InjuryType == InjuryType.FALL_DAMAGE) && new Random().Next(0, 100) < 30)
 				{
 					PlayerController.SetPlayerAlive(target, false);
 					player.Notify("Information", "Da die Person nicht schwer verletzt war konntest du ihr direkt wieder aufhelfen!", NotificationType.INFO);

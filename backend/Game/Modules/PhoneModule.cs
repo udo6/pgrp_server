@@ -562,7 +562,7 @@ namespace Game.Modules
 				CallState = (int)player.CallState,
 				CallStarted = player.CallStarted.ToString(),
 				CallPartner = callPartner?.PhoneNumber,
-				CallPartnerName = callPartner?.Name
+				CallPartnerName = contactName
 			}));
 		}
 

@@ -2,18 +2,10 @@
 using AltV.Net.Enums;
 using AltV.Net;
 using Core.Entities;
-using Database.Models.GarbageJob;
 using Database.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Core.Enums;
 using Database.Models.MoneyTruckJob;
 using Core.Extensions;
-using Core.Models.MoneyTruck;
-using Database.Services.Jobs;
 
 namespace Game.Controllers.Jobs
 {

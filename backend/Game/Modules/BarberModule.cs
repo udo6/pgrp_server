@@ -85,7 +85,7 @@ namespace Game.Modules
 			var price = 0;
 
 			var style = BarberService.GetStyle(styleId);
-			if (style != null && custom.Hair != style.Value && custom.HairDlc != style.Dlc)
+			if (style != null && (custom.Hair != style.Value || custom.HairDlc != style.Dlc))
 			{
 				price += style.Price;
 				custom.Hair = style.Value;

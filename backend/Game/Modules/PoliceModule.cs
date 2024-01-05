@@ -7,6 +7,7 @@ using Core.Extensions;
 using Core.Models.NativeMenu;
 using Database.Services;
 using Game.Controllers;
+using Newtonsoft.Json;
 
 namespace Game.Modules
 {
@@ -28,6 +29,8 @@ namespace Game.Modules
 			new(-1096.3121f, -850.16705f, 38.22705f)
 		};
 
+		private static Position TicketPayStationPosition = new(-1084.5099f, -796.8f, 19.30481f);
+
 		[Initialize]
 		public static void Initialize()
 		{
@@ -46,12 +49,64 @@ namespace Game.Modules
 				index++;
 			}
 
+			var ticketShape = (RPShape)Alt.CreateColShapeCylinder(TicketPayStationPosition, 2f, 2f);
+			ticketShape.ShapeId = 1;
+			ticketShape.ShapeType = ColshapeType.TICKET_PAY_STATION;
+			ticketShape.Size = 2f;
+
+			Alt.OnClient<RPPlayer, int>("Server:Police:PayFine", PayFine);
+			Alt.OnClient<RPPlayer>("Server:Police:OpenPayStation", OpenPayStation);
 			Alt.OnClient<RPPlayer, int>("Server:Police:Teleport", UseTeleporter);
 			Alt.OnClient<RPPlayer>("Server:Police:OpenTeleporter", OpenTeleporter);
 			Alt.OnClient<RPPlayer, int, int>("Server:Police:TakeLicense", TakeLicense);
 			Alt.OnClient<RPPlayer>("Server:SWAT:OpenShop", OpenShop);
 			Alt.OnClient<RPPlayer, bool>("Server:SWAT:SetSWATDuty", SetSWATDuty);
 			Alt.OnClient<RPPlayer, int, int>("Server:SWAT:Buy", BuyItem);
+		}
+
+		private static void PayFine(RPPlayer player, int price)
+		{
+			if (price < 1) return;
+
+			if (!PlayerController.RemoveMoney(player, price))
+			{
+				player.Notify("Information", "Du hast nicht genug Geld dabei!", NotificationType.ERROR);
+				return;
+			}
+
+			CrimeService.RemovePlayerCrimes(player.DbId);
+			player.Notify("Information", "Du hast deine Tickets bezahlt!", NotificationType.SUCCESS);
+		}
+
+		private static void OpenPayStation(RPPlayer player)
+		{
+			var allCrimes = CrimeService.GetAll();
+			var crimes = CrimeService.GetPlayerCrimes(player.DbId);
+			if (crimes.Count == 0) return;
+
+			var price = 0;
+			foreach(var crime in crimes)
+			{
+				var model = allCrimes.FirstOrDefault(x => x.Id == crime.CrimeId);
+				if (model == null) continue;
+
+				if (model.JailTime > 0)
+				{
+					player.Notify("Information", "Du hast noch eine offene Akte die Haftzeit beinhaltet!", NotificationType.ERROR);
+					return;
+				}
+
+				price += model.Fine;
+			}
+
+			player.ShowComponent("Input", true, JsonConvert.SerializeObject(new
+			{
+				Title = "Ticket",
+				Message = $"Möchtest du deine Tickets für ${price} bezahlen?",
+				Type = (int)InputType.CONFIRM,
+				CallbackEvent = "Server:Police:PayFine",
+				CallbackArgs = new List<object>() { price }
+			}));
 		}
 
 		private static void UseTeleporter(RPPlayer player, int index)

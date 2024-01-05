@@ -48,7 +48,8 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPPlayers:SetMoney", ACPSetMoney);
 			Alt.OnClient<RPPlayer, int, int, int>("Server:Laptop:ACPPlayers:SetTeam", ACPSetTeam);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:UnbanPlayer", ACPUnbanPlayer);
-			Alt.OnClient<RPPlayer, int, string, string, bool>("Server:Laptop:ACPPlayers:BanPlayer", ACPBanPlayer);
+			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:BanPlayerPermanent", ACPBanPlayerPermanent);
+			Alt.OnClient<RPPlayer, int, string, string>("Server:Laptop:ACPPlayers:BanPlayer", ACPBanPlayer);
 			Alt.OnClient<RPPlayer, int, string, bool>("Server:Laptop:ACPPlayers:KickPlayer", ACPKickPlayer);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPPlayers:WarnPlayer", ACPWarnPlayer);
 			Alt.OnClient<RPPlayer, int, string, string>("Server:Laptop:ACPPlayers:SaveRecord", SaveACPRecord);
@@ -490,7 +491,42 @@ namespace Game.Modules
 			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_UNBAN);
 		}
 
-		private static void ACPBanPlayer(RPPlayer player, int id, string reason, string datetime, bool anonym)
+		private static void ACPBanPlayerPermanent(RPPlayer player, int id, string reason)
+		{
+			if (player.AdminRank < AdminRank.MODERATOR) return;
+
+			var targetAccount = AccountService.Get(id);
+			if (targetAccount == null) return;
+
+			targetAccount.BanReason = reason;
+			targetAccount.BannedUntil = DateTime.Now.AddYears(10);
+			AccountService.Update(targetAccount);
+
+			player.Notify("Administration", $"Du hast {targetAccount.Name} vom Server gebannt!", NotificationType.SUCCESS);
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
+			if (target == null) return;
+
+			var data = JsonConvert.SerializeObject(new
+			{
+				Title = $"ADMINISTRATIVE NACHRICHT",
+				Message = $"{player.Name} hat {target.Name} vom Server gebannt! Grund: {reason}",
+				Duration = 10000
+			});
+
+			foreach (var user in RPPlayer.All.ToList())
+			{
+				user.EmitBrowser("Hud:ShowGlobalNotification", data);
+			}
+
+			var history = new AdminHistoryModel(target.DbId, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.BAN);
+			AccountService.AddAdminHistory(history);
+
+			target.Kick($"Du wurdest vom Gameserver gebannt! Grund: {reason}");
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_BAN);
+		}
+
+		private static void ACPBanPlayer(RPPlayer player, int id, string reason, string datetime)
 		{
 			if (player.AdminRank < AdminRank.MODERATOR) return;
 
@@ -506,19 +542,16 @@ namespace Game.Modules
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
 
-			if(!anonym)
+			var data = JsonConvert.SerializeObject(new
 			{
-				var data = JsonConvert.SerializeObject(new
-				{
-					Title = $"ADMINISTRATIVE NACHRICHT",
-					Message = $"{player.Name} hat {target.Name} vom Server gebannt! Grund: {reason}",
-					Duration = 10000
-				});
+				Title = $"ADMINISTRATIVE NACHRICHT",
+				Message = $"{player.Name} hat {target.Name} vom Server gebannt! Grund: {reason}",
+				Duration = 10000
+			});
 
-				foreach (var user in RPPlayer.All.ToList())
-				{
-					user.EmitBrowser("Hud:ShowGlobalNotification", data);
-				}
+			foreach (var user in RPPlayer.All.ToList())
+			{
+				user.EmitBrowser("Hud:ShowGlobalNotification", data);
 			}
 
 			var history = new AdminHistoryModel(target.DbId, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.BAN);

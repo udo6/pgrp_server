@@ -6,7 +6,7 @@ namespace Game.Modules
 {
 	public static class FoodModule
 	{
-		[EveryMinute]
+		[EveryTwoMinute]
 		public static void OnEveryMinute()
 		{
 			foreach(var player in RPPlayer.All.ToList())

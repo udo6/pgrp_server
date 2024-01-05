@@ -8,6 +8,7 @@ namespace Game
 	{
 		public static readonly List<MethodInfo> EveryFifteenMinuteActions = new();
 		public static readonly List<MethodInfo> EveryMinuteActions = new();
+		public static readonly List<MethodInfo> EveryTwoMinuteActions = new();
 		public static readonly List<MethodInfo> EveryTenSecondsActions = new();
 		public static readonly List<MethodInfo> EveryFiveSecondsActions = new();
 
@@ -25,6 +26,12 @@ namespace Game
 			minute.Elapsed += EveryMinute;
 			minute.AutoReset = true;
 			minute.Start();
+
+			var twoMinute = new System.Timers.Timer();
+			twoMinute.Interval = 120000;
+			twoMinute.Elapsed += EveryTwoMinute;
+			twoMinute.AutoReset = true;
+			twoMinute.Start();
 
 			var tenSecond = new System.Timers.Timer();
 			tenSecond.Interval = 10000;
@@ -48,6 +55,12 @@ namespace Game
 		public static void EveryMinute(object? sender, ElapsedEventArgs e)
 		{
 			foreach (var action in EveryMinuteActions)
+				action.Invoke(null, Array.Empty<object>());
+		}
+
+		public static void EveryTwoMinute(object? sender, ElapsedEventArgs e)
+		{
+			foreach (var action in EveryTwoMinuteActions)
 				action.Invoke(null, Array.Empty<object>());
 		}
 

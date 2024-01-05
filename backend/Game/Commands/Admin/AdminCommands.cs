@@ -68,5 +68,14 @@ namespace Game.Commands.Admin
 
 			player.Emit("Client:AdminModule:ToggleNames");
 		}
+
+		[Command("team")]
+		public static void Team(RPPlayer player)
+		{
+			if (player.AdminRank < AdminRank.GUIDE) return;
+
+			var teamOnline = RPPlayer.All.ToList().Count(x => x.AdminRank > AdminRank.SPIELER);
+			player.Notify("Administration", $"Es sind {teamOnline} Team Mitglieder online!", NotificationType.INFO);
+		}
 	}
 }

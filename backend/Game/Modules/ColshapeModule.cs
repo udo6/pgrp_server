@@ -34,6 +34,7 @@ namespace Game.Modules
 			(ColshapeType.TUNER, ("KEY_E", "TUNER")),
 			(ColshapeType.LSPD_TELEPORTER, ("KEY_E", "LSPD_TELEPORTER")),
 			(ColshapeType.CREATOR, ("KEY_E", "CREATOR")),
+			(ColshapeType.TICKET_PAY_STATION, ("KEY_E", "PAY_STATION")),
 
 			(ColshapeType.DOOR, ("KEY_L", "DOOR_LOCK")),
 

@@ -8,9 +8,14 @@ namespace Game.ItemScripts
 {
     public class BulletproofVest : ItemScript
 	{
-		private static readonly int ArmorDrawable = 15;
-		private static readonly int ArmorTexture = 2;
-		private static readonly uint ArmorDlc = 0;
+		private static readonly int MaleArmorDrawable = 15;
+		private static readonly int MaleArmorTexture = 2;
+		private static readonly uint MaleArmorDlc = 0;
+
+
+		private static readonly int FemaleArmorDrawable = 17;
+		private static readonly int FemaleArmorTexture = 2;
+		private static readonly uint FemaleArmorDlc = 0;
 
 		public BulletproofVest() : base(9, true)
 		{
@@ -26,14 +31,21 @@ namespace Game.ItemScripts
 			{
 				if (player == null || !player.Exists) return;
 
+				var custom = CustomizationService.Get(player.CustomizationId);
+				if (custom == null) return;
+
+				var drawable = custom.Gender ? MaleArmorDrawable : FemaleArmorDrawable;
+				var texture = custom.Gender ? MaleArmorTexture : FemaleArmorTexture;
+				var dlc = custom.Gender ? MaleArmorDlc : FemaleArmorDlc;
+
 				var clothes = ClothesService.Get(player.ClothesId);
 				if (clothes == null) return;
 
-				if (clothes.Armor != ArmorDrawable || clothes.ArmorColor != ArmorTexture || clothes.ArmorDlc != ArmorDlc)
+				if (clothes.Armor != drawable || clothes.ArmorColor != texture || clothes.ArmorDlc != dlc)
 				{
-					clothes.Armor = ArmorDrawable;
-					clothes.ArmorColor = ArmorTexture;
-					clothes.ArmorDlc = ArmorDlc;
+					clothes.Armor = drawable;
+					clothes.ArmorColor = texture;
+					clothes.ArmorDlc = dlc;
 					ClothesService.Update(clothes);
 				}
 
@@ -41,7 +53,7 @@ namespace Game.ItemScripts
 				var armor = (ushort)(attribute == null ? 100 : attribute.Value);
 
 				player.SetArmor(armor);
-				player.SetClothing(9, ArmorDrawable, ArmorTexture, ArmorDlc);
+				player.SetClothing(9, drawable, texture, dlc);
 				player.VestItemId = ItemId;
 				InventoryController.RemoveItem(inventory, item.Slot, 1);
 			}, 4000);

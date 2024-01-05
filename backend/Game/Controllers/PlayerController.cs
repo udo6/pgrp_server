@@ -274,9 +274,22 @@ namespace Game.Controllers
 				var account = AccountService.Get(player.DbId);
 				if (account == null) return;
 
+				var inventory = InventoryService.Get(player.InventoryId);
+				if (inventory == null) return;
+
+				player.Phone = false;
+				player.Laptop = false;
+
+				account.Phone = false;
+				account.Laptop = false;
 				account.Backpack = false;
-				PlayerController.SetMoney(player, 0);
+				SetMoney(player, 0);
+
 				InventoryService.ClearInventoryItems(player.InventoryId);
+				inventory.Slots = 6;
+				inventory.MaxWeight = 25f;
+				InventoryService.Update(inventory);
+
 				LoadoutService.ClearPlayerLoadout(player.DbId);
 				player.RemoveAllWeapons(true);
 				player.Weapons.Clear();
@@ -405,15 +418,16 @@ namespace Game.Controllers
 			player.EmitBrowser("Hud:SetMoney", account.Money);
 		}
 
-		public static void RemoveMoney(RPPlayer player, int amount)
+		public static bool RemoveMoney(RPPlayer player, int amount)
 		{
 			var account = AccountService.Get(player.DbId);
-			if (account == null) return;
+			if (account == null || account.Money < amount) return false;
 
 			account.Money -= amount;
 			AccountService.Update(account);
 
 			player.EmitBrowser("Hud:SetMoney", account.Money);
+			return true;
 		}
 
 		public static void SetClothes(RPPlayer player, ClothesModel clothes, int component, int drawable, int texture, uint dlc, bool apply = false, bool update = false)

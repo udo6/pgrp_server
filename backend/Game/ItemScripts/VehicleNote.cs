@@ -14,7 +14,7 @@ namespace Game.ItemScripts
 
 		public override void OnUse(RPPlayer player, InventoryModel inventory, InventoryItemModel item, int slot, int amount)
 		{
-			if (!player.IsInVehicle || player.Seat != 0) return;
+			if (!player.IsInVehicle || player.Seat != 1) return;
 
 			var veh = (RPVehicle)player.Vehicle;
 			if (!VehicleController.IsVehicleOwner(veh, player)) return;

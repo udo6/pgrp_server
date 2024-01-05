@@ -18,7 +18,7 @@ namespace Game.Modules
 
 		private static void Open(RPPlayer player)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsInVehicle) return;
 
 			var items = new List<NativeMenuItem>();
 			foreach(var item in AnimationService.GetCategories())
@@ -31,7 +31,7 @@ namespace Game.Modules
 
 		private static void OpenCategory(RPPlayer player, int category)
 		{
-			if (!player.LoggedIn) return;
+			if (!player.LoggedIn || player.IsInVehicle) return;
 
 			var items = new List<NativeMenuItem>();
 			foreach (var item in AnimationService.GetFromCategory(category))

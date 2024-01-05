@@ -10,7 +10,10 @@ namespace Discord
 		{
 			if (Client != null) return;
 
-			Client = new DiscordSocketClient();
+			Client = new DiscordSocketClient(new()
+			{
+				GatewayIntents = GatewayIntents.GuildMembers
+			});
 			Client.Log += Log;
 
 			await Client.LoginAsync(TokenType.Bot, Token);
@@ -25,7 +28,9 @@ namespace Discord
 			var guild = Client.Guilds.FirstOrDefault(x => x.Id == 1162876377511505980);
 			if (guild == null) return false;
 
-			var user = guild.Users.FirstOrDefault(x => x.Id == userId);
+			await guild.DownloadUsersAsync();
+
+			var user = guild.GetUser(userId);
 			if (user == null) return false;
 
 			var dm = await user.CreateDMChannelAsync();

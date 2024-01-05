@@ -4,6 +4,7 @@ using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
 using Database.Services;
+using Discord;
 using Game.Controllers;
 using Logs;
 
@@ -147,6 +148,18 @@ namespace Game.Modules
 
 			var injury = GetInjuryType(weapon);
 			PlayerController.SetPlayerDead(player, injury);
+
+			if(player.Phone)
+			{
+				var dispatch = new Core.Models.Laptop.Dispatch(player.DbId, player.Name, "Notrufsignal", player.Position, "", DateTime.Now.ToString("HH:mm"), 3);
+				LaptopModule.Dispatches.Add(dispatch);
+				foreach (var target in RPPlayer.All.ToList())
+				{
+					if (!LaptopModule.HasAccessToDispatch(dispatch, target.TeamId)) continue;
+
+					target.Notify("Dispatch", $"Es ist ein Dispatch von {player.Name} eingegangen!", NotificationType.INFO);
+				}
+			}
 		}
 
 		private static InjuryType GetInjuryType(uint weapon)

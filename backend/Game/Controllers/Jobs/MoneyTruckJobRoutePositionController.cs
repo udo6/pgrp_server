@@ -23,11 +23,11 @@ namespace Game.Controllers.Jobs
             var position = PositionService.Get(model.PositionId);
             if (position == null) return;
 
-            var pickupPoint = (RPShape)Alt.CreateColShapeCylinder(position.Position.Down(), 1.5f, 1.5f);
+            var pickupPoint = (RPShape)Alt.CreateColShapeCylinder(position.Position.Down(), 1f, 1.5f);
             pickupPoint.ShapeId = model.Id;
             pickupPoint.Dimension = 0;
             pickupPoint.ShapeType = ColshapeType.MONEY_TRUCK_JOB_PICKUP;
-            pickupPoint.Size = 1.5f;
+            pickupPoint.Size = 1f;
             pickupPoint.SetData("MONEY_TRUCK_PICKED_UP", false);
         }
     }

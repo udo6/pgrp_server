@@ -30,6 +30,7 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
+			Alt.OnClient<RPPlayer, int>("Server:Anticheat:Healkey", DetectedHealkey);
 			Alt.OnClient<RPPlayer>("Server:Anticheat:VehicleEngineToggle", DetectedVehicleEngine);
 			Alt.OnClient<RPPlayer, uint>("Server:Anticheat:NoReload", DetectedNoreload);
 			Alt.OnClient<RPPlayer, uint, float>("Server:Anticheat:Rapidfire", DetectedRapidfire);
@@ -60,6 +61,13 @@ namespace Game.Modules
 		}
 
 		// client ac
+
+		private static void DetectedHealkey(RPPlayer player, int health)
+		{
+			if (player.LastHealthChange.AddSeconds(5) >= DateTime.Now || player.Health + player.Armor <= player.AllowedHealth) return;
+
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Healkey (Health: {player.Health + player.Armor} Allowed Health: {health})");
+		}
 
 		private static void DetectedVehicleEngine(RPPlayer player)
 		{
@@ -128,15 +136,7 @@ namespace Game.Modules
 				var maxDamage = WeaponDamage[weapon];
 				if (damage > maxDamage)
 				{
-					var account = AccountService.Get(player.DbId);
-					if (account == null) return false;
-
-					account.BannedUntil = DateTime.Now.AddYears(10);
-					account.BanReason = "Cheating";
-					AccountService.Update(account);
-
-					LogService.LogPlayerBan(player.DbId, 0, $"Damage modifier (Weapon: {weapon} Damage: {damage} Allowed Damage: {maxDamage})");
-					player.Kick("Du wurdest gebannt! Grund: Cheating");
+					PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Damage modifier (Weapon: {weapon} Damage: {damage} Allowed Damage: {maxDamage})");
 					return false;
 				}
 
@@ -180,16 +180,7 @@ namespace Game.Modules
 				player.ExplosionsCaused++;
 				if (player.ExplosionsCaused > 20)
 				{
-					var account = AccountService.Get(player.DbId);
-					if (account != null)
-					{
-						account.BannedUntil = DateTime.Now.AddYears(10);
-						account.BanReason = "Cheating";
-						AccountService.Update(account);
-					}
-
-					LogService.LogPlayerBan(player.DbId, 0, $"Caused too many explosions!");
-					player.Kick("Du wurdest gebannt! Grund: Cheating");
+					PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Caused too many explosions!");
 
 					foreach(var target in RPPlayer.All.ToList())
 					{
@@ -211,17 +202,9 @@ namespace Game.Modules
 				}
 			}
 
-			if (explosionType == ExplosionType.GrenadeLauncher)
+			if (explosionType == ExplosionType.GrenadeLauncher || explosionType == ExplosionType.Grenade || explosionType == ExplosionType.StickyBomb)
 			{
-				var account = AccountService.Get(player.DbId);
-				if (account == null) return false;
-
-				account.BannedUntil = DateTime.Now.AddYears(10);
-				account.BanReason = "Cheating";
-				AccountService.Update(account);
-
-				LogService.LogPlayerBan(player.DbId, 0, $"SKRIPT Explosive Ammo (Grenadelauncher)");
-				player.Kick("Du wurdest gebannt! Grund: Cheating");
+				PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Blacklisted Explosion");
 				return false;
 			}
 

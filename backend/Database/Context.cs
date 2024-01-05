@@ -135,10 +135,10 @@ namespace Database
 
 			var connectionString = new MySqlConnectionStringBuilder
 			{
-				Server = "176.96.137.221",
+				Server = "localhost",
 				Port = 3306,
 				UserID = "mason",
-				Password = "Paiyai43234!",
+				Password = "3ad51Ox1ciso3uSaL53ARalo74SIYo",
 				Database = "pgrp",
 			};
 

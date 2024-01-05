@@ -35,6 +35,8 @@ namespace Database.Services
 			return ctx.Accounts.Where(x =>
 				x.Id.ToString().ToLower().Contains(search.ToLower()) ||
 				x.Name.ToLower().Contains(search.ToLower()) ||
+				x.ForumId.ToString().ToLower().Contains(search.ToLower()) ||
+				x.DiscordId.ToString().ToLower().Contains(search.ToLower()) ||
 				x.TeamId.ToString().ToLower().Contains(search.ToLower()) ||
 				x.PhoneNumber.ToString().ToLower().Contains(search.ToLower())).Take(take).ToList();
 		}

@@ -48,7 +48,7 @@ namespace Game.Modules
 			player.Emit("Client:PlayerModule:SetFarming", true);
 		}
 
-		[EveryFiveSeconds]
+		[EveryFiveSecondsAttribute]
 		public static void PlayerTick()
 		{
 			var itemBases = InventoryService.GetItems();

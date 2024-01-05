@@ -68,5 +68,6 @@
         MONEY_TRUCK_JOB_PICKUP,
         CREATOR,
         GARDENER_JOB_START,
+		TICKET_PAY_STATION
     }
 }
