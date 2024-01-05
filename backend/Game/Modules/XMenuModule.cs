@@ -475,9 +475,9 @@ namespace Game.Modules
 				if (baseModel == null) return;
 
 				var freeSeat = 0;
-				for(var i = 1; i < baseModel.Seats; i++)
+                for (var i = 2; i <= baseModel.Seats; i++)
 				{
-					if (RPPlayer.All.Any(x => x.Vehicle == veh && x.Seat == i)) continue;
+					if (RPPlayer.All.Any(x => x.Vehicle == veh && x.Seat == i && x.IsInVehicle)) continue;
 
 					freeSeat = i;
 					break;
@@ -489,8 +489,8 @@ namespace Game.Modules
 					return;
 				}
 
-				target.SetIntoVehicle(veh, 2);
-			}, 7500);
+                target.Emit("Client:SetIntoVehicle", veh, freeSeat);
+            }, 7500);
 		}
 
 		private static void TakeLicense(RPPlayer player, int targetId)
