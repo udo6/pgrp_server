@@ -175,7 +175,7 @@ namespace Game.Modules
 
 			if (explosionType == ExplosionType.Unknown || explosionType == ExplosionType.GasTank || explosionType == ExplosionType.Propane) return false;
 
-			if(explosionType != ExplosionType.Flare && explosionType != ExplosionType.Snowball && explosionType != ExplosionType.DirGasCanister && explosionType != ExplosionType.DirFlame)
+			if(explosionType != ExplosionType.Flare && explosionType != ExplosionType.Snowball && explosionType != ExplosionType.DirGasCanister && explosionType != ExplosionType.DirFlame && explosionType != ExplosionType.DirWaterHydrant)
 			{
 				player.ExplosionsCaused++;
 				if (player.ExplosionsCaused > 20)
