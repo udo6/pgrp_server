@@ -47,12 +47,8 @@ namespace Game.Modules
 
 			player.OAuthDiscordId = discordId;
 			player.AuthCode = GenerateAuthCode();
-			var success = Discord.Main.SendAuthCode(discordId, player.AuthCode).Result;
-			if (success)
-			{
-				player.ShowComponent("Login", true, player.Name);
-				return;
-			}
+			Discord.Main.SendAuthCode(discordId, player.AuthCode);
+			player.ShowComponent("Login", true, player.Name);
 
 			player.Kick("Du wurdest gekicked! Grund: Du musst auf dem Pegasus Roleplay Discord sein! (discord.gg/pgrp)");
 		}

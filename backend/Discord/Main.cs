@@ -6,36 +6,41 @@ namespace Discord
 	{
 		private static string Token = "MTE5MjUyMzc3NjM3NDYyNDQxNw.Gt7QA-.WzlugCVoog1UnhqU_mgJUrx1Np7fTpGaL7t9wY";
 		private static DiscordSocketClient? Client = null;
-		public static async Task Start()
+		public static void Start()
 		{
-			if (Client != null) return;
-
-			Client = new DiscordSocketClient(new()
+			Task.Run(async () =>
 			{
-				GatewayIntents = GatewayIntents.GuildMembers
-			});
-			Client.Log += Log;
+				if (Client != null) return;
 
-			await Client.LoginAsync(TokenType.Bot, Token);
-			await Client.StartAsync();
-			await Task.Delay(-1);
+				Client = new DiscordSocketClient(new()
+				{
+					GatewayIntents = GatewayIntents.GuildMembers
+				});
+				Client.Log += Log;
+
+				await Client.LoginAsync(TokenType.Bot, Token);
+				await Client.StartAsync();
+				await Task.Delay(-1);
+			});
 		}
 
-		public static async Task<bool> SendAuthCode(ulong userId, string code)
+		public static void SendAuthCode(ulong userId, string code)
 		{
-			if (Client == null) return false;
+			Task.Run(async () =>
+			{
+				if (Client == null) return;
 
-			var guild = Client.Guilds.FirstOrDefault(x => x.Id == 1162876377511505980);
-			if (guild == null) return false;
+				var guild = Client.Guilds.FirstOrDefault(x => x.Id == 1162876377511505980);
+				if (guild == null) return;
 
-			await guild.DownloadUsersAsync();
+				await guild.DownloadUsersAsync();
 
-			var user = guild.GetUser(userId);
-			if (user == null) return false;
+				var user = guild.GetUser(userId);
+				if (user == null) return;
 
-			var dm = await user.CreateDMChannelAsync();
-			await dm.SendMessageAsync($"Dein Authentifizierungscode: {code}");
-			return true;
+				var dm = await user.CreateDMChannelAsync();
+				await dm.SendMessageAsync($"Dein Authentifizierungscode: {code}");
+			});
 		}
 
 		private static Task Log(LogMessage msg)

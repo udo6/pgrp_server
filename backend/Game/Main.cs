@@ -10,7 +10,8 @@ namespace Game
 	{
 		public override void OnStart()
 		{
-			Discord.Main.Start(); // soll nicht awaited werden
+			Discord.Main.Start();
+
 			Initializer.Initialize();
 			RequestHandler.Register();
 
