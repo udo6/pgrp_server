@@ -18,7 +18,7 @@ namespace Database.Services
 			return ctx.Vehicles.Where(x => x.Type == OwnerType.PLAYER && (x.OwnerId == accId || x.KeyHolderId == accId)).ToList();
 		}
 
-		public static List<VehicleModel> Search(string search, List<VehicleBaseModel> vehBases, List<TeamModel> teams, int max)
+		public static List<VehicleModel> Search(string search, List<VehicleBaseModel> vehBases, List<TeamModel> teams)
 		{
 			using var ctx = new Context();
 			var result = new List<VehicleModel>();
@@ -71,8 +71,6 @@ namespace Database.Services
 						}
 						break;
 				}
-
-				if(result.Count >= max) break;
 			}
 
 			return result;
