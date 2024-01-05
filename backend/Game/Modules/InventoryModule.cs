@@ -131,6 +131,13 @@ namespace Game.Modules
 				if(rootInventoryId != player.InventoryId && targetInventoryId != player.InventoryId) return;
 				if (!HasInventoryAccess(player, containerInventory)) return;
 
+				if(targetInventory.Type == InventoryType.LAB_OUTPUT || targetInventory.Type == InventoryType.LAB_ROB)
+				{
+					player.ShowComponent("Inventory", false);
+					player.Notify("Information", "Du kannst in dieses Inventar nichts rein legen!", NotificationType.ERROR);
+					return;
+				}
+
 				var warehouseInventory = rootInventory.Type == InventoryType.WAREHOUSE ? rootInventory : targetInventory.Type == InventoryType.WAREHOUSE ? targetInventory : null;
 				if (warehouseInventory != null)
 				{
@@ -175,6 +182,13 @@ namespace Game.Modules
 			{
 				if (rootInventoryId != player.InventoryId && targetInventoryId != player.InventoryId) return;
 				if (!HasInventoryAccess(player, containerInventory)) return;
+
+				if (targetInventory.Type == InventoryType.LAB_OUTPUT || targetInventory.Type == InventoryType.LAB_ROB)
+				{
+					player.ShowComponent("Inventory", false);
+					player.Notify("Information", "Du kannst in dieses Inventar nichts rein legen!", NotificationType.ERROR);
+					return;
+				}
 
 				var warehouseInventory = rootInventory.Type == InventoryType.WAREHOUSE ? rootInventory : targetInventory.Type == InventoryType.WAREHOUSE ? targetInventory : null;
 				if (warehouseInventory != null)
