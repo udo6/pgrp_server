@@ -49,7 +49,7 @@ namespace Game.Modules
 			var shape = RPShape.Get(player.Position, player.Dimension, Core.Enums.ColshapeType.DEALER);
 			if (shape == null) return;
 
-			var dealerCache = DealerController.DealerCache.FirstOrDefault(x => x.DealerId == shape.Id);
+			var dealerCache = DealerController.DealerCache.FirstOrDefault(x => x.DealerId == shape.ShapeId);
 			if (dealerCache == null) return;
 
 			var itemBases = InventoryService.GetItems();
