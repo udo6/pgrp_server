@@ -95,7 +95,7 @@ namespace Game.Modules
 				return;
 			}
 
-			var dealerCache = DealerController.DealerCache.FirstOrDefault(x => x.DealerId == shape.Id);
+			var dealerCache = DealerController.DealerCache.FirstOrDefault(x => x.DealerId == shape.ShapeId);
 			if (dealerCache == null) return;
 
 			var itemCache = dealerCache.Items.FirstOrDefault(x => x.Id == itemId);
