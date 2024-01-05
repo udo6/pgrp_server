@@ -65,7 +65,14 @@ namespace Game.Modules
 				return;
 			}
 
-			if (gangwar.LastAttack.AddHours(36) > DateTime.Now)
+			var now = DateTime.Now;
+			if(now.Hour < 18)
+			{
+				player.Notify("Gangwar", "Du kannst erst ab 18 Uhr ein Gangwar Gebiet angreifen!", NotificationType.ERROR);
+				return;
+			}
+
+			if (gangwar.LastAttack.AddHours(36) > now)
 			{
 				player.Notify("Gangwar", "Das Gebiet wurde bereits in den letzten 36 Stunden attackiert!", NotificationType.ERROR);
 				return;
