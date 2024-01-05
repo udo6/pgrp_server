@@ -8,7 +8,7 @@ namespace Discord
 		private static DiscordSocketClient? Client = null;
 		public static void Start()
 		{
-			Task.Run(async () =>
+			ThreadPool.QueueUserWorkItem(async o =>
 			{
 				if (Client != null) return;
 
@@ -26,7 +26,7 @@ namespace Discord
 
 		public static void SendAuthCode(ulong userId, string code)
 		{
-			Task.Run(async () =>
+			ThreadPool.QueueUserWorkItem(async o =>
 			{
 				if (Client == null) return;
 

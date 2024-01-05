@@ -271,7 +271,7 @@ namespace Game.Modules
 
 			var bases = VehicleService.GetAllBases();
 			var teams = TeamService.GetAll();
-			var vehicles = VehicleService.Search(search, bases, teams, 10);
+			var vehicles = VehicleService.Search(search, bases, teams);
 			var data = new List<object>();
 
 			foreach(var vehicle in vehicles)
