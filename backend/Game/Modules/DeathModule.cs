@@ -149,7 +149,7 @@ namespace Game.Modules
 			var injury = GetInjuryType(weapon);
 			PlayerController.SetPlayerDead(player, injury);
 
-			if(player.Phone)
+			if(player.Dimension == 0 && player.Phone)
 			{
 				var dispatch = new Core.Models.Laptop.Dispatch(player.DbId, player.Name, "Notrufsignal", player.Position, "", DateTime.Now.ToString("HH:mm"), 3);
 				LaptopModule.Dispatches.Add(dispatch);
