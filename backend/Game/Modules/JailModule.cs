@@ -7,8 +7,6 @@ using Core.Extensions;
 using Database.Models.Account;
 using Database.Services;
 using Game.Controllers;
-using System.Diagnostics;
-using System.Security.Principal;
 
 namespace Game.Modules
 {
@@ -17,6 +15,7 @@ namespace Game.Modules
 		private static readonly Position ReleasePosition = new(1846.3649f, 2585.9473f, 45.657837f);
 		private static readonly Position ImprisonPosition = new(1690.7605f, 2591.5122f, 45.910645f);
 		private static readonly Position SpawnPosition = new(1691.4462f, 2565.4812f, 45.556763f);
+		private static readonly Position OutsidePosition = new(1845.6659f, 2585.934f, 45.657837f);
 
 		[Initialize]
 		public static void Initialize()
@@ -25,6 +24,11 @@ namespace Game.Modules
 			shape.ShapeId = 1;
 			shape.ShapeType = ColshapeType.JAIL;
 			shape.Size = 2f;
+
+			var outsideShape = (RPShape)Alt.CreateColShapeCylinder(OutsidePosition.Down(), 2f, 2f);
+			outsideShape.ShapeId = 2;
+			outsideShape.ShapeType = ColshapeType.JAIL_OUTSIDE;
+			outsideShape.Size = 2f;
 
 			Alt.OnClient<RPPlayer, int>("Server:Jail:ReleaseInmate", ReleaseInmate);
 			Alt.OnClient<RPPlayer, int>("Server:Jail:Imprison", ImprisonPlayer);

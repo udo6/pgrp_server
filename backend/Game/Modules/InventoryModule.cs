@@ -88,6 +88,7 @@ namespace Game.Modules
 									break;
 								case ColshapeType.TEAM:
 								case ColshapeType.JAIL:
+								case ColshapeType.JAIL_OUTSIDE:
 									container = InventoryService.Get(player.LockerInventoryId);
 									break;
 							}
