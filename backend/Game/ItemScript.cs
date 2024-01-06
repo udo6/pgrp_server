@@ -40,7 +40,7 @@ namespace Game
 
 		public override void OnUse(RPPlayer player, InventoryModel inventory, InventoryItemModel item, int slot, int amount)
 		{
-			if (Federal && !player.TeamDuty/* || player.Level < 3*/ || WeaponType == WeaponType.MEELE) return;
+			if (Federal && !player.TeamDuty/* || player.Level < 3*/) return;
 
 			if(player.Weapons.Any(x => x.Hash == Hash))
 			{
