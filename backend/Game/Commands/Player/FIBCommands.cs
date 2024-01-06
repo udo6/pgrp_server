@@ -22,7 +22,7 @@ namespace Game.Commands.Player
 			var nativeItems = new List<NativeMenuItem>();
 			foreach(var target in RPPlayer.All.ToList())
 			{
-				if (!target.LoggedIn || !CrimeService.HasPlayerCrimes(target.DbId)) continue;
+				if (!target.LoggedIn || !CrimeService.HasPlayerJailtimeCrime(target.DbId)) continue;
 
 				nativeItems.Add(new(target.Name, false, "Server:FIB:LocatePlayer", target.DbId));
 			}
