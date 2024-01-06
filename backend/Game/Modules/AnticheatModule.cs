@@ -27,9 +27,33 @@ namespace Game.Modules
 			{ 3347935668u, 8 },  // Heavyrifle
 		};
 
+		private static Dictionary<uint, int> MeeleDamage = new()
+		{
+			{ 0xA2719263, 10 },   // Fist
+			{ 0x92A27487, 20 },   // Dagger
+			{ 0x958A4A8F, 20 },   // Bat
+			{ 0xF9E6AA4B, 20 },   // Bottle
+			{ 0x84BD7BFD, 20 },   // Crowbar
+			{ 0x8BB05FD7, 20 },   // Flashlight
+			{ 0x440E4788, 20 },   // Golfclub
+			{ 0x4E875F73, 20 },   // Hammer
+			{ 0xF9DCBF2D, 20 },   // Hatchet
+			{ 0xD8DF3C3C, 13 },   // Knuckle
+			{ 0x99B507EA, 20 },   // Knife
+			{ 0xDD5DF8D9, 20 },   // Machete
+			{ 0xDFE37640, 20 },   // Switchblade
+			{ 0x678B81B1, 20 },   // Nightstick
+			{ 0x19044EE0, 20 },   // Wrench
+			{ 0xCD274149, 20 },   // Battleaxe
+			{ 0x94117305, 20 },   // Queue
+			{ 0x3813FC08, 20 },   // Hatchet
+			{ 0x6589186A, 10 },  // Candycane
+		};
+
 		[Initialize]
 		public static void Initialize()
 		{
+			Alt.OnClient<RPPlayer, string>("Server:Anticheat:UnallowedResource", DetectedUnallowedResource);
 			Alt.OnClient<RPPlayer, int>("Server:Anticheat:Healkey", DetectedHealkey);
 			Alt.OnClient<RPPlayer>("Server:Anticheat:VehicleEngineToggle", DetectedVehicleEngine);
 			Alt.OnClient<RPPlayer, uint>("Server:Anticheat:NoReload", DetectedNoreload);
@@ -61,6 +85,11 @@ namespace Game.Modules
 		}
 
 		// client ac
+
+		private static void DetectedUnallowedResource(RPPlayer player, string resourceName)
+		{
+			PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Unallowed resource (Name: {resourceName})");
+		}
 
 		private static void DetectedHealkey(RPPlayer player, int health)
 		{
@@ -119,6 +148,7 @@ namespace Game.Modules
 				{
 					var targetPlayer = (RPPlayer)target;
 					targetPlayer.Spawn(player.Position, 0);
+					targetPlayer.SetArmor(0);
 					PlayerController.SetPlayerAlive(targetPlayer, false);
 				}
 				return false;
@@ -128,7 +158,14 @@ namespace Game.Modules
 			{
 				var targetPlayer = (RPPlayer)target;
 				targetPlayer.LastAttackerId = player.DbId;
+				targetPlayer.Emit("Client:AnticheatModule:SetHealth", targetPlayer.Health + targetPlayer.Armor - damage);
 				LogService.LogDamage(player.DbId, targetPlayer.DbId, weapon, damage, (int)bodyPart);
+			}
+
+			if (MeeleDamage.ContainsKey(weapon))
+			{
+				var maxDamage = MeeleDamage[weapon];
+				if (damage > maxDamage) return false;
 			}
 
 			if (WeaponDamage.ContainsKey(weapon))

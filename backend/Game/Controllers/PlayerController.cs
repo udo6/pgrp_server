@@ -335,7 +335,7 @@ namespace Game.Controllers
 					await Task.Delay(2000);
 
 					player.Spawn(player.Position, 0);
-					player.Emit("Client:AnticheatModule:SetHealth", 200);
+					player.SetHealth(200);
 					if (!player.Alive)
 					{
 						player.Invincible = true;
