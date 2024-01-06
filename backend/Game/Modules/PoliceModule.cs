@@ -29,7 +29,7 @@ namespace Game.Modules
 			new(-1096.3121f, -850.16705f, 38.22705f)
 		};
 
-		private static Position TicketPayStationPosition = new(-1084.5099f, -796.8f, 19.30481f);
+		private static Position TicketPayStationPosition = new(-1102.3253f, -815.74945f, 19.321655f);
 
 		[Initialize]
 		public static void Initialize()

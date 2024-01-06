@@ -29,15 +29,28 @@ namespace Database.Services
 		{
 			using var ctx = new Context();
 			return ctx.Crimes.FirstOrDefault(x => x.Id == id);
-		}
+        }
 
-		public static bool HasPlayerCrimes(int accountId)
-		{
-			using var ctx = new Context();
-			return ctx.Crimes.Any(x => x.AccountId == accountId);
-		}
+        public static bool HasPlayerCrimes(int accountId)
+        {
+            using var ctx = new Context();
+            return ctx.Crimes.Any(x => x.AccountId == accountId);
+        }
 
-		public static List<CrimeModel> GetPlayerCrimes(int accountId)
+        public static bool HasPlayerJailtimeCrime(int accountId)
+        {
+            using var ctx = new Context();
+			List<CrimeBaseModel> crimes = ctx.CrimeBases.ToList();
+            var crime = ctx.Crimes.FirstOrDefault(x => x.AccountId == accountId);
+            if (crime == null) return false;
+
+			var crimeBase = crimes.FirstOrDefault(x => x.Id == crime.CrimeId);
+			if (crimeBase == null) return false;
+
+            return crimeBase.JailTime > 0;
+        }
+
+        public static List<CrimeModel> GetPlayerCrimes(int accountId)
 		{
 			using var ctx = new Context();
 			return ctx.Crimes.Where(x => x.AccountId == accountId).ToList();

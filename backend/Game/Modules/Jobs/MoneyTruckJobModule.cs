@@ -126,6 +126,7 @@ namespace Game.Modules.Jobs
 
                 var blip = Alt.CreateBlip(false, BlipType.Destination, pos.Position, new[] { player });
                 blip.ShortRange = false;
+                blip.SetData("BLIP_ID", position.Id);
                 blip.ScaleXY = new Vector2(0.85f, 0.85f);
                 blip.Sprite = 351;
                 blip.Name = "Geld";
@@ -217,7 +218,27 @@ namespace Game.Modules.Jobs
 
             if (count < routePositions.Count)
             {
-                player.Notify("Geldtransporter", "Du hast nicht alle Geldsäcke gesichert.", NotificationType.ERROR);
+                player.Notify("Geldtransporter", "Du hast nicht alle Geldsäcke gesichert.", NotificationType.ERROR); 
+                player.IsInMoneyTruckJob = false;
+                player.Emit("Client:PropSyncModule:Clear");
+                player.TempClothesId = 0;
+                PlayerController.ApplyPlayerClothes(player);
+
+                route.InWork = false;
+                route.PlayerId = 0;
+
+                if (player.JobVehicle != null)
+                {
+                    player.JobVehicle.Delete();
+                    player.JobVehicle = null!;
+                }
+
+                foreach (var blip in player.TemporaryBlips)
+                {
+                    blip.Destroy();
+                }
+
+                player.TemporaryBlips.Clear();
                 return;
             }
 
@@ -268,6 +289,12 @@ namespace Game.Modules.Jobs
             player.SetObjectProp("prop_money_bag_01", 0xdead, 0.56, 0, 0, 0, 360, 270);
             player.HasMoneyInHand = true;
             // TODO: Play animation
+
+            var blip = player.TemporaryBlips.FirstOrDefault(x => x.GetData("BLIP_ID", out int blipId) && blipId == model.Id);
+            if (blip == null) return;
+
+            blip.Destroy();
+            player.TemporaryBlips.Remove(blip);
         }
 
         private static void Store(RPPlayer player, int id)
