@@ -579,7 +579,8 @@ namespace Game.Modules
 					var targetVehicle = RPVehicle.All.FirstOrDefault(x => x.TrunkId == inventory.Id && x.Dimension == player.Dimension);
 					return targetVehicle != null && !targetVehicle.Locked && !targetVehicle.TrunkLocked && player.Position.Distance(targetVehicle.Position) < 5f;
 				case InventoryType.GLOVEBOX:
-					return player.IsInVehicle && ((RPVehicle)player.Vehicle).GloveBoxId == inventory.Id && player.Position.Distance(player.Vehicle.Position) < 5f;
+					var vehicle = (RPVehicle)player.Vehicle;
+					return player.IsInVehicle && !vehicle.Locked && vehicle.GloveBoxId == inventory.Id && player.Position.Distance(player.Vehicle.Position) < 5f;
 				case InventoryType.LAB_FUEL:
 					var labFuelShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.LABORATORY_FUEL && x.InventoryId == inventory.Id && x.Dimension == player.Dimension && x.InventoryAccess.Count > 0 && x.InventoryAccess[0].Id == player.TeamId);
 					return labFuelShape != null && player.Position.Distance(labFuelShape.Position) < labFuelShape.Size;

@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord.Net;
+using Discord.WebSocket;
 
 namespace Discord
 {
@@ -10,17 +11,24 @@ namespace Discord
 		{
 			ThreadPool.QueueUserWorkItem(async o =>
 			{
-				if (Client != null) return;
-
-				Client = new DiscordSocketClient(new()
+				try
 				{
-					GatewayIntents = GatewayIntents.GuildMembers
-				});
-				Client.Log += Log;
+					if (Client != null) return;
 
-				await Client.LoginAsync(TokenType.Bot, Token);
-				await Client.StartAsync();
-				await Task.Delay(-1);
+					Client = new DiscordSocketClient(new()
+					{
+						GatewayIntents = GatewayIntents.GuildMembers
+					});
+					Client.Log += Log;
+
+					await Client.LoginAsync(TokenType.Bot, Token);
+					await Client.StartAsync();
+					await Task.Delay(-1);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"Disconnected from Discord Bot");
+				}
 			});
 		}
 
@@ -28,18 +36,25 @@ namespace Discord
 		{
 			ThreadPool.QueueUserWorkItem(async o =>
 			{
-				if (Client == null) return;
+				try
+				{
+					if (Client == null) return;
 
-				var guild = Client.Guilds.FirstOrDefault(x => x.Id == 1162876377511505980);
-				if (guild == null) return;
+					var guild = Client.Guilds.FirstOrDefault(x => x.Id == 1162876377511505980);
+					if (guild == null) return;
 
-				await guild.DownloadUsersAsync();
+					await guild.DownloadUsersAsync();
 
-				var user = guild.GetUser(userId);
-				if (user == null) return;
+					var user = guild.GetUser(userId);
+					if (user == null) return;
 
-				var dm = await user.CreateDMChannelAsync();
-				await dm.SendMessageAsync($"Dein Authentifizierungscode: {code}");
+					var dm = await user.CreateDMChannelAsync();
+					await dm.SendMessageAsync($"Dein Authentifizierungscode: {code}");
+				}
+				catch(Exception ex)
+				{
+					Console.WriteLine($"Cant send discord message to {userId}");
+				}
 			});
 		}
 

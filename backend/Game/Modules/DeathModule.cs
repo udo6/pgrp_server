@@ -36,10 +36,10 @@ namespace Game.Modules
 			{ InjuryType.PUNCH, 15 },
 			{ InjuryType.SLICE, 10 },
 			{ InjuryType.DROWN, 5 },
-			{ InjuryType.SHOT_LOW, 8 },
+			{ InjuryType.SHOT_LOW, 10 },
 			{ InjuryType.VEHICLE, 10 },
-			{ InjuryType.SHOT_HIGH, 5 },
-			{ InjuryType.FIRE, 5 },
+			{ InjuryType.SHOT_HIGH, 10 },
+			{ InjuryType.FIRE, 8 },
 			{ InjuryType.EXPLOSION, 5 }
 		};
 

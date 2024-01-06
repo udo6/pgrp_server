@@ -66,7 +66,7 @@ namespace Game.Modules
 				return;
 			}
 
-			player.SetDimension(10000 + (int)player.Id);
+			player.SetDimension(100000 + (int)player.Id);
 		}
 
 		private static void Auth(RPPlayer player, string code)

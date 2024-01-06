@@ -69,7 +69,7 @@ namespace Database.Services
 		{
 			using var ctx = new Context();
 			var now = DateTime.Now;
-			return ctx.Accounts.FirstOrDefault(x => x.BannedUntil > now && (x.IP == ip || x.SocialclubId == social || x.DiscordId == discord || (useHwid && x.HardwareId == hwid) || ( useHwidEx && x.HardwareIdEx == hwidEx)));
+			return ctx.Accounts.FirstOrDefault(x => x.BannedUntil > now && (x.IP == ip || x.SocialclubId == social || x.DiscordId == discord || (useHwid && x.HardwareId > 0 && x.HardwareId == hwid) || ( useHwidEx && x.HardwareIdEx > 0 && x.HardwareIdEx == hwidEx)));
 		}
 
 		public static bool CheckForumId(int forumId)

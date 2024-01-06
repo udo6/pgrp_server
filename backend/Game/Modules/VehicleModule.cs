@@ -27,7 +27,7 @@ namespace Game.Modules
 
 		private static void SetNote(RPPlayer player, string note)
 		{
-			if (!player.IsInVehicle || player.Seat != 0) return;
+			if (!player.IsInVehicle || player.Seat != 1) return;
 
 			var veh = (RPVehicle)player.Vehicle;
 			if (!VehicleController.IsVehicleOwner(veh, player)) return;

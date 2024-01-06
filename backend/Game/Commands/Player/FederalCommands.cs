@@ -13,7 +13,7 @@ namespace Game.Commands.Player
 		[Command("gov", true)]
 		public static void SendGovAnnounce(RPPlayer player, string message)
 		{
-			if(!player.LoggedIn || ((player.TeamId < 1 || player.TeamId > 2) && player.TeamId != 5)) return;
+			if(!player.LoggedIn || player.TeamId < 1 || player.TeamId > 5) return;
 
 			var account = AccountService.Get(player.DbId);
 			if (account == null || account.TeamRank < 7) return;

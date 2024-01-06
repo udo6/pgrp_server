@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using AltV.Net.Elements.Entities;
+using Core.Entities;
 using Core.Enums;
 using Database.Models.Inventory;
 using Database.Services;
@@ -27,7 +28,7 @@ namespace Game.Controllers
 		public static void MoveAllInsideContainer(int inventoryId, int oldSlot, int newSlot)
 		{
 			var inventory = InventoryService.Get(inventoryId);
-			if (inventory == null) return;
+			if (inventory == null || newSlot > inventory.Slots) return;
 
 			var items = InventoryService.GetInventoryItemsWithSlot(inventoryId, oldSlot, newSlot);
 			if (items.Count < 1) return;
@@ -39,6 +40,7 @@ namespace Game.Controllers
 					items[0].Slot = newSlot;
 					InventoryService.UpdateInventoryItem(items[0]);
 				}
+
 				return;
 			}
 
@@ -89,6 +91,11 @@ namespace Game.Controllers
 
 			var rootInventory = inventories[0].Id == rootInventoryId ? inventories[0] : inventories[1];
 			var targetInventory = inventories[0].Id == targetInventoryId ? inventories[0] : inventories[1];
+			if (targetInventory.Slots < newSlot)
+			{
+				player.ShowComponent("Inventory", false);
+				return;
+			}
 
 			var rootItem = InventoryService.GetInventoryItemBySlot(rootInventoryId, oldSlot);
 			if (rootItem == null) return;
@@ -182,7 +189,7 @@ namespace Game.Controllers
 		public static void MoveAmountInsideContainer(RPPlayer player, int inventoryId, int oldSlot, int newSlot, int amount)
 		{
 			var inventory = InventoryService.Get(inventoryId);
-			if (inventory == null) return;
+			if (inventory == null || newSlot > inventory.Slots) return;
 
 			var items = InventoryService.GetInventoryItemsWithSlot(inventoryId, oldSlot, newSlot);
 			if (items.Count != 1 || items[0].Slot != oldSlot) return;
@@ -209,6 +216,7 @@ namespace Game.Controllers
 			if (inventories.Count != 2) return;
 
 			var targetInventory = inventories[0].Id == targetInventoryId ? inventories[0] : inventories[1];
+			if (targetInventory.Slots < newSlot) return;
 
 			var rootItem = InventoryService.GetInventoryItemBySlot(rootInventoryId, oldSlot);
 			if (rootItem == null || rootItem.Amount <= amount) return;
