@@ -32,6 +32,14 @@ namespace Game.Modules.Scenario
 
 		public static void StartHacking(RPPlayer player)
 		{
+			if (player.IsInVehicle) return;
+
+			if (HasBeenAttacked)
+			{
+				player.Notify("Information", "Der Juwelier wurde bereits ausgeraubt!", NotificationType.ERROR);
+				return;
+			}
+
 			if (FederalBankScenarioModule.IsBeingAttacked)
 			{
 				player.Notify("Information", "Es wird bereits ein Objekt ausgeraubt!", NotificationType.ERROR);
@@ -48,7 +56,7 @@ namespace Game.Modules.Scenario
 			{
 				if (player == null || !player.Exists) return;
 				FinishHacking(player);
-			}, 450000, () =>
+			}, 1200000, () =>
 			{
 				IsBeingAttacked = false;
 			});

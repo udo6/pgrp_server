@@ -66,7 +66,7 @@ namespace Game.Modules.Scenario
 			var obj = Alt.CreateObject(249853152, pos.Position, pos.Rotation);
 			obj.Frozen = true;
 
-			ActiveLootDrops.Add(new(drop.Id, pos.Position + new Position(15, 9, 46), obj));
+			ActiveLootDrops.Add(new(drop.Id, pos.Position, obj));
 
 			var data = JsonConvert.SerializeObject(new
 			{

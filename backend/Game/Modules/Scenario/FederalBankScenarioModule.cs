@@ -40,6 +40,12 @@ namespace Game.Modules.Scenario
 		{
 			if (player.IsInVehicle) return;
 
+			if (HasBeenAttacked)
+			{
+				player.Notify("Information", "Die Staatsbank wurde bereits ausgeraubt!", NotificationType.ERROR);
+				return;
+			}
+
 			if (JeweleryScenarioModule.IsBeingAttacked)
 			{
 				player.Notify("Information", "Es wird bereits ein Objekt ausgeraubt!", NotificationType.ERROR);
@@ -56,7 +62,7 @@ namespace Game.Modules.Scenario
 			{
 				if (player == null || !player.Exists) return;
 				FinishHacking(player);
-			}, 450000, () =>
+			}, 1500000, () =>
 			{
 				IsBeingAttacked = false;
 			});

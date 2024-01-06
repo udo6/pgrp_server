@@ -15,9 +15,7 @@ namespace Game.Commands.Gamedesign
 		{
 			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
 
-			var offset = new Position(15, 9, 46);
-
-			var pos = new PositionModel(player.Position - offset);
+			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
 
 			var drop = new LootdropModel(name.Replace('_', ' '), pos.Id, 0, 0, 0);
