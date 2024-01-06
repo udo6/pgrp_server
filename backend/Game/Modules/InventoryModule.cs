@@ -337,6 +337,9 @@ namespace Game.Modules
 		{
 			if (!InventoryController.AddItem(player.InventoryId, 12, 1)) return;
 
+			if (player.RadioActive) VoiceModule.EnableRadio(player, false);
+			if (player.RadioTalking) VoiceModule.RadioTalkingState(player, false);
+			player.Emit("Client:VoiceModule:SetRadioState", false);
 			player.ShowComponent("Inventory", false);
 			player.Phone = false;
 			account.Phone = false;
