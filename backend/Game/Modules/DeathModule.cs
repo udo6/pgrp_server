@@ -164,7 +164,12 @@ namespace Game.Modules
                 {
                     PhoneModule.EndCall(player);
                 }
-			}
+
+                if (player.RadioTalking) VoiceModule.RadioTalkingState(player, false);
+                VoiceModule.EnableRadio(player, false);
+                player.Emit("Client:VoiceModule:SetRadioState", false);
+                player.EmitBrowser("Phone:Radio:SetData", 0);
+            }
 		}
 
 		private static InjuryType GetInjuryType(uint weapon)
