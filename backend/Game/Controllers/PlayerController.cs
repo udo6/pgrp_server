@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using AltV.Net.Shared.Elements.Data;
+using Core.Entities;
 using Core.Enums;
 using Core.Models.Hud;
 using Database.Models.Account;
@@ -286,8 +287,8 @@ namespace Game.Controllers
 				SetMoney(player, 0);
 
 				InventoryService.ClearInventoryItems(player.InventoryId);
-				inventory.Slots = 6;
-				inventory.MaxWeight = 25f;
+				inventory.Slots = Core.Config.Inventory.DEFAULT_SLOTS;
+				inventory.MaxWeight = Core.Config.Inventory.DEFAULT_WEIGHT;
 				InventoryService.Update(inventory);
 
 				LoadoutService.ClearPlayerLoadout(player.DbId);

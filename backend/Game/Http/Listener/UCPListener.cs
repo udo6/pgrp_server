@@ -3,12 +3,8 @@ using Database.Models.Account;
 using Database.Models.Inventory;
 using Database.Models;
 using Database.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Game.Http.Utils;
+using Core;
 
 namespace Game.Http.Listener
 {
@@ -28,7 +24,7 @@ namespace Game.Http.Listener
 			var clothes = new ClothesModel();
 			ClothesService.Add(clothes);
 
-			var inv = new InventoryModel(6, 25f, InventoryType.PLAYER);
+			var inv = new InventoryModel(Config.Inventory.DEFAULT_SLOTS, Config.Inventory.DEFAULT_WEIGHT, InventoryType.PLAYER);
 			var labInput = new InventoryModel(8, 30f, InventoryType.LAB_INPUT);
 			var labOutput = new InventoryModel(8, 60f, InventoryType.LAB_OUTPUT);
 			var locker = new InventoryModel(8, 100f, InventoryType.LOCKER);

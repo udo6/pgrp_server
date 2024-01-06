@@ -21,8 +21,8 @@ namespace Game.ItemScripts
 			account.Backpack = true;
 			AccountService.Update(account);
 
-			inventory.Slots = 16;
-			inventory.MaxWeight = 60f;
+			inventory.Slots = Core.Config.Inventory.BACKPACK_SLOTS;
+			inventory.MaxWeight = Core.Config.Inventory.BACKPACK_WEIGHT;
 			InventoryService.Update(inventory);
 		}
 	}
