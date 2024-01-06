@@ -504,6 +504,11 @@ namespace Game.Modules
 
 			player.Notify("Administration", $"Du hast {targetAccount.Name} vom Server gebannt!", NotificationType.SUCCESS);
 
+			var history = new AdminHistoryModel(id, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.BAN);
+			AccountService.AddAdminHistory(history);
+
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_BAN);
+
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
 
@@ -519,14 +524,10 @@ namespace Game.Modules
 				user.EmitBrowser("Hud:ShowGlobalNotification", data);
 			}
 
-			var history = new AdminHistoryModel(target.DbId, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.BAN);
-			AccountService.AddAdminHistory(history);
-
 			target.Kick($"Du wurdest vom Gameserver gebannt! Grund: {reason}");
-			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_BAN);
 		}
 
-		private static void ACPBanPlayer(RPPlayer player, int id, string reason, string datetime)
+		private static void ACPBanPlayer(RPPlayer player, int id, string reason, string datetimeString)
 		{
 			if (player.AdminRank < AdminRank.MODERATOR) return;
 
@@ -534,10 +535,15 @@ namespace Game.Modules
 			if (targetAccount == null) return;
 
 			targetAccount.BanReason = reason;
-			targetAccount.BannedUntil = DateTime.Parse(datetime);
+			targetAccount.BannedUntil = DateTime.Parse(datetimeString);
 			AccountService.Update(targetAccount);
 
 			player.Notify("Administration", $"Du hast {targetAccount.Name} vom Server gebannt!", NotificationType.SUCCESS);
+
+			var history = new AdminHistoryModel(id, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.BAN);
+			AccountService.AddAdminHistory(history);
+
+			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_BAN);
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.DbId == id);
 			if (target == null) return;
@@ -554,11 +560,7 @@ namespace Game.Modules
 				user.EmitBrowser("Hud:ShowGlobalNotification", data);
 			}
 
-			var history = new AdminHistoryModel(target.DbId, reason, player.DbId, player.Name, DateTime.Now, AdminHistoryType.BAN);
-			AccountService.AddAdminHistory(history);
-
 			target.Kick($"Du wurdest vom Gameserver gebannt! Grund: {reason}");
-			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_BAN);
 		}
 
 		private static void ACPKickPlayer(RPPlayer player, int id, string reason, bool anonym)
