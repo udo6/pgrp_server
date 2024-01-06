@@ -253,13 +253,13 @@ namespace Game.Controllers
 
 		public static void QuitGangwar(RPPlayer player)
 		{
-			player.CurrentGangwarId = 0;
 			player.InInterior = false;
 			player.SetPosition(player.OutsideInteriorPosition);
 			player.SetDimension(0);
 			player.SetArmor(0);
 			player.Armor = 0;
 			PlayerController.ApplyPlayerLoadout(player);
+			player.CurrentGangwarId = 0;
 			player.EmitBrowser("Hud:ShowGangwar", false, "");
 
 			var items = InventoryService.GetInventoryItems(player.InventoryId);

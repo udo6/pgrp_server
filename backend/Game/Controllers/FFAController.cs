@@ -21,12 +21,12 @@ namespace Game.Controllers
 
 		public static void QuitFFA(RPPlayer player)
 		{
-			player.FFAId = 0;
 			player.InInterior = false;
 			player.SetDimension(0);
 			player.Spawn(player.Position, 0);
 			player.SetPosition(FFAModule.Position.Position);
 			PlayerController.ApplyPlayerLoadout(player);
+			player.FFAId = 0;
 		}
 
 		public static void SpawnPlayer(RPPlayer player)
