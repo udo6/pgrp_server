@@ -144,7 +144,7 @@ namespace Game.Modules.Scenario
 		[EveryFifteenMinutes]
 		public static void Tick()
 		{
-			if ((DateTime.Now.Hour < 16 && DateTime.Now.Hour > 2) || new Random().Next(0, 100) < 95) return;
+			if (DateTime.Now.Hour < 16 || new Random().Next(0, 100) < 94) return;
 
 			Spawn();
 		}

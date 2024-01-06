@@ -139,6 +139,7 @@ namespace Core.Entities
         public bool IsInGardenerJob { get; set; } = false;
         public bool IsInMoneyTruckJob { get; set; } = false;
         public bool HasMoneyInHand { get; set; } = false;
+		public List<int> MoneyTrunkJobRouteIds { get; } = new();
 
         // JOB VEHICLES
         public RPVehicle? JobVehicle = null;

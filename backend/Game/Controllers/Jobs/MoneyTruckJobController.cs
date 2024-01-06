@@ -31,7 +31,17 @@ namespace Game.Controllers.Jobs
             blip.Sprite = (ushort)67;
             blip.Color = 46;
             blip.ShortRange = true;
-
         }
-    }
+
+		public static void LoadMoneyTruckJobRoutePostion(MoneyTruckJobRoutePositionModel model)
+		{
+			var position = PositionService.Get(model.PositionId);
+			if (position == null) return;
+
+			var pickupPoint = (RPShape)Alt.CreateColShapeCylinder(position.Position.Down(), 1f, 2.5f);
+			pickupPoint.ShapeId = model.Id;
+			pickupPoint.ShapeType = ColshapeType.MONEY_TRUCK_JOB_PICKUP;
+			pickupPoint.Size = 1f;
+		}
+	}
 }

@@ -27,7 +27,7 @@ namespace Game.Modules.Jobs
         public static void Initialize()
         {
             foreach (var job in MoneyTruckJobService.GetAll()) MoneyTruckJobController.LoadMoneyTruckJobs(job);
-            foreach (var points in MoneyTruckJobRoutePositionService.GetAll()) MoneyTruckJobRoutePositionController.LoadMoneyTruckJobRoutePostion(points);
+            foreach (var points in MoneyTruckJobRoutePositionService.GetAll()) MoneyTruckJobController.LoadMoneyTruckJobRoutePostion(points);
 
             MoneyTruckJobRouteService.GetAll().ForEach(x => MoneyTruckJobRouteService.ActiveRoutes.Add(new MoneyTruckActiveRouteModel(x.Id, x.Name, x.Reward, false, DateTime.Now.AddMinutes(-10), 0)));
 
@@ -103,7 +103,7 @@ namespace Game.Modules.Jobs
                 player.JobVehicle = null!;
             }
 
-            RPVehicle moneyTruck = (RPVehicle)Alt.CreateVehicle(VehicleModel.Stockade, spawnPosition.Position, spawnPosition.Rotation);
+            var moneyTruck = (RPVehicle)Alt.CreateVehicle(VehicleModel.Stockade, spawnPosition.Position, spawnPosition.Rotation);
             moneyTruck.OwnerId = player.DbId;
             moneyTruck.OwnerType = OwnerType.PLAYER;
             moneyTruck.Dimension = player.Dimension;
@@ -111,7 +111,7 @@ namespace Game.Modules.Jobs
             moneyTruck.SetEngineState(false);
             moneyTruck.SetFuel(150);
             moneyTruck.SetMaxFuel(150);
-            moneyTruck.NumberplateText = "MONEY-0" + player.Id * 2;
+            moneyTruck.NumberplateText = "FEDERAL";
             moneyTruck.SetData("MONEY_COUNT", 0);
 
             player.JobVehicle = moneyTruck;
@@ -132,6 +132,7 @@ namespace Game.Modules.Jobs
                 blip.Name = "Geld";
 
                 player.TemporaryBlips.Add(blip);
+                player.MoneyTrunkJobRouteIds.Add(position.Id);
             }
         }
 
@@ -161,7 +162,8 @@ namespace Game.Modules.Jobs
                 player.Notify("Geldtransporter", "Du hast den Job beendet.", NotificationType.ERROR);
                 player.Emit("Client:PropSyncModule:Clear");
                 player.TempClothesId = 0;
-                PlayerController.ApplyPlayerClothes(player);
+                player.MoneyTrunkJobRouteIds.Clear();
+				PlayerController.ApplyPlayerClothes(player);
                 route.InWork = false;
                 route.PlayerId = 0;
 
@@ -196,7 +198,8 @@ namespace Game.Modules.Jobs
                 player.IsInMoneyTruckJob = false;
                 player.Emit("Client:PropSyncModule:Clear");
                 player.TempClothesId = 0;
-                PlayerController.ApplyPlayerClothes(player);
+				player.MoneyTrunkJobRouteIds.Clear();
+				PlayerController.ApplyPlayerClothes(player);
 
                 route.InWork = false;
                 route.PlayerId = 0;
@@ -222,7 +225,8 @@ namespace Game.Modules.Jobs
                 player.IsInMoneyTruckJob = false;
                 player.Emit("Client:PropSyncModule:Clear");
                 player.TempClothesId = 0;
-                PlayerController.ApplyPlayerClothes(player);
+				player.MoneyTrunkJobRouteIds.Clear();
+				PlayerController.ApplyPlayerClothes(player);
 
                 route.InWork = false;
                 route.PlayerId = 0;
@@ -247,7 +251,8 @@ namespace Game.Modules.Jobs
             player.Notify("Geldtransporter", "Du hast den Job beendet und dein Geld erhalten.", NotificationType.SUCCESS);
             player.Emit("Client:PropSyncModule:Clear");
             player.TempClothesId = 0;
-            PlayerController.ApplyPlayerClothes(player);
+			player.MoneyTrunkJobRouteIds.Clear();
+			PlayerController.ApplyPlayerClothes(player);
 
             route.InWork = false;
             route.PlayerId = 0;
@@ -270,27 +275,20 @@ namespace Game.Modules.Jobs
         {
             if (!player.LoggedIn || player == null || !player.IsInMoneyTruckJob) return;
 
-            var shape = RPShape.All.FirstOrDefault(x => player.Position.Distance(x.Position) <= x.Size && x.ShapeType == ColshapeType.MONEY_TRUCK_JOB_PICKUP && player.Dimension == x.Dimension);
+            var shape = RPShape.Get(player.Position, player.Dimension, ColshapeType.MONEY_TRUCK_JOB_PICKUP);
             if (shape == null) return;
 
-            var model = MoneyTruckJobRoutePositionService.Get(shape.ShapeId);
-            if (model == null) return;
+			var playerRoute = player.MoneyTrunkJobRouteIds.FirstOrDefault(x => x == shape.ShapeId);
+            if(playerRoute == 0) return;
 
-            shape.GetData("MONEY_TRUCK_PICKED_UP", out bool pickedUp);
-
-            if (pickedUp)
-            {
-                player.Notify("Geldtransporter", "Das Geld wurde hier bereits abgeholt.", NotificationType.ERROR);
-                return;
-            }
-
-            shape.SetData("MONEY_TRUCK_PICKED_UP", true);
             player.Notify("Geldtransporter", "Du hast das Geld abgeholt.", NotificationType.SUCCESS);
             player.SetObjectProp("prop_money_bag_01", 0xdead, 0.56, 0, 0, 0, 360, 270);
             player.HasMoneyInHand = true;
             // TODO: Play animation
 
-            var blip = player.TemporaryBlips.FirstOrDefault(x => x.GetData("BLIP_ID", out int blipId) && blipId == model.Id);
+            player.MoneyTrunkJobRouteIds.Remove(playerRoute);
+
+			var blip = player.TemporaryBlips.FirstOrDefault(x => x.GetData("BLIP_ID", out int blipId) && blipId == shape.ShapeId);
             if (blip == null) return;
 
             blip.Destroy();
