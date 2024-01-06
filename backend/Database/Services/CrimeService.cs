@@ -40,14 +40,19 @@ namespace Database.Services
         public static bool HasPlayerJailtimeCrime(int accountId)
         {
             using var ctx = new Context();
-			List<CrimeBaseModel> crimes = ctx.CrimeBases.ToList();
-            var crime = ctx.Crimes.FirstOrDefault(x => x.AccountId == accountId);
-            if (crime == null) return false;
+            var crimes = ctx.Crimes.Where(x => x.AccountId == accountId).ToList();
+			if (crimes.Count == 0) return false;
 
-			var crimeBase = crimes.FirstOrDefault(x => x.Id == crime.CrimeId);
-			if (crimeBase == null) return false;
+			var crimeBases = ctx.CrimeBases.ToList();
+			foreach (var crime in crimes)
+			{
+				var crimeBase = crimeBases.FirstOrDefault(x => x.Id == crime.CrimeId);
+				if (crimeBase == null || crimeBase.JailTime <= 0) continue;
 
-            return crimeBase.JailTime > 0;
+				return true;
+			}
+
+            return false;
         }
 
         public static List<CrimeModel> GetPlayerCrimes(int accountId)
