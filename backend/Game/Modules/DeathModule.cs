@@ -159,17 +159,7 @@ namespace Game.Modules
 
 					target.Notify("Dispatch", $"Es ist ein Dispatch von {player.Name} eingegangen!", NotificationType.INFO);
 				}
-
-                if (player.CallPartner > 0)
-                {
-                    PhoneModule.EndCall(player);
-                }
-
-                if (player.RadioTalking) VoiceModule.RadioTalkingState(player, false);
-                VoiceModule.EnableRadio(player, false);
-                player.Emit("Client:VoiceModule:SetRadioState", false);
-                player.EmitBrowser("Phone:Radio:SetData", 0);
-            }
+			}
 		}
 
 		private static InjuryType GetInjuryType(uint weapon)

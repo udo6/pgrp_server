@@ -306,7 +306,7 @@ namespace Game.Controllers
 			player.SetStreamSyncedMetaData("ALIVE", true);
 			player.SetStreamSyncedMetaData("STABILIZED", false);
 			player.StopAnimation();
-			VoiceModule.OnPlayerAliveChange(player, true);
+			VoiceModule.OnPlayerAliveChange(player, false);
 		}
 
 		public static void SetPlayerDead(RPPlayer player, InjuryType injury, bool fall = true)
@@ -322,6 +322,13 @@ namespace Game.Controllers
 			SetPlayerRoped(player, false);
 			if (player.RadioTalking) VoiceModule.RadioTalkingState(player, false);
 			VoiceModule.EnableRadio(player, false);
+			player.Emit("Client:VoiceModule:SetRadioState", false);
+			VoiceModule.OnPlayerAliveChange(player, false);
+
+			if (player.CallPartner > 0)
+			{
+				PhoneModule.EndCall(player);
+			}
 
 			if (player.IsFarming)
 			{
@@ -350,8 +357,6 @@ namespace Game.Controllers
 			{
 				player.Invincible = true;
 			}
-
-			VoiceModule.OnPlayerAliveChange(player, false);
 		}
 
 		public static void SetPlayerCuffed(RPPlayer player, bool state)
