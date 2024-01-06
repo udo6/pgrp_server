@@ -28,6 +28,8 @@ namespace Game.ItemScripts.FIB
 
 				jumppoint.Locked = false;
 				jumppoint.LastCrack = DateTime.Now;
+				JumppointService.Update(jumppoint);
+
 				player.Notify("Information", "Du hast das Haus geöffnet!", NotificationType.SUCCESS);
 			}, 90000);
 		}
