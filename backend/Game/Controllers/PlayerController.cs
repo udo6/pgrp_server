@@ -370,6 +370,13 @@ namespace Game.Controllers
 				FarmingController.StopFarming(player);
 			}
 
+			if(!state)
+			{
+				if (player.RadioTalking) VoiceModule.RadioTalkingState(player, false);
+				VoiceModule.EnableRadio(player, false);
+				player.Emit("Client:VoiceModule:SetRadioState", false);
+			}
+
 			if (state) player.PlayAnimation(AnimationType.CUFFED);
 			else player.StopAnimation();
 
@@ -389,6 +396,13 @@ namespace Game.Controllers
 			if (player.IsFarming)
 			{
 				FarmingController.StopFarming(player);
+			}
+
+			if (!state)
+			{
+				if (player.RadioTalking) VoiceModule.RadioTalkingState(player, false);
+				VoiceModule.EnableRadio(player, false);
+				player.Emit("Client:VoiceModule:SetRadioState", false);
 			}
 
 			if (state) player.PlayAnimation(AnimationType.ROPED);
