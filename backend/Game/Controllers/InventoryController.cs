@@ -105,8 +105,6 @@ namespace Game.Controllers
 
 			var targetItem = InventoryService.GetInventoryItemBySlot(targetInventoryId, newSlot);
 
-			// add checks like team storage perms here
-
 			var rootInventoryWeight = CalcInventoryWeight(rootInventory);
 			var targetInventoryWeight = CalcInventoryWeight(targetInventory);
 
@@ -149,25 +147,11 @@ namespace Game.Controllers
 					return;
 				}
 
-				var rootId = rootItem.Id;
-				var rootInv = rootItem.InventoryId;
-				var rootItemId = rootItem.ItemId;
-				var rootAmount = rootItem.Amount;
+				rootItem.InventoryId = targetInventoryId;
+				rootItem.Slot = newSlot;
 
-				var targetId = targetItem.Id;
-				var targetInv = targetItem.InventoryId;
-				var targetItemId = targetItem.ItemId;
-				var targetAmount = targetItem.Amount;
-
-				rootItem.Id = targetId;
-				rootItem.InventoryId = targetInv;
-				rootItem.ItemId = targetItemId;
-				rootItem.Amount = targetAmount;
-
-				targetItem.Id = rootId;
-				targetItem.InventoryId = rootInv;
-				targetItem.ItemId = rootItemId;
-				targetItem.Amount = rootAmount;
+				targetItem.InventoryId = rootInventoryId;
+				targetItem.Slot = oldSlot;
 				player.PlayAnimation(AnimationType.GIVE_ITEM);
 				InventoryService.UpdateInventoryItems(rootItem, targetItem);
 				return;
