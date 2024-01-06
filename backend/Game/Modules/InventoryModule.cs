@@ -37,7 +37,8 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
-			Alt.OnClient<RPPlayer, int>("Server:Inventory:Open", Open);
+			Alt.OnClient<RPPlayer>("Server:Inventory:Open", Open);
+			Alt.OnClient<RPPlayer, int>("Server:Inventory:OpenGiveItem", Open);
 			Alt.OnClient<RPPlayer, int, int, int, int>("Server:Inventory:MoveAll", MoveAll);
 			Alt.OnClient<RPPlayer, int, int, int, int, int>("Server:Inventory:MoveAmount", MoveAmount);
 			Alt.OnClient<RPPlayer, int, int>("Server:Inventory:Use", UseItem);
@@ -49,7 +50,12 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, int, int>("Server:Inventory:DropWeapon", DropWeapon);
 		}
 
-		private static void Open(RPPlayer player, int targetId = -1)
+		private static void Open(RPPlayer player)
+		{
+			Open(player, -1);
+		}
+
+		private static void Open(RPPlayer player, int targetId)
 		{
 			var inventory = InventoryService.Get(player.InventoryId);
 			if (inventory == null) return;
@@ -68,9 +74,9 @@ namespace Game.Modules
 					{
 						container = InventoryService.Get(shape.InventoryId);
 					}
-					else if(shapes.Count > 0)
+					else if (shapes.Count > 0)
 					{
-						foreach(var _shape in shapes)
+						foreach (var _shape in shapes)
 						{
 							switch (_shape.ShapeType)
 							{
@@ -526,7 +532,7 @@ namespace Game.Modules
 			if (amount < 1) return;
 
 			var target = RPPlayer.All.FirstOrDefault(x => x.Id == targetId);
-			if (target == null) return;
+			if (target == null || target.Position.Distance(player.Position) > 3f) return;
 
 			var item = InventoryService.GetInventoryItemBySlot(player.InventoryId, slot);
 			if (item == null || item.Amount < amount) return;
