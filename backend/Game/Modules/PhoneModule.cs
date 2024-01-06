@@ -499,7 +499,7 @@ namespace Game.Modules
 			VoiceModule.CallPlayer(player, partner, true);
 		}
 
-		private static void EndCall(RPPlayer player)
+		public static void EndCall(RPPlayer player)
 		{
 			if (player.CallPartner < 1) return;
 
