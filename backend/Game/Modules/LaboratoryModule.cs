@@ -127,13 +127,15 @@ namespace Game.Modules
 				var lab = TeamService.GetLaboratoryByTeam(team.Id);
 				if (lab == null) continue;
 
+				var batteriesInLab = InventoryService.GetInventoryItems(lab.FuelInventoryId).Select(x => x.ItemId == batteries.Id).ToList();
+
 				var inputItem = team.Type == TeamType.GANG ? weedInput : cokeInput;
 
 				var items = InventoryService.GetItemsFromId(player.LaboratoryInputInventoryId, inputItem.Id, utilityInput.Id);
 				var input = items.Where(x => x.ItemId == inputItem.Id).Sum(x => x.Amount);
 				var utility = items.Where(x => x.ItemId == utilityInput.Id).Sum(x => x.Amount);
 
-				if(input < LabDrugInput || utility < LabUtilityInput)
+				if(input < LabDrugInput || utility < LabUtilityInput || batteriesInLab.Count < 1)
 				{
 					player.LabRunning = false;
 					player.Notify("Drogenlabor", "Das Labor hat keine Ressourcen mehr!", NotificationType.ERROR);
