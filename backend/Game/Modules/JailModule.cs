@@ -12,10 +12,10 @@ namespace Game.Modules
 {
     public static class JailModule
 	{
-		private static readonly Position ReleasePosition = new(1846.3649f, 2585.9473f, 45.657837f);
-		private static readonly Position ImprisonPosition = new(1690.7605f, 2591.5122f, 45.910645f);
-		private static readonly Position SpawnPosition = new(1691.4462f, 2565.4812f, 45.556763f);
-		private static readonly Position OutsidePosition = new(1845.6659f, 2585.934f, 45.657837f);
+		public static readonly Position ReleasePosition = new(1846.3649f, 2585.9473f, 45.657837f);
+		public static readonly Position ImprisonPosition = new(1690.7605f, 2591.5122f, 45.910645f);
+		public static readonly Position SpawnPosition = new(1691.4462f, 2565.4812f, 45.556763f);
+		public static readonly Position OutsidePosition = new(1845.6659f, 2585.934f, 45.657837f);
 
 		[Initialize]
 		public static void Initialize()

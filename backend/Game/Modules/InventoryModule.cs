@@ -145,6 +145,15 @@ namespace Game.Modules
 					return;
 				}
 
+				if(rootInventory.Type == InventoryType.LOCKER || targetInventory.Type == InventoryType.LOCKER)
+				{
+					var insideJail = player.Position.Distance(JailModule.ImprisonPosition) < 5f;
+					if ((rootInventory.Type == InventoryType.LOCKER && insideJail) || (targetInventory.Type == InventoryType.LOCKER && !insideJail))
+					{
+						return;
+					}
+				}
+
 				var warehouseInventory = rootInventory.Type == InventoryType.WAREHOUSE ? rootInventory : targetInventory.Type == InventoryType.WAREHOUSE ? targetInventory : null;
 				if (warehouseInventory != null)
 				{
@@ -195,6 +204,15 @@ namespace Game.Modules
 					player.ShowComponent("Inventory", false);
 					player.Notify("Information", "Du kannst in dieses Inventar nichts rein legen!", NotificationType.ERROR);
 					return;
+				}
+
+				if (rootInventory.Type == InventoryType.LOCKER || targetInventory.Type == InventoryType.LOCKER)
+				{
+					var insideJail = player.Position.Distance(JailModule.ImprisonPosition) < 5f;
+					if ((rootInventory.Type == InventoryType.LOCKER && insideJail) || (targetInventory.Type == InventoryType.LOCKER && !insideJail))
+					{
+						return;
+					}
 				}
 
 				var warehouseInventory = rootInventory.Type == InventoryType.WAREHOUSE ? rootInventory : targetInventory.Type == InventoryType.WAREHOUSE ? targetInventory : null;
