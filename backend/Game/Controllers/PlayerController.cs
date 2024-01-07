@@ -307,7 +307,7 @@ namespace Game.Controllers
 			player.SetStreamSyncedMetaData("ALIVE", true);
 			player.SetStreamSyncedMetaData("STABILIZED", false);
 			player.StopAnimation();
-			VoiceModule.OnPlayerAliveChange(player, false);
+			VoiceModule.OnPlayerAliveChange(player, true);
 		}
 
 		public static void SetPlayerDead(RPPlayer player, InjuryType injury, bool fall = true)
