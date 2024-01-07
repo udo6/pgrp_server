@@ -113,10 +113,10 @@ namespace Game.Modules
 				return;
 			}
 
-			var anyBannedAcc = AccountService.AnyBannedAccounts(player.Ip, player.SocialClubId, player.OAuthDiscordId, player.HardwareIdHash, account.UseHardwareId, player.HardwareIdExHash, account.UseHardwareIdEx);
-			if (anyBannedAcc != null)
+			// ban check
+			if (account.BannedUntil > DateTime.Now)
 			{
-				player.Kick($"Du wurdest gekicked! Grund: Bitte melde dich im Support! Code: 37 ({anyBannedAcc.Id})");
+				player.Kick($"Du wurdest gekicked! Grund: Du bist noch bis zum {account.BannedUntil:dd.MM.yyyy} vom Gameserver gesperrt!");
 				return;
 			}
 
@@ -126,6 +126,13 @@ namespace Game.Modules
 				return;
 			}*/
 
+			var anyBannedAcc = AccountService.AnyBannedAccounts(player.Ip, player.SocialClubId, player.OAuthDiscordId, player.HardwareIdHash, account.UseHardwareId, player.HardwareIdExHash, account.UseHardwareIdEx);
+			if (anyBannedAcc != null)
+			{
+				player.Kick($"Du wurdest gekicked! Grund: Bitte melde dich im Support! Code: 37 ({anyBannedAcc.Id})");
+				return;
+			}
+
 			if (CheckUserCredentials(player, account) || (account.DiscordId > 0 && player.OAuthDiscordId != account.DiscordId))
 			{
 				player.Kick("Du wurdest gekicked! Grund: Bitte melde dich im Support! (Identifier mismatch)");
@@ -133,13 +140,6 @@ namespace Game.Modules
 			}
 
 			UpdateUserData(player, player.OAuthDiscordId, account);
-
-			// ban check
-			if (account.BannedUntil > DateTime.Now)
-			{
-				player.Kick($"Du wurdest gekicked! Grund: Du bist noch bis zum {account.BannedUntil:dd.MM.yyyy} vom Gameserver gesperrt!");
-				return;
-			}
 
 			player.ShowComponent("Login", false);
 			Login(player, account);
