@@ -107,6 +107,7 @@ namespace Game.Commands.Admin
 			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
 			if (target == null) return;
 
+			player.AdminGoBackPosition = player.Position;
 			player.SetPosition(target.Position);
 			player.Dimension = target.Dimension;
 		}
