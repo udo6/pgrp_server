@@ -232,7 +232,7 @@ namespace Game.Modules
 			}
 
 			var target = AccountService.Get(targetId);
-			if (target == null || target.TeamId != player.TeamId) return;
+			if (target == null || target.TeamId != player.TeamId || target.TeamRank > account.TeamRank) return;
 
 			TeamController.Broadcast(account.TeamId, $"{player.Name} hat {target.Name} auf Rang {rank} gesetzt!", NotificationType.INFO);
 
