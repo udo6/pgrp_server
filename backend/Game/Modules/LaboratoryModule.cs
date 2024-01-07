@@ -45,7 +45,7 @@ namespace Game.Modules
 			var enemyTeamId = lab.TeamId;
 			var enemies = RPPlayer.All.Where(x => x.TeamId == enemyTeamId).ToList();
 
-			if (enemies.Count < 15)
+			if (enemies.Count < 12)
 			{
 				player.Notify("Information", "Es sind nicht genug Mitglieder der gegenpartei online!", NotificationType.ERROR);
 				return;
