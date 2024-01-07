@@ -73,6 +73,7 @@ namespace Game.Modules
 			{
 				if (player.RadioTalking) VoiceModule.RadioTalkingState(player, false);
 				VoiceModule.EnableRadio(player, false);
+				player.RadioFrequency = 0;
 				player.Emit("Client:VoiceModule:SetRadioState", false);
 				player.EmitBrowser("Phone:Radio:SetData", frequency);
 				player.Notify("Information", $"Du hast den Funk verlassen!", NotificationType.INFO);
