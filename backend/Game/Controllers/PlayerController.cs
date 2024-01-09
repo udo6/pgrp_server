@@ -284,7 +284,9 @@ namespace Game.Controllers
 				account.Phone = false;
 				account.Laptop = false;
 				account.Backpack = false;
-				SetMoney(player, 0);
+				account.Money = 0;
+
+				player.EmitBrowser("Hud:SetMoney", 0);
 
 				InventoryService.ClearInventoryItems(player.InventoryId);
 				inventory.Slots = Core.Config.Inventory.DEFAULT_SLOTS;
