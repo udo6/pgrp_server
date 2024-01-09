@@ -20,6 +20,14 @@ namespace Game.Controllers
 			shape.ShapeType = ColshapeType.HOSPITAL;
 			shape.Size = 4f;
 
+			var heliPos = PositionService.Get(model.HeliPositionId);
+			if (heliPos == null) return;
+
+			var heliShape = (RPShape)Alt.CreateColShapeCylinder(heliPos.Position.Down(5f), 10f, 30f);
+			heliShape.ShapeId = model.Id;
+			heliShape.ShapeType = ColshapeType.HOSPITAL;
+			heliShape.Size = 10f;
+
 			var blip = Alt.CreateBlip(true, 4, pos.Position, Array.Empty<IPlayer>());
 			blip.Name = $"Krankenhaus";
 			blip.Sprite = 61;

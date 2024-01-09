@@ -7,14 +7,16 @@ namespace Database.Models.Hospital
 	{
 		public int Id { get; set; }
 		public int PositionId { get; set; }
+		public int HeliPositionId { get; set; }
 
 		public HospitalModel()
 		{
 		}
 
-		public HospitalModel(int positionId)
+		public HospitalModel(int positionId, int heliPositionId)
 		{
 			PositionId = positionId;
+			HeliPositionId = heliPositionId;
 		}
 	}
 
@@ -27,6 +29,7 @@ namespace Database.Models.Hospital
 			builder.HasIndex(x => x.Id).HasDatabaseName("id");
 			builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int(11)");
 			builder.Property(x => x.PositionId).HasColumnName("position_id").HasColumnType("int(11)");
+			builder.Property(x => x.HeliPositionId).HasColumnName("heli_position_id").HasColumnType("int(11)");
 		}
 	}
 }
