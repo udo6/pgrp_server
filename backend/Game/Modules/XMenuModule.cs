@@ -664,6 +664,7 @@ namespace Game.Modules
 				InventoryController.RemoveItem(inventory, item, 1);
 				target.Stabilized = true;
 				target.SetStreamSyncedMetaData("STABILIZED", true);
+				VoiceModule.OnPlayerAliveChange(target, true);
 				player.Notify("Information", "Du hast jemanden Stabilisiert!", NotificationType.INFO);
 				target.Notify("Information", "Du wurdest Stabilisiert!", NotificationType.INFO);
 			}, 20000);
