@@ -17,7 +17,7 @@ namespace Game.Commands.Gamedesign
 			var pos = new PositionModel(player.Position);
 			PositionService.Add(pos);
 
-			var model = new HospitalModel(pos.Id);
+			var model = new HospitalModel(pos.Id, 0);
 			HospitalService.Add(model);
 			HospitalController.LoadHospital(model);
 			player.Notify("Gamedesign", "Du hast ein Krankenhaus erstellt!", Core.Enums.NotificationType.SUCCESS);

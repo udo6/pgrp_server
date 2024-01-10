@@ -1,7 +1,6 @@
 ﻿using AltV.Net;
 using Core.Attribute;
 using Core.Entities;
-using Core.Models.Dealer;
 using Core.Models.NativeMenu;
 using Database.Services;
 using Game.Controllers;
@@ -20,11 +19,11 @@ namespace Game.Modules
 			0.16f, // R5
 			0.14f, // R6
 			0.12f, // R7
-			0.10f, // R8
-			0.08f, // R9
-			0.06f, // R10
-			0.04f, // R11
-			0.02f, // R12
+			0.11f, // R8
+			0.10f, // R9
+			0.09f, // R10
+			0.08f, // R11
+			0.07f, // R12
 		};
 
 		[Initialize]

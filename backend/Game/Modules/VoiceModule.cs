@@ -86,7 +86,7 @@ namespace Game.Modules
 
 		public static void OnPlayerNoVoice(RPPlayer player)
 		{
-			player.Kick("Du benötigst das YACA Voiceplugin!");
+			player.Notify("Information", "Du benötigst das YACA Voice Plugin!", Core.Enums.NotificationType.WARN);
 		}
 
 		public static void OnPlayerReconnect(RPPlayer player, bool isFirstConnect)

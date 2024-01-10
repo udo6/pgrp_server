@@ -87,5 +87,13 @@ namespace Game.Commands.Admin
 			player.AdminGoBackPosition = new(0, 0, 0);
 			player.Notify("Administration", "Du hast dich zurück teleportiert!", NotificationType.SUCCESS);
 		}
+
+		[Command("restart")]
+		public static void Restart(RPPlayer player)
+		{
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
+
+			Restarts.Restart();
+		}
 	}
 }
