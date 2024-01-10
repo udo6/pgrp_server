@@ -78,15 +78,21 @@ namespace Logs
 			ctx.SaveChanges();
 		}
 
+		public static List<KillModel> GetKillLogs(int accountId, int killerId, DateTime datetime)
+		{
+			using var ctx = new Context();
+			return ctx.KillLogs.Where(x => (accountId == 0 || x.AccountId == accountId) && (killerId == 0 || x.KillerId == killerId) && x.Date.Year == datetime.Year && x.Date.Month == datetime.Month && x.Date.Day == datetime.Day && x.Date.Hour > datetime.Hour - 1 && x.Date.Hour < datetime.Hour + 1).ToList();
+		}
+
 		public static void LogDamage(int accountId, int targetId, uint weapon, int damage, int bodyPart)
 		{
 			DamageLogsCache.Add(new(accountId, targetId, weapon, damage, bodyPart, DateTime.Now));
 		}
 
-		public static List<DamageModel> GetDamageLogs(int attackerId, int targetId)
+		public static List<DamageModel> GetDamageLogs(int attackerId, int targetId, DateTime datetime)
 		{
 			using var ctx = new Context();
-			return ctx.DamageLogs.Where(x => (attackerId == 0 || x.AccountId == attackerId) && (targetId == 0 || x.TargetId == targetId)).ToList();
+			return ctx.DamageLogs.Where(x => (attackerId == 0 || x.AccountId == attackerId) && (targetId == 0 || x.TargetId == targetId) && x.Date.Year == datetime.Year && x.Date.Month == datetime.Month && x.Date.Day == datetime.Day && x.Date.Hour > datetime.Hour - 1 && x.Date.Hour < datetime.Hour + 1).ToList();
 		}
 
 		public static void LogMagicBullet(int accountId, uint weapon, int damage, float distance)

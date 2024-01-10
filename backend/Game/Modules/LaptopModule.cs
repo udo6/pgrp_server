@@ -25,8 +25,9 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
 			// ACP LOGS APP
+			Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Kill:Search", RequestKillLogs);
+			Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Damage:Search", RequestDamageLogs);
 			Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Admin:Search", RequestAdminLogs);
-			Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Damage:Search", RequestDamageLogs);
 
 			// ACP VEHICLES APP
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:SetFuel", ACPSetVehicleFuel);
@@ -99,9 +100,51 @@ namespace Game.Modules
 
 		#region ACP Logs
 
-		private static void RequestDamageLogs(RPPlayer player, string attackerName, string targetName)
+		private static void RequestKillLogs(RPPlayer player, string accountName, string killerName, string datetimeString)
 		{
-			if (player.AdminRank < AdminRank.SUPERADMIN) return;
+			if (player.AdminRank < AdminRank.MODERATOR) return;
+
+			var datetime = DateTime.Parse(datetimeString);
+
+			var accounts = AccountService.GetAll();
+
+			var account = accounts.FirstOrDefault(x => x.Name.ToLower() == accountName.ToLower());
+			var killer = accounts.FirstOrDefault(x => x.Name.ToLower() == killerName.ToLower());
+
+			var attackerId = account == null ? 0 : account.Id;
+			var targetId = killer == null ? 0 : killer.Id;
+
+			var logs = LogService.GetKillLogs(attackerId, targetId, datetime);
+			logs.Reverse();
+
+			var data = new List<object>();
+			foreach (var log in logs)
+			{
+				var logAccount = accounts.FirstOrDefault(x => x.Id == log.AccountId);
+				if (logAccount == null) continue;
+
+				var logKiller = accounts.FirstOrDefault(x => x.Id == log.KillerId);
+				if (logKiller == null) continue;
+
+				data.Add(new
+				{
+					AccountId = logAccount.Id,
+					AccountName = logAccount.Name,
+					KillerId = logKiller.Id,
+					KillerName = logKiller.Name,
+					Weapon = log.Weapon,
+					Date = log.Date.ToString("HH:mm dd.MM.yyyy")
+				});
+			}
+
+			player.EmitBrowser("Laptop:ACPLogs:Kill:SetLogs", JsonConvert.SerializeObject(data));
+		}
+
+		private static void RequestDamageLogs(RPPlayer player, string attackerName, string targetName, string datetimeString)
+		{
+			if (player.AdminRank < AdminRank.MODERATOR) return;
+
+			var datetime = DateTime.Parse(datetimeString);
 
 			var accounts = AccountService.GetAll();
 
@@ -111,10 +154,9 @@ namespace Game.Modules
 			var attackerId = attacker == null ? 0 : attacker.Id;
 			var targetId = target == null ? 0 : target.Id;
 
-			var logs = LogService.GetDamageLogs(attackerId, targetId);
+			var logs = LogService.GetDamageLogs(attackerId, targetId, datetime);
 			logs.Reverse();
 
-			var count = 0;
 			var data = new List<object>();
 			foreach (var log in logs)
 			{
@@ -128,14 +170,11 @@ namespace Game.Modules
 				{
 					AttackerId = logAttacker.Id,
 					AttackerName = logAttacker.Name,
-					TargetId = log.TargetId,
+					TargetId = logTarget.Id,
 					TargetName = logTarget.Name,
 					Damage = log.Damage,
 					Date = log.Date.ToString("HH:mm dd.MM.yyyy")
 				});
-
-				count++;
-				if (count >= 300) break;
 			}
 
 			player.EmitBrowser("Laptop:ACPLogs:Damage:SetLogs", JsonConvert.SerializeObject(data));
@@ -170,7 +209,7 @@ namespace Game.Modules
 				{
 					AdminId = logAdmin.Id,
 					AdminName = logAdmin.Name,
-					TargetId = log.TargetId,
+					TargetId = logTarget.Id,
 					TargetName = logTarget.Name,
 					ActionType = log.ActionType,
 					Date = log.Date.ToString("HH:mm dd.MM.yyyy")
