@@ -26,6 +26,7 @@ namespace Game.ItemScripts
 				return;
 			}
 
+			player.PlayAnimation(AnimationType.PUT_IN_VEHICLE);
 			player.StartInteraction(() =>
 			{
 				if (player == null || target == null || target.Alive) return;
