@@ -1,7 +1,5 @@
 ﻿using Core.Attribute;
 using Core.Entities;
-using Discord;
-using Game.Controllers;
 using Newtonsoft.Json;
 
 namespace Game

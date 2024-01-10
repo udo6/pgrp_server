@@ -32,30 +32,11 @@ namespace Game.Modules
 
 		public static void ConnectToVoice(RPPlayer player)
 		{
-			var name = "";
-			bool nameFound = false;
-			for(var i = 0; i < 100; i++)
-			{
-				name = GenerateRandomName();
-				if(!Names.Any(x => x == name))
-				{
-					Names.Add(name);
-					nameFound = true;
-					break;
-				}
-			}
-
-			if (!nameFound)
-			{
-				player.Kick("Es ist ein Fehler aufgetreten! Bitte starte dein Spiel neu.");
-				return;
-			}
-
 			player.VoiceRange = 3;
 			player.MaxVoiceRange = 15;
 			player.VoiceFirstConnect = false;
 			player.ForceMuted = false;
-			player.TeamspeakName = name;
+			player.TeamspeakName = $"PGRP-{player.DbId}";
 
 			player.RadioActive = false;
 			player.RadioFrequency = 0;
