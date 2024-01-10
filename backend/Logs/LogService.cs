@@ -63,6 +63,12 @@ namespace Logs
 			ctx.SaveChanges();
 		}
 
+		public static List<ACPActionModel> GetACPLogs(int adminId, int targetId, int take)
+		{
+			using var ctx = new Context();
+			return ctx.ACPActions.Where(x => (adminId == 0 || x.AccountId == adminId) && (targetId == 0 || x.TargetId == targetId)).Reverse().Take(take).ToList();
+		}
+
 		public static void LogKill(int accountId, int killerId, uint weapon)
 		{
 			var model = new KillModel(accountId, killerId, weapon, DateTime.Now);
@@ -75,6 +81,12 @@ namespace Logs
 		public static void LogDamage(int accountId, int targetId, uint weapon, int damage, int bodyPart)
 		{
 			DamageLogsCache.Add(new(accountId, targetId, weapon, damage, bodyPart, DateTime.Now));
+		}
+
+		public static List<DamageModel> GetDamageLogs(int attackerId, int targetId, int take)
+		{
+			using var ctx = new Context();
+			return ctx.DamageLogs.Where(x => (attackerId == 0 || x.AccountId == attackerId) && (targetId == 0 || x.TargetId == targetId)).Reverse().Take(take).ToList();
 		}
 
 		public static void LogMagicBullet(int accountId, uint weapon, int damage, float distance)

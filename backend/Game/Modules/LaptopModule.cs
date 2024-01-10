@@ -24,6 +24,9 @@ namespace Game.Modules
 		{
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
+			// ACP LOGS APP
+			Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Admin:Search", RequestAdminLogs);
+
 			// ACP VEHICLES APP
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:SetFuel", ACPSetVehicleFuel);
 			Alt.OnClient<RPPlayer, int, string>("Server:Laptop:ACPVehicles:SetPlate", ACPSetVehiclePlate);
@@ -92,6 +95,82 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:Dispatch:Accept", AcceptDispatch);
 			Alt.OnClient<RPPlayer, int>("Server:Laptop:Dispatch:Close", CloseDispatch);
 		}
+
+		#region ACP Logs
+
+		private static void RequestDamageLogs(RPPlayer player, string attackerName, string targetName)
+		{
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
+
+			var accounts = AccountService.GetAll();
+
+			var attacker = accounts.FirstOrDefault(x => x.Name.ToLower() == attackerName.ToLower());
+			var target = accounts.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
+
+			var attackerId = attacker == null ? 0 : attacker.Id;
+			var targetId = target == null ? 0 : target.Id;
+
+			var logs = LogService.GetDamageLogs(attackerId, targetId, 100);
+			var data = new List<object>();
+			foreach (var log in logs)
+			{
+				var logAttacker = accounts.FirstOrDefault(x => x.Id == log.AccountId);
+				if (logAttacker == null) continue;
+
+				var logTarget = accounts.FirstOrDefault(x => x.Id == log.TargetId);
+				if (logTarget == null) continue;
+
+				data.Add(new
+				{
+					AttackerId = logAttacker.Id,
+					AttackerName = logAttacker.Name,
+					TargetId = log.TargetId,
+					TargetName = logTarget.Name,
+					Damage = log.Damage,
+					Date = log.Date.ToString("HH:mm dd.MM.yyyy")
+				});
+			}
+
+			player.EmitBrowser("Laptop:ACPLogs:Admin:SetLogs", JsonConvert.SerializeObject(data));
+		}
+
+		private static void RequestAdminLogs(RPPlayer player, string adminName, string targetName)
+		{
+			if (player.AdminRank < AdminRank.SUPERADMIN) return;
+
+			var accounts = AccountService.GetAll();
+
+			var admin = accounts.FirstOrDefault(x => x.Name.ToLower() == adminName.ToLower());
+			var target = accounts.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
+
+			var adminId = admin == null ? 0 : admin.Id;
+			var targetId = target == null ? 0 : target.Id;
+
+			var logs = LogService.GetACPLogs(adminId, targetId, 30);
+			var data = new List<object>();
+			foreach(var log in logs)
+			{
+				var logAdmin = accounts.FirstOrDefault(x => x.Id == log.AccountId);
+				if (logAdmin == null) continue;
+
+				var logTarget = accounts.FirstOrDefault(x => x.Id == log.TargetId);
+				if (logTarget == null) continue;
+
+				data.Add(new
+				{
+					AdminId = logAdmin.Id,
+					AdminName = logAdmin.Name,
+					TargetId = log.TargetId,
+					TargetName = logTarget.Name,
+					ActionType = log.ActionType,
+					Date = log.Date.ToString("HH:mm dd.MM.yyyy")
+				});
+			}
+
+			player.EmitBrowser("Laptop:ACPLogs:Admin:SetLogs", JsonConvert.SerializeObject(data));
+		}
+
+		#endregion
 
 		#region ACP Vehicles
 
