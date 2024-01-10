@@ -63,10 +63,10 @@ namespace Logs
 			ctx.SaveChanges();
 		}
 
-		public static List<ACPActionModel> GetACPLogs(int adminId, int targetId)
+		public static List<ACPActionModel> GetACPLogs(int adminId, int targetId, int take)
 		{
 			using var ctx = new Context();
-			return ctx.ACPActions.Where(x => (adminId == 0 || x.AccountId == adminId) && (targetId == 0 || x.TargetId == targetId)).ToList();
+			return ctx.ACPActions.Where(x => (adminId == 0 || x.AccountId == adminId) && (targetId == 0 || x.TargetId == targetId)).OrderByDescending(x => x.Date).Take(take).ToList();
 		}
 
 		public static void LogKill(int accountId, int killerId, uint weapon)
@@ -81,7 +81,7 @@ namespace Logs
 		public static List<KillModel> GetKillLogs(int accountId, int killerId, DateTime datetime)
 		{
 			using var ctx = new Context();
-			return ctx.KillLogs.Where(x => (accountId == 0 || x.AccountId == accountId) && (killerId == 0 || x.KillerId == killerId) && x.Date.Year == datetime.Year && x.Date.Month == datetime.Month && x.Date.Day == datetime.Day && x.Date.Hour > datetime.Hour - 1 && x.Date.Hour < datetime.Hour + 1).ToList();
+			return ctx.KillLogs.Where(x => (accountId == 0 || x.AccountId == accountId) && (killerId == 0 || x.KillerId == killerId) && x.Date.Year == datetime.Year && x.Date.Month == datetime.Month && x.Date.Day == datetime.Day && x.Date.Hour > datetime.Hour - 1 && x.Date.Hour < datetime.Hour + 1).OrderByDescending(x => x.Date).ToList();
 		}
 
 		public static void LogDamage(int accountId, int targetId, uint weapon, int damage, int bodyPart)
@@ -92,7 +92,7 @@ namespace Logs
 		public static List<DamageModel> GetDamageLogs(int attackerId, int targetId, DateTime datetime)
 		{
 			using var ctx = new Context();
-			return ctx.DamageLogs.Where(x => (attackerId == 0 || x.AccountId == attackerId) && (targetId == 0 || x.TargetId == targetId) && x.Date.Year == datetime.Year && x.Date.Month == datetime.Month && x.Date.Day == datetime.Day && x.Date.Hour > datetime.Hour - 1 && x.Date.Hour < datetime.Hour + 1).ToList();
+			return ctx.DamageLogs.Where(x => (attackerId == 0 || x.AccountId == attackerId) && (targetId == 0 || x.TargetId == targetId) && x.Date.Year == datetime.Year && x.Date.Month == datetime.Month && x.Date.Day == datetime.Day && x.Date.Hour > datetime.Hour - 1 && x.Date.Hour < datetime.Hour + 1).OrderByDescending(x => x.Date).ToList();
 		}
 
 		public static void LogMagicBullet(int accountId, uint weapon, int damage, float distance)

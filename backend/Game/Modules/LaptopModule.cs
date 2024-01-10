@@ -25,9 +25,9 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
 			// ACP LOGS APP
-			Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Kill:Search", RequestKillLogs);
-			Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Damage:Search", RequestDamageLogs);
-			Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Admin:Search", RequestAdminLogs);
+			// Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Kill:Search", RequestKillLogs);
+			// Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Damage:Search", RequestDamageLogs);
+			// Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Admin:Search", RequestAdminLogs);
 
 			// ACP VEHICLES APP
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:SetFuel", ACPSetVehicleFuel);
@@ -115,7 +115,6 @@ namespace Game.Modules
 			var targetId = killer == null ? 0 : killer.Id;
 
 			var logs = LogService.GetKillLogs(attackerId, targetId, datetime);
-			logs.Reverse();
 
 			var data = new List<object>();
 			foreach (var log in logs)
@@ -155,7 +154,6 @@ namespace Game.Modules
 			var targetId = target == null ? 0 : target.Id;
 
 			var logs = LogService.GetDamageLogs(attackerId, targetId, datetime);
-			logs.Reverse();
 
 			var data = new List<object>();
 			foreach (var log in logs)
@@ -192,8 +190,7 @@ namespace Game.Modules
 			var adminId = admin == null ? 0 : admin.Id;
 			var targetId = target == null ? 0 : target.Id;
 
-			var logs = LogService.GetACPLogs(adminId, targetId);
-			logs.Reverse();
+			var logs = LogService.GetACPLogs(adminId, targetId, 30);
 
 			var count = 0;
 			var data = new List<object>();
