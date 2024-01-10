@@ -26,6 +26,7 @@ namespace Game.Modules
 
 			// ACP LOGS APP
 			Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Admin:Search", RequestAdminLogs);
+			Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Damage:Search", RequestDamageLogs);
 
 			// ACP VEHICLES APP
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:SetFuel", ACPSetVehicleFuel);
@@ -110,7 +111,10 @@ namespace Game.Modules
 			var attackerId = attacker == null ? 0 : attacker.Id;
 			var targetId = target == null ? 0 : target.Id;
 
-			var logs = LogService.GetDamageLogs(attackerId, targetId, 100);
+			var logs = LogService.GetDamageLogs(attackerId, targetId);
+			logs.Reverse();
+
+			var count = 0;
 			var data = new List<object>();
 			foreach (var log in logs)
 			{
@@ -129,9 +133,12 @@ namespace Game.Modules
 					Damage = log.Damage,
 					Date = log.Date.ToString("HH:mm dd.MM.yyyy")
 				});
+
+				count++;
+				if (count >= 300) break;
 			}
 
-			player.EmitBrowser("Laptop:ACPLogs:Admin:SetLogs", JsonConvert.SerializeObject(data));
+			player.EmitBrowser("Laptop:ACPLogs:Damage:SetLogs", JsonConvert.SerializeObject(data));
 		}
 
 		private static void RequestAdminLogs(RPPlayer player, string adminName, string targetName)
@@ -146,7 +153,10 @@ namespace Game.Modules
 			var adminId = admin == null ? 0 : admin.Id;
 			var targetId = target == null ? 0 : target.Id;
 
-			var logs = LogService.GetACPLogs(adminId, targetId, 30);
+			var logs = LogService.GetACPLogs(adminId, targetId);
+			logs.Reverse();
+
+			var count = 0;
 			var data = new List<object>();
 			foreach(var log in logs)
 			{
@@ -165,6 +175,9 @@ namespace Game.Modules
 					ActionType = log.ActionType,
 					Date = log.Date.ToString("HH:mm dd.MM.yyyy")
 				});
+
+				count++;
+				if (count >= 100) break;
 			}
 
 			player.EmitBrowser("Laptop:ACPLogs:Admin:SetLogs", JsonConvert.SerializeObject(data));

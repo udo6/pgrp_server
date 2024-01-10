@@ -63,10 +63,10 @@ namespace Logs
 			ctx.SaveChanges();
 		}
 
-		public static List<ACPActionModel> GetACPLogs(int adminId, int targetId, int take)
+		public static List<ACPActionModel> GetACPLogs(int adminId, int targetId)
 		{
 			using var ctx = new Context();
-			return ctx.ACPActions.Where(x => (adminId == 0 || x.AccountId == adminId) && (targetId == 0 || x.TargetId == targetId)).Reverse().Take(take).ToList();
+			return ctx.ACPActions.Where(x => (adminId == 0 || x.AccountId == adminId) && (targetId == 0 || x.TargetId == targetId)).ToList();
 		}
 
 		public static void LogKill(int accountId, int killerId, uint weapon)
@@ -83,10 +83,10 @@ namespace Logs
 			DamageLogsCache.Add(new(accountId, targetId, weapon, damage, bodyPart, DateTime.Now));
 		}
 
-		public static List<DamageModel> GetDamageLogs(int attackerId, int targetId, int take)
+		public static List<DamageModel> GetDamageLogs(int attackerId, int targetId)
 		{
 			using var ctx = new Context();
-			return ctx.DamageLogs.Where(x => (attackerId == 0 || x.AccountId == attackerId) && (targetId == 0 || x.TargetId == targetId)).Reverse().Take(take).ToList();
+			return ctx.DamageLogs.Where(x => (attackerId == 0 || x.AccountId == attackerId) && (targetId == 0 || x.TargetId == targetId)).ToList();
 		}
 
 		public static void LogMagicBullet(int accountId, uint weapon, int damage, float distance)
