@@ -422,21 +422,23 @@ namespace Game.Modules
 			var inventory = InventoryService.Get(player.InventoryId);
 			if (inventory == null) return;
 
-			if(InventoryService.HasItems(player.InventoryId, 29) < 1)
+			var state = !targetAcc.Roped;
+
+			if (state && InventoryService.HasItems(player.InventoryId, 29) < 1)
 			{
 				player.Notify("Information", "Du benötist ein Seil!", NotificationType.ERROR);
 				return;
 			}
 
-			if (targetAcc.Roped)
+			if (state)
 			{
-				var item = InventoryService.GetItem(30);
+				var item = InventoryService.GetItem(29);
 				if (item == null) return;
 
 				InventoryController.RemoveItem(inventory, item, 1);
 			}
 
-			PlayerController.SetPlayerRoped(target, !targetAcc.Roped);
+			PlayerController.SetPlayerRoped(target, state);
 		}
 
 		private static void GrabIntoVehicle(RPPlayer player, int targetId)

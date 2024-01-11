@@ -132,6 +132,8 @@ namespace Core.Entities
 
 		public (uint, uint) TemporaryTattoo { get; set; }
 
+		public DateTime LastRevived { get; set; } = DateTime.Now.AddHours(-1);
+
         // JOBS
         public bool IsInGarbageJob { get; set; } = false;
         public bool HasGarbageInHand { get; set; } = false;

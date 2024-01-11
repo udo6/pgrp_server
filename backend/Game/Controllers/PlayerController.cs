@@ -306,6 +306,7 @@ namespace Game.Controllers
 			player.Stabilized = false;
 			player.Invincible = false;
 			player.IsInHospital = false;
+			player.LastRevived = DateTime.Now;
 			player.SetStreamSyncedMetaData("ALIVE", true);
 			player.SetStreamSyncedMetaData("STABILIZED", false);
 			player.StopAnimation();

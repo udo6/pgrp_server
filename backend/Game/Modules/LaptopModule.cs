@@ -25,9 +25,9 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
 			// ACP LOGS APP
-			// Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Kill:Search", RequestKillLogs);
-			// Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Damage:Search", RequestDamageLogs);
-			// Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Admin:Search", RequestAdminLogs);
+			Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Kill:Search", RequestKillLogs);
+			Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Damage:Search", RequestDamageLogs);
+			Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Admin:Search", RequestAdminLogs);
 
 			// ACP VEHICLES APP
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:SetFuel", ACPSetVehicleFuel);

@@ -214,6 +214,19 @@ namespace Game.Commands.Admin
 			player.Notify("Administration", $"Das Super Secret Anticheat ist nun für {account.Name} {(account.DamageCap ? "aktiviert" : "deaktiviert")}!", NotificationType.SUCCESS);
 		}
 
+		[Command("enableweapons")]
+		public static void EnableWeapons(RPPlayer player, string targetName)
+		{
+			if (player.AdminRank < AdminRank.MODERATOR) return;
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.Name.ToLower() == targetName.ToLower());
+			if (target == null) return;
+
+			target.LastRevived = DateTime.Now.AddHours(-1);
+
+			player.Notify("Administration", $"Du hast die Waffen für {target.Name} aktiviert!", NotificationType.SUCCESS);
+		}
+
 
 
 

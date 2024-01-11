@@ -362,7 +362,7 @@ namespace Game.Modules
 				return;
 			}
 
-			var dispatch = new Core.Models.Laptop.Dispatch(player.DbId, player.Name, message, player.Position, "", DateTime.Now.ToString("HH:mm"), team);
+			var dispatch = new Core.Models.Laptop.Dispatch(player.DbId, player.Name, message, player.Position, string.Empty, DateTime.Now.ToString("HH:mm"), team);
 			LaptopModule.Dispatches.Add(dispatch);
 			foreach(var target in RPPlayer.All.ToList())
 			{

@@ -36,6 +36,13 @@ namespace Game.Modules
 			var player = (RPPlayer)_player;
 			if (player.IsGangwar || player.IsInFFA) return;
 
+			/*if(player.LastRevived.AddMinutes(10) > DateTime.Now)
+			{
+				player.CurrentWeapon = 2725352035;
+				player.Notify("Information", "Du bist zu schwach um eine Waffe zu halten!", Core.Enums.NotificationType.WARN);
+				return;
+			}*/
+
 			if(newWeapon > 0 && newWeapon != 2725352035)
 			{
 				var weapon = player.Weapons.FirstOrDefault(x => x.Hash == newWeapon);
