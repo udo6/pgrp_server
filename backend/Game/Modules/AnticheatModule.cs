@@ -53,7 +53,7 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
-			Alt.OnClient<RPPlayer, string>("Server:Anticheat:UnallowedResource", DetectedUnallowedResource);
+			// Alt.OnClient<RPPlayer, string>("Server:Anticheat:UnallowedResource", DetectedUnallowedResource);
 			Alt.OnClient<RPPlayer, int>("Server:Anticheat:Healkey", DetectedHealkey);
 			Alt.OnClient<RPPlayer>("Server:Anticheat:VehicleEngineToggle", DetectedVehicleEngine);
 			Alt.OnClient<RPPlayer, uint>("Server:Anticheat:NoReload", DetectedNoreload);
