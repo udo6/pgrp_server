@@ -362,6 +362,8 @@ namespace Game.Modules
 				return;
 			}
 
+			player.Notify("Information", "Du hast einen Dispatch abgesendet!", NotificationType.SUCCESS);
+
 			var dispatch = new Core.Models.Laptop.Dispatch(player.DbId, player.Name, message, player.Position, string.Empty, DateTime.Now.ToString("HH:mm"), team);
 			LaptopModule.Dispatches.Add(dispatch);
 			foreach(var target in RPPlayer.All.ToList())

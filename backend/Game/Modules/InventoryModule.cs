@@ -87,6 +87,8 @@ namespace Game.Modules
 									container = InventoryService.Get(player.LaboratoryOutputInventoryId);
 									break;
 								case ColshapeType.TEAM:
+									container = InventoryService.Get(player.TeamLockerId);
+									break;
 								case ColshapeType.JAIL:
 								case ColshapeType.JAIL_OUTSIDE:
 									container = InventoryService.Get(player.LockerInventoryId);
@@ -347,7 +349,7 @@ namespace Game.Modules
 			if (target == null || player.Position.Distance(target.Position) > 5f) return;
 
 			var targetAccount = AccountService.Get(target.DbId);
-			if (targetAccount == null || (targetAccount.Alive && !targetAccount.Cuffed && !targetAccount.Roped)) return;
+			if (targetAccount == null || (!targetAccount.Cuffed && !targetAccount.Roped)) return;
 
 			var loadout = LoadoutService.Get(loadoutId);
 			if (loadout == null) return;
@@ -602,7 +604,7 @@ namespace Game.Modules
 			{
 				case InventoryType.PLAYER:
 					var targetPlayer = RPPlayer.All.FirstOrDefault(x => x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
-					return targetPlayer != null && (!targetPlayer.Alive || targetPlayer.Roped || targetPlayer.Cuffed) && player.Position.Distance(targetPlayer.Position) < 5f;
+					return targetPlayer != null && (targetPlayer.Roped || targetPlayer.Cuffed) && player.Position.Distance(targetPlayer.Position) < 5f;
 				case InventoryType.TRUNK:
 					var targetVehicle = RPVehicle.All.FirstOrDefault(x => x.TrunkId == inventory.Id && x.Dimension == player.Dimension);
 					return targetVehicle != null && !targetVehicle.Locked && !targetVehicle.TrunkLocked && player.Position.Distance(targetVehicle.Position) < 5f;
@@ -610,8 +612,10 @@ namespace Game.Modules
 					var vehicle = (RPVehicle)player.Vehicle;
 					return player.IsInVehicle && !vehicle.Locked && vehicle.GloveBoxId == inventory.Id && player.Position.Distance(player.Vehicle.Position) < 5f;
 				case InventoryType.LAB_FUEL:
+					var account = AccountService.Get(player.DbId);
+					if (account == null) return false;
 					var labFuelShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.LABORATORY_FUEL && x.InventoryId == inventory.Id && x.Dimension == player.Dimension && x.InventoryAccess.Count > 0 && x.InventoryAccess[0].Id == player.TeamId);
-					return labFuelShape != null && player.Position.Distance(labFuelShape.Position) < labFuelShape.Size;
+					return labFuelShape != null && account.TeamStorage && player.Position.Distance(labFuelShape.Position) < labFuelShape.Size;
 				case InventoryType.LAB_INPUT:
 					return player.LaboratoryInputInventoryId == inventory.Id;
 				case InventoryType.LAB_OUTPUT:
@@ -633,6 +637,8 @@ namespace Game.Modules
 				case InventoryType.JEWELERY_ROB:
 					var jewleryRobberyShape = RPShape.All.FirstOrDefault(x => x.ShapeType == ColshapeType.JEWELERY_LOOT && x.InventoryId == inventory.Id && x.Dimension == player.Dimension);
 					return jewleryRobberyShape != null && player.Position.Distance(jewleryRobberyShape.Position) < jewleryRobberyShape.Size;
+				case InventoryType.TEAM_LOCKER:
+					return player.TeamLockerId == inventory.Id;
 			}
 
 			return false;

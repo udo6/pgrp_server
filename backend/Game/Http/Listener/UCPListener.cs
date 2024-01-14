@@ -28,7 +28,8 @@ namespace Game.Http.Listener
 			var labInput = new InventoryModel(8, 30f, InventoryType.LAB_INPUT);
 			var labOutput = new InventoryModel(8, 60f, InventoryType.LAB_OUTPUT);
 			var locker = new InventoryModel(8, 100f, InventoryType.LOCKER);
-			InventoryService.Add(inv, labInput, labOutput, locker);
+			var teamLocker = new InventoryModel(8, 100f, InventoryType.TEAM_LOCKER);
+			InventoryService.Add(inv, labInput, labOutput, locker, teamLocker);
 
 			var license = new LicenseModel();
 			LicenseService.Add(license);
@@ -53,7 +54,8 @@ namespace Game.Http.Listener
 				locker.Id,
 				0,
 				license.Id,
-				false);
+				false,
+				teamLocker.Id);
 			AccountService.Add(account);
 		}
 	}

@@ -55,16 +55,19 @@ namespace Game.Modules
 			var players = RPPlayer.All.Where(x => x.LoggedIn && x.Vehicle == vehicle && !x.Alive).ToList();
 			if (players.Count < 1) return;
 
+			var occupiedBeds = new List<HospitalBedModel>();
+
 			var beds = HospitalService.GetBeds(shape.ShapeId);
 			foreach(var player in players)
 			{
-				var bed = beds.FirstOrDefault(IsBedAvailable);
+				var bed = beds.FirstOrDefault(x => IsBedAvailable(x) && !occupiedBeds.Any(e => e == x));
 				if (bed == null)
 				{
 					driver?.Notify("Information", "Es ist kein Bett mehr frei!", NotificationType.ERROR);
 					break;
 				}
 
+				occupiedBeds.Add(bed);
 				HospitalController.TakeInPlayer(player, bed);
 				player.Notify("Information", "Du wurdest ins Krankenhaus eingeliefert!", NotificationType.INFO);
 				driver?.Notify("Information", "Du hast jemanden ins Krankenhaus eingeliefert!", NotificationType.SUCCESS);

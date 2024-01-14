@@ -25,9 +25,9 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer>("Server:Laptop:Open", Open);
 
 			// ACP LOGS APP
-			Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Kill:Search", RequestKillLogs);
-			Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Damage:Search", RequestDamageLogs);
-			Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Admin:Search", RequestAdminLogs);
+			// Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Kill:Search", RequestKillLogs);
+			// Alt.OnClient<RPPlayer, string, string, string>("Server:Laptop:ACPLogs:Damage:Search", RequestDamageLogs);
+			// Alt.OnClient<RPPlayer, string, string>("Server:Laptop:ACPLogs:Admin:Search", RequestAdminLogs);
 
 			// ACP VEHICLES APP
 			Alt.OnClient<RPPlayer, int, int>("Server:Laptop:ACPVehicles:SetFuel", ACPSetVehicleFuel);
@@ -549,6 +549,7 @@ namespace Game.Modules
 			if (target == null) return;
 
 			target.AdminRank = (AdminRank)rank;
+			target.ApplyAdmin();
 			target.Notify("Administration", $"Du wurdest von {player.Name} auf Rang {rank} gesetzt!", NotificationType.SUCCESS);
 			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SETADMIN);
 		}
@@ -597,6 +598,7 @@ namespace Game.Modules
 			if (target == null) return;
 
 			target.TeamId = teamId;
+			target.ApplyTeam();
 			target.Notify("Administration", $"Du wurdest von {player.Name} in die Fraktion {team.ShortName} gesetzt!", NotificationType.SUCCESS);
 			LogService.LogACPAction(player.DbId, id, TargetType.PLAYER, ACPActionType.PLAYER_SETTEAM);
 		}

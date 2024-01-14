@@ -51,6 +51,13 @@ namespace Game.Modules
 			{
 				if (!player.LoggedIn) continue;
 
+				if(!player.CanHoldWeapon && player.LastRevived.AddMinutes(5) <= now)
+				{
+					player.CanHoldWeapon = true;
+					player.Emit("Client:PlayerModule:SetCanHoldWeapon", true);
+					player.Notify("Information", "Du fühlst dich wieder stark genug um eine Waffe zu halten!", NotificationType.SUCCESS);
+				}
+
 				player.XpTicks++;
 
 				if(player.XpTicks >= 60)

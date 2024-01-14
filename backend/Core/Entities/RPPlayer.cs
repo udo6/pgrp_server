@@ -24,6 +24,7 @@ namespace Core.Entities
 		public int TeamId { get; set; }
 		public int BusinessId { get; set; }
 		public int LicenseId { get; set; }
+		public int TeamLockerId { get; set; }
 		public int VestItemId { get; set; }
 		public ulong OAuthDiscordId { get; set; }
 
@@ -133,6 +134,9 @@ namespace Core.Entities
 		public (uint, uint) TemporaryTattoo { get; set; }
 
 		public DateTime LastRevived { get; set; } = DateTime.Now.AddHours(-1);
+
+		public bool CanHoldWeapon { get; set; } = true;
+		public bool CuffsCanWalk { get; set; } = false;
 
         // JOBS
         public bool IsInGarbageJob { get; set; } = false;

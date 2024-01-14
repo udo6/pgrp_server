@@ -288,6 +288,9 @@ namespace Game.Controllers
 
 				player.EmitBrowser("Hud:SetMoney", 0);
 
+				player.CanHoldWeapon = false;
+				player.Emit("Client:PlayerModule:SetCanHoldWeapon", false);
+
 				InventoryService.ClearInventoryItems(player.InventoryId);
 				inventory.Slots = Core.Config.Inventory.DEFAULT_SLOTS;
 				inventory.MaxWeight = Core.Config.Inventory.DEFAULT_WEIGHT;
@@ -386,6 +389,7 @@ namespace Game.Controllers
 			player.SetStreamSyncedMetaData("CUFFED", state);
 			player.HasBeenSearched = false;
 			player.Cuffed = state;
+			player.CuffsCanWalk = false;
 
 			account.Cuffed = state;
 			AccountService.Update(account);
@@ -414,6 +418,7 @@ namespace Game.Controllers
 			player.SetStreamSyncedMetaData("ROPED", state);
 			player.HasBeenSearched = false;
 			player.Roped = state;
+			player.CuffsCanWalk = false;
 
 			account.Roped = state;
 			AccountService.Update(account);

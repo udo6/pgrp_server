@@ -4,6 +4,7 @@ using Core.Attribute;
 using Core.Entities;
 using Core.Enums;
 using Database.Models.Account;
+using Database.Models.Inventory;
 using Database.Services;
 using Game.Controllers;
 using Logs;
@@ -204,15 +205,6 @@ namespace Game.Modules
 
 		private static void Login(RPPlayer player, AccountModel account)
 		{
-			if (account.BanOnConnect)
-			{
-				account.BannedUntil = DateTime.Now.AddYears(10);
-				account.BanReason = "Multiaccount";
-				AccountService.Update(account);
-				player.Kick("Du wurdest gebannt! Grund: Multiaccount");
-				return;
-			}
-
 			ApplyPlayerIds(player, account);
 
 			var custom = CustomizationService.Get(player.CustomizationId);
@@ -242,6 +234,14 @@ namespace Game.Modules
 			player.TeamId = account.TeamId;
 			player.BusinessId = account.BusinessId;
 			player.LicenseId = account.LicenseId;
+			player.TeamLockerId = account.TeamLockerId;
+
+			if (account.TeamLockerId > 0) return;
+
+			var locker = new InventoryModel(8, 100f, InventoryType.TEAM_LOCKER);
+			InventoryService.Add(locker);
+
+			account.TeamLockerId = locker.Id;
 		}
 
 		private static string GenerateAuthCode()

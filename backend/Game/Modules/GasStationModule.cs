@@ -33,9 +33,9 @@ namespace Game.Modules
 			var station = GasStationService.Get(stationId);
 			if (station == null) return;
 
-			var price = 7 * value;
+			var price = station.Price * value;
 
-			if (vehicle.OwnerType != Core.Enums.OwnerType.PLAYER && account.Money < price)
+			if (vehicle.OwnerType == Core.Enums.OwnerType.PLAYER && account.Money < price)
 			{
 				player.Notify("Information", "Du hast nicht genug Geld dabei!", Core.Enums.NotificationType.ERROR);
 				return;

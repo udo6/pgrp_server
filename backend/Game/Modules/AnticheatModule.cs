@@ -53,7 +53,6 @@ namespace Game.Modules
 		[Initialize]
 		public static void Initialize()
 		{
-			// Alt.OnClient<RPPlayer, string>("Server:Anticheat:UnallowedResource", DetectedUnallowedResource);
 			Alt.OnClient<RPPlayer, int>("Server:Anticheat:Healkey", DetectedHealkey);
 			Alt.OnClient<RPPlayer>("Server:Anticheat:VehicleEngineToggle", DetectedVehicleEngine);
 			Alt.OnClient<RPPlayer, uint>("Server:Anticheat:NoReload", DetectedNoreload);
@@ -159,31 +158,32 @@ namespace Game.Modules
 				var targetPlayer = (RPPlayer)target;
 				targetPlayer.LastAttackerId = player.DbId;
 				targetPlayer.Emit("Client:AnticheatModule:SetHealth", targetPlayer.Health + targetPlayer.Armor - damage);
+
+				if (MeeleDamage.ContainsKey(weapon))
+				{
+					var maxDamage = MeeleDamage[weapon];
+					if (damage > maxDamage) return false;
+				}
+
+				if (WeaponDamage.ContainsKey(weapon))
+				{
+					var maxDamage = WeaponDamage[weapon];
+					if (damage > maxDamage)
+					{
+						PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Damage modifier (Weapon: {weapon} Damage: {damage} Allowed Damage: {maxDamage})");
+						return false;
+					}
+
+					var dist = player.Position.Distance(target.Position);
+					if (dist > 40 && damage == maxDamage)
+					{
+						AdminController.BroadcastTeam("Anticheat", $"Magic bullets wurden bei {player.Name} vom System erkannt!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.ADMINISTRATOR);
+						LogService.LogMagicBullet(player.DbId, weapon, damage, dist);
+						return false;
+					}
+				}
+
 				LogService.LogDamage(player.DbId, targetPlayer.DbId, weapon, damage, (int)bodyPart);
-			}
-
-			if (MeeleDamage.ContainsKey(weapon))
-			{
-				var maxDamage = MeeleDamage[weapon];
-				if (damage > maxDamage) return false;
-			}
-
-			if (WeaponDamage.ContainsKey(weapon))
-			{
-				var maxDamage = WeaponDamage[weapon];
-				if (damage > maxDamage)
-				{
-					PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Damage modifier (Weapon: {weapon} Damage: {damage} Allowed Damage: {maxDamage})");
-					return false;
-				}
-
-				var dist = player.Position.Distance(target.Position);
-				if (dist > 40 && damage == maxDamage)
-				{
-					AdminController.BroadcastTeam("Anticheat", $"Magic bullets wurden bei {player.Name} vom System erkannt!", Core.Enums.NotificationType.WARN, Core.Enums.AdminRank.ADMINISTRATOR);
-					LogService.LogMagicBullet(player.DbId, weapon, damage, dist);
-					return false;
-				}
 			}
 
 			return true;
@@ -237,12 +237,6 @@ namespace Game.Modules
 
 					return false;
 				}
-			}
-
-			if (explosionType == ExplosionType.GrenadeLauncher || explosionType == ExplosionType.Grenade || explosionType == ExplosionType.StickyBomb)
-			{
-				PlayerController.AnticheatBanPlayer(player, DateTime.Now.AddYears(10), $"Blacklisted Explosion");
-				return false;
 			}
 
 			LogService.LogExplosion(player.DbId, (int)explosionType);

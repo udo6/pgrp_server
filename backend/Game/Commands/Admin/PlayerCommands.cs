@@ -52,7 +52,7 @@ namespace Game.Commands.Admin
 				PlayerController.SetPlayerAlive(target, false);
 			}
 
-			AdminController.BroadcastTeam("Administration", $"{player.Name} hat alle Spieler wiederbelebt!", NotificationType.WARN);
+			AdminController.BroadcastTeam("Administration", $"{player.Name} hat alle Spieler im umkreis wiederbelebt!", NotificationType.WARN);
 		}
 
 		[Command("reviveall")]
@@ -154,6 +154,36 @@ namespace Game.Commands.Admin
 			if (player.AdminRank < AdminRank.SUPPORTER) return;
 
 			var all = RPPlayer.All.Where(x => x.LoggedIn).ToList();
+			var nativeItems = new List<NativeMenuItem>();
+			foreach (var target in all)
+			{
+				nativeItems.Add(new($"{target.Name} ({target.DbId})", true, ""));
+			}
+
+			player.ShowNativeMenu(true, new($"Online Spieler (Gesamt: {all.Count})", nativeItems));
+		}
+
+		[Command("team")]
+		public static void GetAllTeamPlayers(RPPlayer player, int team)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var all = RPPlayer.All.Where(x => x.LoggedIn && x.TeamId == team).ToList();
+			var nativeItems = new List<NativeMenuItem>();
+			foreach (var target in all)
+			{
+				nativeItems.Add(new($"{target.Name} ({target.DbId})", true, ""));
+			}
+
+			player.ShowNativeMenu(true, new($"Online Spieler (Gesamt: {all.Count})", nativeItems));
+		}
+
+		[Command("admins")]
+		public static void GetAllAdminPlayers(RPPlayer player)
+		{
+			if (player.AdminRank < AdminRank.SUPPORTER) return;
+
+			var all = RPPlayer.All.Where(x => x.LoggedIn && x.AdminRank > AdminRank.SPIELER).ToList();
 			var nativeItems = new List<NativeMenuItem>();
 			foreach (var target in all)
 			{

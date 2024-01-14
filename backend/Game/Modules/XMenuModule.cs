@@ -27,6 +27,7 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, int>("Server:XMenu:Park", Park);
 
 			// PLAYER
+			Alt.OnClient<RPPlayer, int>("Server:XMenu:CuffLegs", CuffLegs);
 			Alt.OnClient<RPPlayer, int>("Server:XMenu:GetPlayerId", GetPlayerId);
 			Alt.OnClient<RPPlayer, int>("Server:XMenu:GiveKey", GiveKey);
 			Alt.OnClient<RPPlayer, int>("Server:XMenu:Revive", RevivePlayer);
@@ -168,6 +169,8 @@ namespace Game.Modules
 			var station = GasStationService.Get(shape.ShapeId);
 			if (station == null) return;
 
+			if ((station.Id == 21 && veh.GarageType != GarageType.HELI) || (station.Id != 21 && veh.GarageType == GarageType.HELI)) return;
+
 			var baseModel = VehicleService.GetBase(veh.BaseId);
 			if (baseModel == null) return;
 
@@ -176,7 +179,7 @@ namespace Game.Modules
 				Id = station.Id,
 				Vehicle = vehicleId,
 				Max = baseModel.MaxFuel - veh.Fuel,
-				Price = 7
+				Price = station.Price
 			}));
 		}
 
@@ -217,6 +220,18 @@ namespace Game.Modules
 		}
 
 		// PLAYER
+		private static void CuffLegs(RPPlayer player, int targetId)
+		{
+			if (!player.LoggedIn) return;
+
+			var target = RPPlayer.All.FirstOrDefault(x => x.Id == targetId);
+			if (target == null) return;
+
+			target.CuffsCanWalk = !target.CuffsCanWalk;
+
+			target.Emit("Client:PlayerModule:Freeze", target.CuffsCanWalk);
+		}
+
 		private static void GetPlayerId(RPPlayer player, int targetId)
 		{
 			if (!player.LoggedIn) return;

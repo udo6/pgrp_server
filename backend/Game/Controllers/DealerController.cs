@@ -15,7 +15,7 @@ namespace Game.Controllers
 
 		public static void LoadDealer(DealerModel model, List<DealerItemModel> items, bool forceActivate = false)
 		{
-			if (!forceActivate && Random.Next(0, 101) > 10) return;
+			if (!forceActivate && Random.Next(0, 101) > 5) return;
 
 			var pos = PositionService.Get(model.PositionId);
 			if (pos == null) return;

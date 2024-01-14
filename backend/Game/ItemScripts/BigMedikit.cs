@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Core.Enums;
 using Database.Models.Inventory;
+using Database.Services;
 using Game.Controllers;
 
 namespace Game.ItemScripts
@@ -38,6 +39,7 @@ namespace Game.ItemScripts
 				}
 
 				PlayerController.SetPlayerAlive(target, false);
+				InventoryController.RemoveItem(inventory, slot, 1);
 			}, 60000);
 		}
 	}

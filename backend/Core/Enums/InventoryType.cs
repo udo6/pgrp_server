@@ -14,6 +14,7 @@
 		WAREHOUSE,
 		FEDERAL_BANK_ROB,
 		JEWELERY_ROB,
-		LOOTDROP // unused but cant be removed!!
+		LOOTDROP, // unused but cant be removed!!
+		TEAM_LOCKER
 	}
 }
