@@ -288,9 +288,6 @@ namespace Game.Controllers
 
 				player.EmitBrowser("Hud:SetMoney", 0);
 
-				player.CanHoldWeapon = false;
-				player.Emit("Client:PlayerModule:SetCanHoldWeapon", false);
-
 				InventoryService.ClearInventoryItems(player.InventoryId);
 				inventory.Slots = Core.Config.Inventory.DEFAULT_SLOTS;
 				inventory.MaxWeight = Core.Config.Inventory.DEFAULT_WEIGHT;
@@ -302,6 +299,9 @@ namespace Game.Controllers
 
 				AccountService.Update(account);
 			}
+
+			player.CanHoldWeapon = false;
+			player.Emit("Client:PlayerModule:SetCanHoldWeapon", false);
 
 			player.Alive = true;
 			player.InjuryType = 0;
