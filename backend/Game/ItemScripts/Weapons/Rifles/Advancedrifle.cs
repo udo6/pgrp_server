@@ -16,7 +16,14 @@
 
 	public class AdvancedrifleSuppressor : AttatchmentItemScript
 	{
-		public AdvancedrifleSuppressor() : base(24, 2205435306, 2937143193)
+		public AdvancedrifleSuppressor() : base(380, 0x837445AA, 2937143193)
+		{
+		}
+	}
+
+	public class AdvancedrifleScope : AttatchmentItemScript
+	{
+		public AdvancedrifleScope() : base(381, 0xAA2C45B4, 2937143193)
 		{
 		}
 	}

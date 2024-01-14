@@ -8,21 +8,21 @@ namespace Game.Modules
 {
 	public static class WeaponModule
 	{
-		// default clip
-		private static Dictionary<uint, List<uint>> AttatchmentWhitelist = new()
+		private static List<uint> AttatchmentWhitelist = new()
 		{
-			{ 453432689u, new(){ 0xFED0FD71 } },   // Pistol
-			{ 1593441988u, new(){ 0x721B079 } },   // Combat Pistol
-			{ 3523564046u, new(){ 0xD4A969A } },   // Heavy Pistol
-			{ 2578377531u, new(){ 0x2297BE19 } },  // Pistol50
-			{ 3219281620u, new(){ 0x94F42D62 } },  // Pistol MKII
-			{ 3220176749u, new(){ 0xBE5EEA16 } },  // Assaultrifle
-			{ 2210333304u, new(){ 0x9FBE33EC } },  // Carbinerifle
-			{ 2937143193u, new(){ 0xFA8FA10F } },  // Advancedrifle
-			{ 2132975508u, new(){ 0xC5A12F80 } },  // Bullpuprifle
-			{ 3231910285u, new(){ 0xC6C7E581 } },  // Specialcarbine
-			{ 2636060646u, new(){ 0x2D46D83B, 0x6B82F395 } },  // Militaryrifle
-			{ 3347935668u, new(){ 1525977990 } },              // Heavyrifle
+			0xFED0FD71, // Pistol DEFAULT MAG
+			0x721B079, // Combat Pistol DEFAULT MAG
+			0xD4A969A, // Heavy Pistol DEFAULT MAG
+			0x2297BE19, // Pistol50 DEFAULT MAG
+			0x94F42D62, // Pistol MKII DEFAULT MAG
+			0xBE5EEA16, // Assaultrifle DEFAULT MAG
+			0x9FBE33EC, // Carbinerifle DEFAULT MAG
+			0xFA8FA10F, // Advancedrifle DEFAULT MAG
+			0xC5A12F80, // Bullpuprifle DEFAULT MAG
+			0xC6C7E581, // Specialcarbine DEFAULT MAG
+			0x2D46D83B, // Militaryrifle DEFAULT MAG
+			0x6B82F395, // Militaryrifle DEFAULT SCOPE
+			1525977990, // Heavyrifle DEFAULT MAG
 		};
 
 		[Initialize]
@@ -38,6 +38,8 @@ namespace Game.Modules
 
 			if(newWeapon > 0 && newWeapon != 2725352035)
 			{
+				var playerWeapon = player.GetWeapons().FirstOrDefault(x => x.Hash == newWeapon);
+
 				var weapon = player.Weapons.FirstOrDefault(x => x.Hash == newWeapon);
 				if (weapon == null)
 				{
@@ -45,8 +47,7 @@ namespace Game.Modules
 					return;
 				}
 
-				player.GetCurrentWeaponComponents(out var components);
-				var unallowedComponent = components.FirstOrDefault(x => !weapon.Components.Contains(x) && (!AttatchmentWhitelist.ContainsKey(newWeapon) || !AttatchmentWhitelist[newWeapon].Any(e => e == x)));
+				var unallowedComponent = playerWeapon.Components.FirstOrDefault(x => !weapon.Components.Contains(x) && !AttatchmentWhitelist.Any(e => e == x));
 				if (unallowedComponent > 0)
 				{
 					AnticheatModule.DetectedAttatchment(player, newWeapon, unallowedComponent);
@@ -62,11 +63,11 @@ namespace Game.Modules
 				var ammo = player.GetWeaponAmmo(oldWeapon);
 				if (ammo == loadout.Ammo) return;
 
-				/*if (ammo > loadout.Ammo)
+				if (ammo > loadout.Ammo)
 				{
 					AnticheatModule.DetectedUnallowedAmmo(player, oldWeapon, ammo, loadout.Ammo);
 					return;
-				}*/
+				}
 
 				loadout.Ammo = ammo;
 				LoadoutService.Update(loadout);

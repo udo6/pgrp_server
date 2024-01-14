@@ -13,4 +13,25 @@
 		{
 		}
 	}
+
+	public class BullpuprifleSuppressor : AttatchmentItemScript
+	{
+		public BullpuprifleSuppressor() : base(385, 0x837445AA, 2132975508u)
+		{
+		}
+	}
+
+	public class BullpuprifleScope : AttatchmentItemScript
+	{
+		public BullpuprifleScope() : base(386, 0xAA2C45B4, 2132975508u)
+		{
+		}
+	}
+
+	public class BullpuprifleGrip : AttatchmentItemScript
+	{
+		public BullpuprifleGrip() : base(387, 0xC164F53, 2132975508u)
+		{
+		}
+	}
 }

@@ -13,4 +13,18 @@
 		{
 		}
 	}
+
+	public class MilitaryrifleSuppressor : AttatchmentItemScript
+	{
+		public MilitaryrifleSuppressor() : base(392, 0x837445AA, 2636060646u)
+		{
+		}
+	}
+
+	public class MilitaryrifleScope : AttatchmentItemScript
+	{
+		public MilitaryrifleScope() : base(391, 0xAA2C45B4, 2636060646u)
+		{
+		}
+	}
 }

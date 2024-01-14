@@ -15,4 +15,25 @@ namespace Game.ItemScripts.Weapons.Rifles
 		{
 		}
 	}
+
+	public class AssaultrifleSuppressor : AttatchmentItemScript
+	{
+		public AssaultrifleSuppressor() : base(382, 0xA73D4664, 3220176749u)
+		{
+		}
+	}
+
+	public class AssaultrifleScope : AttatchmentItemScript
+	{
+		public AssaultrifleScope() : base(383, 0x9D2FBF29, 3220176749u)
+		{
+		}
+	}
+
+	public class AssaultrifleGrip : AttatchmentItemScript
+	{
+		public AssaultrifleGrip() : base(384, 0xC164F53, 3220176749u)
+		{
+		}
+	}
 }

@@ -96,6 +96,7 @@ namespace Game
 			var attatchments = LoadoutService.GetLoadoutAttatchments(loadout.Id);
 			if (attatchments.FirstOrDefault(x => x.Hash == Hash) != null)
 			{
+				player.Notify("Information", "Du hast diesen Aufsatz bereits ausgerüstet!", NotificationType.ERROR);
 				player.ShowComponent("Inventory", false);
 				return;
 			}
@@ -109,7 +110,7 @@ namespace Game
 				{
 					var comp = new LoadoutAttatchmentModel(loadout.Id, Hash);
 					LoadoutService.AddAttatchment(comp);
-					player.AddWeaponComponent(WeaponHash, Hash);
+					player.AddAttatchment(WeaponHash, Hash);
 				}
 			}, 4000);
 		}
