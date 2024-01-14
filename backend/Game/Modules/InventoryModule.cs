@@ -19,7 +19,7 @@ namespace Game.Modules
 			{ InventoryType.PLAYER, "Spieler" },
 			{ InventoryType.TRUNK, "Kofferraum" },
 			{ InventoryType.GLOVEBOX, "Handschuhfach" },
-			{ InventoryType.LOCKER, "Schließfach" },
+			{ InventoryType.LOCKER, "Spind" },
 
 			{ InventoryType.HOUSE, "Haus" },
 			{ InventoryType.WAREHOUSE, "Lagerkiste" },
@@ -31,7 +31,9 @@ namespace Game.Modules
 			{ InventoryType.LAB_FUEL, "Labor Energie" },
 			{ InventoryType.LAB_ROB, "Labor Loot" },
 			{ InventoryType.LAB_INPUT, "Labor Eingabe" },
-			{ InventoryType.LAB_OUTPUT, "Labor Ausgabe" }
+			{ InventoryType.LAB_OUTPUT, "Labor Ausgabe" },
+
+			{ InventoryType.TEAM_LOCKER, "Spind" },
 		};
 
 		[Initialize]

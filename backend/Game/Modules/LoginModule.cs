@@ -241,7 +241,10 @@ namespace Game.Modules
 			var locker = new InventoryModel(8, 100f, InventoryType.TEAM_LOCKER);
 			InventoryService.Add(locker);
 
+			player.TeamLockerId = locker.Id;
+
 			account.TeamLockerId = locker.Id;
+			AccountService.Update(account);
 		}
 
 		private static string GenerateAuthCode()
