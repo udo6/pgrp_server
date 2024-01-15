@@ -80,6 +80,23 @@ namespace Game.Modules.Jobs
             player.TempClothesId = customization.Gender ? 65 : 66;
             PlayerController.ApplyPlayerClothes(player);
             player.Notify("Müllabfuhr", "Du hast den Job gestartet.", Core.Enums.NotificationType.SUCCESS);
+
+            var houses = HouseService.GetAll();
+            if (houses == null) return;
+
+            houses.ForEach(house => {
+                var position = PositionService.Get(house.PositionId);
+                if (position == null) return;
+
+                var blip = Alt.CreateBlip(false, BlipType.Destination, position.Position, new[] { player });
+                blip.ShortRange = false;
+                blip.SetData("BLIP_ID", position.Id);
+                blip.ScaleXY = new Vector2(0.85f, 0.85f);
+                blip.Sprite = 1;
+                blip.Name = "Muell";
+
+                player.TemporaryBlips.Add(blip);
+            });
         }
 
         private static void Stop(RPPlayer player, int jobId)
@@ -115,6 +132,13 @@ namespace Game.Modules.Jobs
             player.Notify("Müllabfuhr", "Du hast den Job beendet.", Core.Enums.NotificationType.SUCCESS);
             player.TempClothesId = 0;
             PlayerController.ApplyPlayerClothes(player);
+
+            foreach (var blip in player.TemporaryBlips)
+            {
+                blip.Destroy();
+            }
+            
+            player.TemporaryBlips.Clear();
         }
 
         private static void Return(RPPlayer player)
