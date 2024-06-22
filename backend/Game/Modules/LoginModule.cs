@@ -47,15 +47,26 @@ namespace Game.Modules
             }
 
             player.OAuthDiscordId = discordId;
-			player.AuthCode = GenerateAuthCode();
+
+			var account = AccountService.Get(player.Name);
+			if(account == null)
+			{
+				player.Kick($"Du wurdest gekicked! Grund: Es wurde kein Account mit dem Namen {player.Name} gefunden!");
+				return;
+			}
+
+            if (account.DiscordId != player.OAuthDiscordId)
+            {
+                player.Kick("Du wurdest gekicked! Grund: Bitte melde dich im Support! (Discord mismatch)");
+                return;
+            }
+
+            player.AuthCode = GenerateAuthCode();
 			Discord.Main.SendAuthCode(discordId, player.AuthCode);
 			player.ShowComponent("Login", true, player.Name);
 		}
 
-		private static void Kick(RPPlayer player, string reason)
-		{
-			player.Kick(reason);
-		}
+		private static void Kick(RPPlayer player, string reason) => player.Kick(reason);
 
 		[Core.Attribute.ServerEvent(ServerEventType.PLAYER_CONNECT)]
 		public static void OnPlayerConnect(RPPlayer player, string reason)
@@ -73,12 +84,6 @@ namespace Game.Modules
 		private static void Auth(RPPlayer player, string code)
 		{
 			if (player.LoggedIn || player.OAuthDiscordId == 0) return;
-
-			if((ulong)player.DiscordId != player.OAuthDiscordId)
-			{
-                player.Kick("Du wurdest gekicked! Grund: Bitte melde dich im Support! (Discord mismatch)");
-                return;
-            }
 
 			if(player.AuthCode != code)
 			{
@@ -255,7 +260,7 @@ namespace Game.Modules
 		private static string GenerateAuthCode()
 		{
 			var length = 32;
-			var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+			var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			var result = "";
 
 			for (int i = 0; i < length; i++)

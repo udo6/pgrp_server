@@ -808,7 +808,7 @@ namespace Game.Modules
 				Money = account.Money,
 				BankMoney = account.BankMoney,
 				AdminHistory = historyData,
-				ForumId = account.ForumId,
+				ForumId = 0,
 				BannedUntil = account.BannedUntil.ToString("HH:mm dd.MM.yyyy"),
 				BanReason = account.BanReason
 			};

@@ -13,7 +13,6 @@ namespace Database.Models.Account
         public ulong HardwareId { get; set; }
         public ulong HardwareIdEx { get; set; }
         public ulong DiscordId { get; set; }
-        public int ForumId { get; set; }
         public bool Whitelisted { get; set; }
         public int Money { get; set; }
         public int BankMoney { get; set; }
@@ -96,7 +95,7 @@ namespace Database.Models.Account
 
 		}
 
-        public AccountModel(string name, string ip, ulong social, ulong hwid, ulong hwidEx, int forumId, ulong discord, int money, int bankMoney, int phoneNumber, int positionId, int customId, int clothesId, int inventoryId, int labInputInventoryId, int labOutputInventoryId, int lockerInventoryId, int businessId, int licenseId, bool banOnConnect, int teamLockerId)
+        public AccountModel(string name, string ip, ulong social, ulong hwid, ulong hwidEx, ulong discord, int money, int bankMoney, int phoneNumber, int positionId, int customId, int clothesId, int inventoryId, int labInputInventoryId, int labOutputInventoryId, int lockerInventoryId, int businessId, int licenseId, bool banOnConnect, int teamLockerId)
         {
             Name = name;
             IP = ip;
@@ -104,7 +103,6 @@ namespace Database.Models.Account
             HardwareId = hwid;
             HardwareIdEx = hwidEx;
             DiscordId = discord;
-            ForumId = forumId;
             Whitelisted = false;
             Money = money;
             BankMoney = bankMoney;
@@ -178,7 +176,6 @@ namespace Database.Models.Account
 			builder.Property(x => x.SocialclubId).HasColumnName("social").HasColumnType("bigint(20)");
 			builder.Property(x => x.HardwareId).HasColumnName("hwid").HasColumnType("bigint(20)");
 			builder.Property(x => x.HardwareIdEx).HasColumnName("hwid_ex").HasColumnType("bigint(20)");
-			builder.Property(x => x.ForumId).HasColumnName("forum_id").HasColumnType("int(11)");
 			builder.Property(x => x.DiscordId).HasColumnName("discord").HasColumnType("bigint(20)");
 			builder.Property(x => x.Whitelisted).HasColumnName("whitelisted").HasColumnType("tinyint(1)");
 

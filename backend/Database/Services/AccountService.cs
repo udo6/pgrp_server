@@ -35,7 +35,6 @@ namespace Database.Services
 			return ctx.Accounts.Where(x =>
 				x.Id.ToString().ToLower().Contains(search.ToLower()) ||
 				x.Name.ToLower().Contains(search.ToLower()) ||
-				x.ForumId.ToString().ToLower().Contains(search.ToLower()) ||
 				x.DiscordId.ToString().ToLower().Contains(search.ToLower()) ||
 				x.TeamId.ToString().ToLower().Contains(search.ToLower()) ||
 				x.PhoneNumber.ToString().ToLower().Contains(search.ToLower())).Take(take).ToList();
@@ -72,12 +71,6 @@ namespace Database.Services
 			return ctx.Accounts.FirstOrDefault(x => x.BannedUntil > now && (x.IP == ip || x.SocialclubId == social || x.DiscordId == discord));
 		}
 
-		public static bool CheckForumId(int forumId)
-		{
-			using var ctx = new Context();
-			return ctx.Accounts.Any(x => x.ForumId == forumId);
-		}
-
 		public static List<AccountModel> GetFromTeam(int teamId)
 		{
 			using var ctx = new Context();
@@ -88,12 +81,6 @@ namespace Database.Services
 		{
 			using var ctx = new Context();
 			return ctx.Accounts.Any(x => x.Name.ToLower() == name.ToLower());
-		}
-
-		public static bool IsForumIdTaken(int id)
-		{
-			using var ctx = new Context();
-			return ctx.Accounts.Any(x => x.ForumId == id);
 		}
 
 		public static bool IsDiscordIdTaken(ulong id)
