@@ -23,11 +23,11 @@ namespace Logs
 
 			var connectionString = new MySqlConnectionStringBuilder
 			{
-				Server = "localhost",
-				Port = 3306,
-				UserID = "mason",
-				Password = "3ad51Ox1ciso3uSaL53ARalo74SIYo",
-				Database = "pgrp_logs",
+                Server = "localhost",
+                Port = 3306,
+                UserID = "root",
+                Password = "",
+                Database = "pgrp_logs",
 			};
 
 			optionsBuilder.UseMySql(connectionString.ConnectionString, ServerVersion.AutoDetect(connectionString.ConnectionString)).EnableSensitiveDataLogging();

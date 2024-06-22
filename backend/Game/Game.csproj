@@ -7,6 +7,7 @@
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	<Platforms>AnyCPU;x64</Platforms>
+	<BaseOutputPath>C:\Users\Anwender\Desktop\altvserver\resources\chat\server</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

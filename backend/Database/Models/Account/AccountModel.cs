@@ -11,9 +11,7 @@ namespace Database.Models.Account
         public string IP { get; set; }
         public ulong SocialclubId { get; set; }
         public ulong HardwareId { get; set; }
-        public bool UseHardwareId { get; set; }
         public ulong HardwareIdEx { get; set; }
-        public bool UseHardwareIdEx { get; set; }
         public ulong DiscordId { get; set; }
         public int ForumId { get; set; }
         public bool Whitelisted { get; set; }
@@ -104,9 +102,7 @@ namespace Database.Models.Account
             IP = ip;
             SocialclubId = social;
             HardwareId = hwid;
-            UseHardwareId = true;
             HardwareIdEx = hwidEx;
-            UseHardwareIdEx = true;
             DiscordId = discord;
             ForumId = forumId;
             Whitelisted = false;
@@ -181,9 +177,7 @@ namespace Database.Models.Account
 			builder.Property(x => x.IP).HasColumnName("ip").HasColumnType("varchar(255)");
 			builder.Property(x => x.SocialclubId).HasColumnName("social").HasColumnType("bigint(20)");
 			builder.Property(x => x.HardwareId).HasColumnName("hwid").HasColumnType("bigint(20)");
-			builder.Property(x => x.UseHardwareId).HasColumnName("use_hwid").HasColumnType("tinyint(1)");
 			builder.Property(x => x.HardwareIdEx).HasColumnName("hwid_ex").HasColumnType("bigint(20)");
-			builder.Property(x => x.UseHardwareIdEx).HasColumnName("use_hwid_ex").HasColumnType("tinyint(1)");
 			builder.Property(x => x.ForumId).HasColumnName("forum_id").HasColumnType("int(11)");
 			builder.Property(x => x.DiscordId).HasColumnName("discord").HasColumnType("bigint(20)");
 			builder.Property(x => x.Whitelisted).HasColumnName("whitelisted").HasColumnType("tinyint(1)");

@@ -31,10 +31,7 @@ using Database.Models.FFA;
 using Database.Models.Dealer;
 using Database.Models.Door;
 using Database.Models.Tuner;
-using Database.Models.GarbageJob;
-using Database.Models.MoneyTruckJob;
 using Database.Models.Case;
-using Database.Models.GardenerJob;
 
 namespace Database
 {
@@ -118,15 +115,10 @@ namespace Database
 		public DbSet<TunerModel> Tuner { get; set; }
 		public DbSet<TunerCategoryModel> TunerCategories { get; set; }
 		public DbSet<TunerItemModel> TunerItems { get; set; }
-        public DbSet<GarbageJobModel> GarbageJobs { get; set; }
         public DbSet<WarnModel> Warns { get; set; }
         public DbSet<AdminHistoryModel> AdminHistory { get; set; }
-        public DbSet<MoneyTruckJobModel> MoneyTruckJobs { get; set; }
-        public DbSet<MoneyTruckJobRouteModel> MoneyTruckJobRoutes { get; set; }
-        public DbSet<MoneyTruckJobRoutePositionModel> MoneyTruckJobRoutePosition { get; set; }
 		public DbSet<CaseLootModel> CaseLootTable { get; set; }
 		public DbSet<BarberBeardModel> BarberBeardModels { get; set; }
-		public DbSet<GardenerJobModel> GardenerJobs { get; set; }
 		public DbSet<ReportModel> Reports { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -137,8 +129,8 @@ namespace Database
 			{
 				Server = "localhost",
 				Port = 3306,
-				UserID = "mason",
-				Password = "3ad51Ox1ciso3uSaL53ARalo74SIYo",
+				UserID = "root",
+				Password = "",
 				Database = "pgrp",
 			};
 

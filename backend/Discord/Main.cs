@@ -40,17 +40,17 @@ namespace Discord
 				{
 					if (Client == null) return;
 
-					var guild = Client.Guilds.FirstOrDefault(x => x.Id == 1162876377511505980);
+                    var guild = Client.Guilds.FirstOrDefault(x => x.Id == 1254115515966689350);
 					if (guild == null) return;
 
 					await guild.DownloadUsersAsync();
 
-					var user = guild.GetUser(userId);
+                    var user = guild.GetUser(userId);
 					if (user == null) return;
 
-					var dm = await user.CreateDMChannelAsync();
+                    var dm = await user.CreateDMChannelAsync();
 					await dm.SendMessageAsync($"Dein Authentifizierungscode: {code}");
-				}
+                }
 				catch(Exception ex)
 				{
 					Console.WriteLine($"Cant send discord message to {userId}");

@@ -65,11 +65,11 @@ namespace Database.Services
 			return ctx.Accounts.Count(x => x.SocialclubId == social || x.DiscordId == discord) > 1;
 		}
 
-		public static AccountModel? AnyBannedAccounts(string ip, ulong social, ulong discord, ulong hwid, bool useHwid, ulong hwidEx, bool useHwidEx)
+		public static AccountModel? AnyBannedAccounts(string ip, ulong social, ulong discord)
 		{
 			using var ctx = new Context();
 			var now = DateTime.Now;
-			return ctx.Accounts.FirstOrDefault(x => x.BannedUntil > now && (x.IP == ip || x.SocialclubId == social || x.DiscordId == discord || (useHwid && x.HardwareId > 0 && x.HardwareId == hwid) || ( useHwidEx && x.HardwareIdEx > 0 && x.HardwareIdEx == hwidEx)));
+			return ctx.Accounts.FirstOrDefault(x => x.BannedUntil > now && (x.IP == ip || x.SocialclubId == social || x.DiscordId == discord));
 		}
 
 		public static bool CheckForumId(int forumId)

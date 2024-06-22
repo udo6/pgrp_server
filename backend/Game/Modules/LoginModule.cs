@@ -28,7 +28,7 @@ namespace Game.Modules
 		{
 			if (player.LoggedIn) return;
 
-			var pos = new Position(-578.3736f, -718.2198f, 132.77148f);
+            var pos = new Position(-578.3736f, -718.2198f, 132.77148f);
 
 			player.Model = 1885233650;
 			player.Spawn(pos, 0);
@@ -39,14 +39,14 @@ namespace Game.Modules
 			player.SetStreamSyncedMetaData("ROPED", false);
 			player.SetStreamSyncedMetaData("STABILIZED", false);
 
-			var discordId = GetDiscordId(token);
+            var discordId = GetDiscordId(token);
 			if(discordId == 0)
 			{
 				player.Kick("Du wurdest gekicked! Grund: Discord authentifizierung fehlgeschlagen!");
 				return;
-			}
+            }
 
-			player.OAuthDiscordId = discordId;
+            player.OAuthDiscordId = discordId;
 			player.AuthCode = GenerateAuthCode();
 			Discord.Main.SendAuthCode(discordId, player.AuthCode);
 			player.ShowComponent("Login", true, player.Name);
@@ -76,7 +76,7 @@ namespace Game.Modules
 
 			if((ulong)player.DiscordId != player.OAuthDiscordId)
 			{
-                player.Kick("Du wurdest gekicked! Grund: Deine Discord ID stimmt nicht überein!");
+                player.Kick("Du wurdest gekicked! Grund: Bitte melde dich im Support! (Discord mismatch)");
                 return;
             }
 
@@ -132,7 +132,7 @@ namespace Game.Modules
 				return;
 			}*/
 
-			var anyBannedAcc = AccountService.AnyBannedAccounts(player.Ip, player.SocialClubId, player.OAuthDiscordId, player.HardwareIdHash, account.UseHardwareId, player.HardwareIdExHash, account.UseHardwareIdEx);
+			var anyBannedAcc = AccountService.AnyBannedAccounts(player.Ip, player.SocialClubId, player.OAuthDiscordId);
 			if (anyBannedAcc != null)
 			{
 				player.Kick($"Du wurdest gekicked! Grund: Bitte melde dich im Support! Code: 37 ({anyBannedAcc.Id})");

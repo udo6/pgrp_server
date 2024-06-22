@@ -138,18 +138,6 @@ namespace Core.Entities
 		public bool CanHoldWeapon { get; set; } = true;
 		public bool CuffsCanWalk { get; set; } = false;
 
-        // JOBS
-        public bool IsInGarbageJob { get; set; } = false;
-        public bool HasGarbageInHand { get; set; } = false;
-
-        public bool IsInGardenerJob { get; set; } = false;
-        public bool IsInMoneyTruckJob { get; set; } = false;
-        public bool HasMoneyInHand { get; set; } = false;
-		public List<int> MoneyTrunkJobRouteIds { get; } = new();
-
-        // JOB VEHICLES
-        public RPVehicle? JobVehicle = null;
-
 		// CLOTHES
 		public bool HatState { get; set; } = true;
 		public bool MaskState { get; set; } = true;
@@ -163,11 +151,6 @@ namespace Core.Entities
 		public bool ShoesState { get; set; } = true;
 		public bool AccessoriesState { get; set; } = true;
 		public bool DecalsState { get; set; } = true;
-
-		public bool IsInJob()
-        {
-            return (IsInGarbageJob || IsInGardenerJob || IsInMoneyTruckJob);
-        }
 
         public RPPlayer(ICore core, nint nativePointer, uint id) : base(core, nativePointer, id)
 		{
