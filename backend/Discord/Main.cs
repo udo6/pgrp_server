@@ -140,7 +140,17 @@ namespace Discord
                 false,
 				-1));
 
-			await modal.RespondAsync("Dein Charakter wurde erstellt! Du kannst dich nun auf dem Gameserver einloggen.");
+            var guild = Client.Guilds.FirstOrDefault(x => x.Id == 1254115515966689350);
+            if (guild == null) return;
+
+            await guild.DownloadUsersAsync();
+
+            var user = guild.GetUser(modal.User.Id);
+            if (user == null) return;
+
+			await user.ModifyAsync(x => x.Nickname = name);
+
+            await modal.RespondAsync("Dein Charakter wurde erstellt! Du kannst dich nun auf dem Gameserver einloggen.");
         }
 
 
