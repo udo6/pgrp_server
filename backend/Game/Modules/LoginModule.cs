@@ -74,6 +74,12 @@ namespace Game.Modules
 		{
 			if (player.LoggedIn || player.OAuthDiscordId == 0) return;
 
+			if((ulong)player.DiscordId != player.OAuthDiscordId)
+			{
+                player.Kick("Du wurdest gekicked! Grund: Deine Discord ID stimmt nicht überein!");
+                return;
+            }
+
 			if(player.AuthCode != code)
 			{
 				if(player.AuthTries > 3)
@@ -114,7 +120,6 @@ namespace Game.Modules
 				return;
 			}
 
-			// ban check
 			if (account.BannedUntil > DateTime.Now)
 			{
 				player.Kick($"Du wurdest gekicked! Grund: Du bist noch bis zum {account.BannedUntil:dd.MM.yyyy} vom Gameserver gesperrt!");

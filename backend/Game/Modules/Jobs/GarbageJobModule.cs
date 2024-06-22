@@ -10,6 +10,7 @@ using Database.Services.Jobs;
 using Core.Extensions;
 using AltV.Net.Enums;
 using Core.Enums;
+using System.Numerics;
 
 namespace Game.Modules.Jobs
 {
