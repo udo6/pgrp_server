@@ -60,8 +60,7 @@ namespace Game.Controllers
 			ApplyPlayerTattoos(player);
 			ApplyPlayerClothes(player);
 			ApplyPlayerLoadout(player);
-			player.ShowComponent("Hud", true);
-			player.EmitBrowser("Hud:ShowInfo", true, JsonConvert.SerializeObject(new HudClientData(account.Money, account.Hunger, account.Thirst)));
+			player.ShowComponent("Hud", true, JsonConvert.SerializeObject(new HudClientData(account.Money, account.Hunger, account.Thirst)));
 			player.EmitBrowser("Hud:SetId", account.Id);
 
 			if (!account.Alive)

@@ -21,7 +21,6 @@ namespace Game.Modules
 			Alt.OnClient<RPPlayer, float>("server:yaca:changeVoiceRange", ChangeVoiceRange);
 			Alt.OnClient<RPPlayer, bool>("server:yaca:lipsync", Lipsync);
 			Alt.OnClient<RPPlayer, int>("server:yaca:addPlayer", AddNewPlayer);
-			Alt.OnClient<RPPlayer>("server:yaca:noVoicePlugin", OnPlayerNoVoice);
 			Alt.OnClient<RPPlayer, bool>("server:yaca:wsReady", OnPlayerReconnect);
 		}
 
@@ -63,11 +62,6 @@ namespace Game.Modules
 			player.ForceMuted = !state;
 			player.VoicePluginForceMuted = !state;
 			Alt.EmitAllClients("client:yaca:muteTarget", player.Id, !state);
-		}
-
-		public static void OnPlayerNoVoice(RPPlayer player)
-		{
-			player.Notify("Information", "Du benötigst das YACA Voice Plugin!", Core.Enums.NotificationType.WARN);
 		}
 
 		public static void OnPlayerReconnect(RPPlayer player, bool isFirstConnect)

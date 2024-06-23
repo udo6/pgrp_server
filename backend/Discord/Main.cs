@@ -76,10 +76,18 @@ namespace Discord
 
         private static async Task ModalSubmitted(SocketModal modal)
         {
-			if (modal.Data.CustomId != "RegisterModal") return;
+			if (modal.Data.CustomId != "RegisterModal")
+			{
+				await modal.DeferAsync();
+                return;
+            }
 
 			var name = modal.Data.Components.FirstOrDefault(x => x.CustomId == "RegisterModal::Name")?.Value;
-			if(name == null || name == string.Empty) return;
+			if(name == null || name == string.Empty)
+			{
+                await modal.DeferAsync();
+                return;
+            }
 
 			if(!Regex.IsMatch(name, "([a-zA-Z]+)_([a-zA-Z]+)$"))
 			{
@@ -135,20 +143,10 @@ namespace Discord
                 labInput.Id,
                 labOutput.Id,
                 locker.Id,
-                0,
+                0, // Business
                 license.Id,
                 false,
-				-1));
-
-            var guild = Client.Guilds.FirstOrDefault(x => x.Id == 1254115515966689350);
-            if (guild == null) return;
-
-            await guild.DownloadUsersAsync();
-
-            var user = guild.GetUser(modal.User.Id);
-            if (user == null) return;
-
-			await user.ModifyAsync(x => x.Nickname = name);
+                teamLocker.Id));
 
             await modal.RespondAsync("Dein Charakter wurde erstellt! Du kannst dich nun auf dem Gameserver einloggen.");
         }

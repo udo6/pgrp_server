@@ -129,8 +129,8 @@ namespace Database
 			{
 				Server = "localhost",
 				Port = 3306,
-				UserID = "root",
-				Password = "",
+				UserID = "mason",
+				Password = "Paiyai43234",
 				Database = "pgrp",
 			};
 
