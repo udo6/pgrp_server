@@ -1,5 +1,6 @@
 ﻿using Core.Attribute;
 using Core.Entities;
+using Core.Enums;
 using Newtonsoft.Json;
 
 namespace Game
@@ -52,7 +53,8 @@ namespace Game
 			{
 				Title = "Globale Nachricht",
 				Message = $"Ein geplanter Server-Restart findet in {time} Minuten statt!",
-				Duration = 10000
+				Duration = 10000,
+				Type = GlobalNotifyType.RESTART
 			});
 
 			foreach (var target in RPPlayer.All.ToList())

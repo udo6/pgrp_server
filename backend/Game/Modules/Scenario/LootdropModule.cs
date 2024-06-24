@@ -72,8 +72,9 @@ namespace Game.Modules.Scenario
 			{
 				Title = "Militärischer Absturz",
 				Message = $"Es wurde der Absturz einer Militärischen Flugmaschine in folgendem Gebiet gemeldet: {drop.Name}",
-				Duration = 15000
-			});
+				Duration = 15000,
+                Type = GlobalNotifyType.DROP
+            });
 
 			foreach (var player in RPPlayer.All.ToList())
 			{

@@ -646,8 +646,9 @@ namespace Game.Modules
 			{
 				Title = $"ADMINISTRATIVE NACHRICHT",
 				Message = $"{player.Name} hat {target.Name} vom Server gebannt! Grund: {reason}",
-				Duration = 10000
-			});
+				Duration = 10000,
+                Type = GlobalNotifyType.BAN
+            });
 
 			foreach (var user in RPPlayer.All.ToList())
 			{
@@ -682,8 +683,9 @@ namespace Game.Modules
 			{
 				Title = $"ADMINISTRATIVE NACHRICHT",
 				Message = $"{player.Name} hat {target.Name} vom Server gebannt! Grund: {reason}",
-				Duration = 10000
-			});
+				Duration = 10000,
+                Type = GlobalNotifyType.BAN
+            });
 
 			foreach (var user in RPPlayer.All.ToList())
 			{
@@ -712,8 +714,9 @@ namespace Game.Modules
 				{
 					Title = $"ADMINISTRATIVE NACHRICHT",
 					Message = $"{player.Name} hat {target.Name} vom Server gekickt! Grund: {reason}",
-					Duration = 10000
-				});
+					Duration = 10000,
+                    Type = GlobalNotifyType.GLOBAL
+                });
 
 				foreach (var user in RPPlayer.All.ToList())
 				{
