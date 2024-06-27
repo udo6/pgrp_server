@@ -35,5 +35,9 @@ namespace Game
 		{
 			return new ColshapeFactory();
 		}
-	}
+        public override IBaseObjectFactory<IBlip> GetBlipFactory()
+        {
+            return new BlipFactory();
+        }
+    }
 }

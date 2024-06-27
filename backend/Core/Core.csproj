@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Factories\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AltV.Net" Version="16.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>

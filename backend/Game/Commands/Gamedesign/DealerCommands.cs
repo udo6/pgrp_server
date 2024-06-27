@@ -19,7 +19,7 @@ namespace Game.Commands.Gamedesign
 
 			var dealer = new DealerModel(pos.Id, true);
 			DealerService.Add(dealer);
-			DealerController.LoadDealer(dealer, new(), true);
+			DealerController.LoadDealer(dealer, new());
 			player.Notify("Gamedesign", "Du hast einen Dealer erstellt!", Core.Enums.NotificationType.SUCCESS);
 		}
 	}

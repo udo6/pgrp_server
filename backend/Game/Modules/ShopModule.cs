@@ -48,6 +48,16 @@ namespace Game.Modules
 			var shop = ShopService.Get(shopId);
 			if (shop == null) return;
 
+			if(shop.Type == ShopType.AMMUNATION)
+			{
+				var license = LicenseService.Get(player.LicenseId);
+				if(license == null || !license.Gun)
+				{
+					player.Notify("Ammunation", "Du benötigst einen gültigen Waffenschein!", NotificationType.ERROR);
+                    return;
+                }
+			}
+
 			var inventory = InventoryService.Get(player.InventoryId);
 			if (inventory == null) return;
 

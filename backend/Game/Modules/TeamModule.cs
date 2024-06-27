@@ -34,13 +34,14 @@ namespace Game.Modules
 		{
 			if (!player.LoggedIn || player.PendingTeamInvite != team || team < 1) return;
 
-			/*if(player.Level < 3)
+            player.PendingTeamInvite = 0;
+
+            if (player.Level < 3)
 			{
 				player.Notify("Information", "Du musst mind. Level 3 sein!", NotificationType.ERROR);
 				return;
-			}*/
+			}
 
-			player.PendingTeamInvite = 0;
 			TeamController.SetPlayerTeam(player, team, 0, false, false, false);
 			TeamController.Broadcast(team, $"{player.Name} ist der Fraktion beigetreten!", NotificationType.INFO);
 		}
@@ -48,6 +49,12 @@ namespace Game.Modules
 		private static void ToggleDuty(RPPlayer player)
 		{
 			if (!player.LoggedIn || player.TeamId < 1) return;
+
+			if(player.TeamId <= 5 && player.TeamSuspended)
+			{
+				player.Notify("Information", "Du bist noch vom Dienst suspendiert!", NotificationType.ERROR);
+				return;
+			}
 
 			var team = TeamService.Get(player.TeamId);
 			if(team == null || team.Type == TeamType.GANG || team.Type == TeamType.MAFIA) return;
@@ -175,7 +182,7 @@ namespace Game.Modules
 			if (account == null) return;
 
 			var team = TeamService.Get(player.TeamId);
-			if (team == null) return;
+			if (team == null || (team.Type == TeamType.FEDERAL && !player.TeamDuty)) return;
 
 			if (loadout.Any(x => x.Hash == 3219281620 || x.Hash == team.MeeleWeaponHash || x.Hash == 911657153u || x.Hash == 1233104067u))
 			{
@@ -309,19 +316,11 @@ namespace Game.Modules
 
 		private static void OpenCrimeTeamMenu(RPPlayer player, AccountModel account, TeamModel team)
 		{
-			var lab = TeamService.GetLaboratoryByTeam(team.Id);
-			if (lab == null) return;
-
-			var labPos = PositionService.Get(lab.PositionId);
-			if (labPos == null) return;
-
-
 			var inventories = WarehouseService.GetWarehouseInventories(team.Id, OwnerType.TEAM);
 			var weight = 0f;
 			var maxWeight = 0f;
 			var slots = 0;
 			var maxSlots = 0;
-			var drugs = 0;
 
 			foreach(var inventory in inventories)
 			{
@@ -337,7 +336,6 @@ namespace Game.Modules
 					if (itemBase == null) continue;
 
 					weight += itemBase.Weight * item.Amount;
-					if(item.ItemId == 3) drugs += item.Amount;
 				}
 			}
 
@@ -347,7 +345,7 @@ namespace Game.Modules
 				(int)Math.Round(maxWeight),
 				(int)Math.Round((decimal)slots),
 				(int)Math.Round((decimal)maxSlots),
-				drugs);
+				0);
 
 			var members = new List<TeamClientMemberData>();
 
@@ -385,7 +383,7 @@ namespace Game.Modules
 				storageData,
 				members,
 				GetBankHistory(team.Id),
-				new(labPos.Position, TeamController.GetLaboratoryFuel(team.Id)),
+				new(new(), 0),
 				new(0, 0, 0));
 
 			player.ShowComponent("Team", true, JsonConvert.SerializeObject(new TeamClientData(

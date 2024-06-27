@@ -37,30 +37,5 @@ namespace Game.Commands.Gamedesign
 
 			TeamController.LoadTeam(team);
 		}
-
-		[Command("createlab")]
-		public static void CreateLaboratory(RPPlayer player, int teamId, int type)
-		{
-			if (!Core.Config.DevMode && player.AdminRank < Core.Enums.AdminRank.SUPERADMIN) return;
-
-			var team = TeamService.Get(teamId);
-			if (team == null) return;
-
-			var pos = new PositionModel(player.Position);
-			PositionService.Add(pos);
-
-			var fuel = new InventoryModel(8, 1000, InventoryType.LAB_FUEL);
-			var rob = new InventoryModel(500, 1000000, InventoryType.LAB_ROB);
-			InventoryService.Add(fuel, rob);
-
-			var lab = new LaboratoryModel(teamId, pos.Id, fuel.Id, false, rob.Id, (LaboratoryType)type);
-			TeamService.AddLaboratory(lab);
-
-			var jumppoint = new JumppointModel($"{team.ShortName} - Labor", pos.Id, 0, LaboratoryController.LabInsidePositionIds[type], lab.Id, teamId, 0, OwnerType.TEAM, true, DateTime.Now.AddHours(-92), JumppointType.LABORATORY);
-			JumppointService.Add(jumppoint);
-
-			LaboratoryController.LoadLaboratory(lab);
-			JumppointController.LoadJumppoint(jumppoint);
-		}
 	}
 }

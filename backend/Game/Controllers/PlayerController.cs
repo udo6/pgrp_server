@@ -45,6 +45,7 @@ namespace Game.Controllers
 			player.PhoneVolume = account.PhoneVolume;
 			player.Cuffed = account.Cuffed;
 			player.Roped = account.Roped;
+			player.TeamSuspended = account.TeamSuspended;
 
 			player.ApplyTeam();
 			player.ApplyAdmin();

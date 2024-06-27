@@ -55,7 +55,7 @@ namespace Game.Modules
 				return;
 			}
 
-            if (account.DiscordId != player.OAuthDiscordId)
+            if (account.DiscordId > 0 && account.DiscordId != player.OAuthDiscordId)
             {
                 player.Kick("Du wurdest gekicked! Grund: Bitte melde dich im Support! (Discord mismatch)");
                 return;

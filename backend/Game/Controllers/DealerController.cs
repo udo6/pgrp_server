@@ -11,12 +11,9 @@ namespace Game.Controllers
 	public static class DealerController
 	{
 		public static List<DealerCache> DealerCache = new();
-		private static Random Random = new Random();
 
-		public static void LoadDealer(DealerModel model, List<DealerItemModel> items, bool forceActivate = false)
+		public static void LoadDealer(DealerModel model, List<DealerItemModel> items)
 		{
-			if (!forceActivate && Random.Next(0, 101) > 5) return;
-
 			var pos = PositionService.Get(model.PositionId);
 			if (pos == null) return;
 
@@ -36,7 +33,7 @@ namespace Game.Controllers
 			var dealerCache = new DealerCache(model.Id);
 			foreach(var item in items)
 			{
-				dealerCache.Items.Add(new(item.Id, Random.Next(item.MinPrice, item.MaxPrice)));
+				dealerCache.Items.Add(new(item.Id, new Random().Next(item.MinPrice, item.MaxPrice), item.SellCap));
             }
 
             DealerCache.Add(dealerCache);

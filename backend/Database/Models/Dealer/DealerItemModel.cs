@@ -9,16 +9,18 @@ namespace Database.Models.Dealer
 		public int ItemId { get; set; }
 		public int MinPrice { get; set; }
 		public int MaxPrice { get; set; }
+		public int SellCap { get; set; }
 
 		public DealerItemModel()
 		{
 		}
 
-		public DealerItemModel(int itemId, int minPrice, int maxPrice)
+		public DealerItemModel(int itemId, int minPrice, int maxPrice, int sellCap)
 		{
 			ItemId = itemId;
 			MinPrice = minPrice;
 			MaxPrice = maxPrice;
+			SellCap = sellCap;
 		}
 	}
 
@@ -33,6 +35,7 @@ namespace Database.Models.Dealer
 			builder.Property(x => x.ItemId).HasColumnName("item_id").HasColumnType("int(11)");
 			builder.Property(x => x.MinPrice).HasColumnName("min_price").HasColumnType("int(11)");
 			builder.Property(x => x.MaxPrice).HasColumnName("max_price").HasColumnType("int(11)");
-		}
+            builder.Property(x => x.SellCap).HasColumnName("sell_cap").HasColumnType("int(11)");
+        }
 	}
 }

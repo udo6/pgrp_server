@@ -65,6 +65,7 @@ namespace Database.Models.Account
         public DateTime TeamJoinDate { get; set; }
         public bool TeamDuty { get; set; }
         public DateTime TeamLeaveDate { get; set; }
+        public bool TeamSuspended { get; set; }
 
         public string FederalRecordTeam { get; set; }
         public string FederalRecordDescription { get; set; }
@@ -198,8 +199,9 @@ namespace Database.Models.Account
 			builder.Property(x => x.TeamJoinDate).HasColumnName("team_join").HasColumnType("datetime");
 			builder.Property(x => x.TeamDuty).HasColumnName("team_duty").HasColumnType("tinyint(1)");
 			builder.Property(x => x.TeamLeaveDate).HasColumnName("team_leave").HasColumnType("datetime");
+            builder.Property(x => x.TeamSuspended).HasColumnName("team_suspended").HasColumnType("tinyint(1)");
 
-			builder.Property(x => x.Phone).HasColumnName("phone").HasColumnType("tinyint(1)");
+            builder.Property(x => x.Phone).HasColumnName("phone").HasColumnType("tinyint(1)");
 			builder.Property(x => x.Laptop).HasColumnName("laptop").HasColumnType("tinyint(1)");
 			builder.Property(x => x.Backpack).HasColumnName("backpack").HasColumnType("tinyint(1)");
 
