@@ -13,7 +13,7 @@ namespace Discord
 {
 	public static class Main
 	{
-		private static string Token = "MTI1NDExNTk0OTg5MjczMDk1MQ.GasDEW.Z6_0lhDVuuOXUWxtgyvCFy1oQcxXD63UJ8D2Lw";
+		private static string Token = "";
 		private static DiscordSocketClient? Client = null;
 		public static void Start()
 		{
